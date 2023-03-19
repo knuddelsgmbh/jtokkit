@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
  *     But if you want to use a custom encoding, you can use this class to pass the parameters to the library.
  *     Use {@link EncodingRegistry#registerGptBytePairEncoding(GptBytePairEncodingParams)} to register your custom encoding
  *     to the registry, so that you can easily use your encoding in conjunction with the predefined ones.
- * </p>
  * <p>
  *     The encoding parameters are:
  *     <ul>
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
  *         <li>encoder: The encoder that maps the tokens to their ids.</li>
  *         <li>specialTokensEncoder: The encoder that maps the special tokens to their ids.</li>
  *     </ul>
- * </p>
  */
 public final class GptBytePairEncodingParams {
 	private final String name;
