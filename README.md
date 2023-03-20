@@ -16,7 +16,7 @@ enc = registry.getEncodingForModel(ModelType.TEXT_EMBEDDING_ADA_002);
 JTokkit aims to be a fast and efficient tokenizer designed for use in natural
 language processing tasks using the OpenAI models. It provides an easy-to-use
 interface for tokenizing input text, for example for counting required tokens
-in preparation of requests to the ChatGPT model. This library resulted out of
+in preparation of requests to the GPT-3.5 model. This library resulted out of
 the need to have similar capacities in the JVM ecosystem as the library
 [tiktoken](https://github.com/openai/tiktoken) provides for Python.
 
