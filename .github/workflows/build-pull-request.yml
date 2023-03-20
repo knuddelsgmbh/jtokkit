@@ -8,8 +8,6 @@
 name: Build
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -18,9 +16,7 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 8
@@ -28,7 +24,7 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+    - name: Build
+      uses: gradle/gradle-build-action@v2
       with:
         arguments: build
