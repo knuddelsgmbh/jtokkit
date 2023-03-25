@@ -168,4 +168,8 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### Keep benchmark data out of repository ###
+benchmark/data/**
+!benchmark/data/.gitkeep
+
 # End of https://www.toptal.com/developers/gitignore/api/gradle,intellij,java
