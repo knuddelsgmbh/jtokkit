@@ -27,7 +27,7 @@ jobs:
     - name: Build
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build
+        arguments: :lib:build
     - name: Publish
       uses: gradle/gradle-build-action@v2
       with:
@@ -36,4 +36,4 @@ jobs:
           -PmavenCentralPassword=${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           -PsigningPassword=${{ secrets.MAVEN_CENTRAL_SIGNING_PASSWORD }}
           -PsigningKey=${{ secrets.MAVEN_CENTRAL_SIGNING_KEY }}
-          publish
+          :lib:publish
