@@ -1,6 +1,9 @@
 # 🚀 JTokkit - Java Tokenizer Kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/knuddelsgmbh/jtokkit)](https://opensource.org/license/mit/)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/knuddelsgmbh/jtokkit/build-publish.yml)
+![Maven Central](https://img.shields.io/maven-central/v/com.knuddels/jtokkit)
+[![javadoc](https://javadoc.io/badge2/com.knuddels/jtokkit/javadoc.svg)](https://javadoc.io/doc/com.knuddels/jtokkit)
 
 Welcome to JTokkit, a Java tokenizer library designed for use with OpenAI models.
 ```java
