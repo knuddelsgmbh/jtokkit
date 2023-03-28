@@ -36,10 +36,18 @@ and `cl100k_base`
 
 ✅ Supports Java 8 and above
 
+✅ Fast and efficient performance
 
-🔨 Fast and efficient performance (currently working on it)
 
-🔨 Handling of special tokens during encoding (upcoming)
+🔨 Handling of special tokens during encoding (not started)
+
+## 📊 Performance
+
+JTokkit is between 2-3 times faster than a comparable tokenizer.
+
+![benchmark](benchmark/reports/benchmark.svg)
+
+For details on the benchmark, see the [benchmark](benchmark) directory.
 
 ## 🛠️ Installation
 You can install JTokkit by adding the following dependency to your Maven project:

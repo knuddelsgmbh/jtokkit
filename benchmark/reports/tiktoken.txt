@@ -1,0 +1,931 @@
+bench
+=====
+
+Number of benchmarks: 28
+Total duration: 1 hour 13 min 36.7 sec
+Start date: 2023-03-28 12:07:43
+End date: 2023-03-28 13:18:37
+
+cl100k_base 1 thread(s)
+-----------------------
+
+Total duration: 9 min 47.9 sec
+Start date: 2023-03-28 12:07:43
+End date: 2023-03-28 12:17:32
+Raw value minimum: 32.0 sec
+Raw value maximum: 32.7 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         32.0 sec
+Median +- MAD:   32.3 sec +- 0.3 sec
+Mean +- std dev: 32.3 sec +- 0.3 sec
+Maximum:         32.7 sec
+
+  0th percentile: 32.0 sec (-1% of the mean) -- minimum
+  5th percentile: 32.0 sec (-1% of the mean)
+ 25th percentile: 32.1 sec (-1% of the mean) -- Q1
+ 50th percentile: 32.3 sec (-0% of the mean) -- median
+ 75th percentile: 32.6 sec (+1% of the mean) -- Q3
+ 95th percentile: 32.7 sec (+1% of the mean)
+100th percentile: 32.7 sec (+1% of the mean) -- maximum
+
+Number of outlier (out of 31.3 sec..33.4 sec): 0
+
+cl100k_base 2 thread(s)
+-----------------------
+
+Total duration: 5 min 14.0 sec
+Start date: 2023-03-28 12:16:00
+End date: 2023-03-28 12:21:17
+Raw value minimum: 16.6 sec
+Raw value maximum: 19.6 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         16.6 sec
+Median +- MAD:   16.7 sec +- 0.1 sec
+Mean +- std dev: 17.3 sec +- 1.2 sec
+Maximum:         19.6 sec
+
+  0th percentile: 16.6 sec (-4% of the mean) -- minimum
+  5th percentile: 16.6 sec (-4% of the mean)
+ 25th percentile: 16.7 sec (-4% of the mean) -- Q1
+ 50th percentile: 16.7 sec (-3% of the mean) -- median
+ 75th percentile: 16.9 sec (-2% of the mean) -- Q3
+ 95th percentile: 19.5 sec (+13% of the mean)
+100th percentile: 19.6 sec (+14% of the mean) -- maximum
+
+Number of outlier (out of 16.3 sec..17.3 sec): 2
+
+cl100k_base 4 thread(s)
+-----------------------
+
+Total duration: 2 min 56.1 sec
+Start date: 2023-03-28 12:20:29
+End date: 2023-03-28 12:23:26
+Raw value minimum: 8.72 sec
+Raw value maximum: 10.7 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         8.72 sec
+Median +- MAD:   9.61 sec +- 0.66 sec
+Mean +- std dev: 9.74 sec +- 0.77 sec
+Maximum:         10.7 sec
+
+  0th percentile: 8.72 sec (-10% of the mean) -- minimum
+  5th percentile: 8.81 sec (-9% of the mean)
+ 25th percentile: 9.05 sec (-7% of the mean) -- Q1
+ 50th percentile: 9.61 sec (-1% of the mean) -- median
+ 75th percentile: 10.5 sec (+8% of the mean) -- Q3
+ 95th percentile: 10.7 sec (+10% of the mean)
+100th percentile: 10.7 sec (+10% of the mean) -- maximum
+
+Number of outlier (out of 6.83 sec..12.75 sec): 0
+
+cl100k_base 8 thread(s)
+-----------------------
+
+Total duration: 1 min 31.7 sec
+Start date: 2023-03-28 12:22:58
+End date: 2023-03-28 12:24:30
+Raw value minimum: 4.66 sec
+Raw value maximum: 4.95 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         4.66 sec
+Median +- MAD:   4.73 sec +- 0.06 sec
+Mean +- std dev: 4.76 sec +- 0.10 sec
+Maximum:         4.95 sec
+
+  0th percentile: 4.66 sec (-2% of the mean) -- minimum
+  5th percentile: 4.66 sec (-2% of the mean)
+ 25th percentile: 4.69 sec (-2% of the mean) -- Q1
+ 50th percentile: 4.73 sec (-1% of the mean) -- median
+ 75th percentile: 4.83 sec (+1% of the mean) -- Q3
+ 95th percentile: 4.92 sec (+3% of the mean)
+100th percentile: 4.95 sec (+4% of the mean) -- maximum
+
+Number of outlier (out of 4.50 sec..5.02 sec): 0
+
+cl100k_base 16 thread(s)
+------------------------
+
+Total duration: 1 min 5.6 sec
+Start date: 2023-03-28 12:24:21
+End date: 2023-03-28 12:25:27
+Raw value minimum: 3.31 sec
+Raw value maximum: 3.46 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.31 sec
+Median +- MAD:   3.35 sec +- 0.03 sec
+Mean +- std dev: 3.36 sec +- 0.05 sec
+Maximum:         3.46 sec
+
+  0th percentile: 3.31 sec (-1% of the mean) -- minimum
+  5th percentile: 3.31 sec (-1% of the mean)
+ 25th percentile: 3.32 sec (-1% of the mean) -- Q1
+ 50th percentile: 3.35 sec (-0% of the mean) -- median
+ 75th percentile: 3.38 sec (+1% of the mean) -- Q3
+ 95th percentile: 3.43 sec (+2% of the mean)
+100th percentile: 3.46 sec (+3% of the mean) -- maximum
+
+Number of outlier (out of 3.24 sec..3.46 sec): 0
+
+cl100k_base 32 thread(s)
+------------------------
+
+Total duration: 1 min 4.4 sec
+Start date: 2023-03-28 12:25:27
+End date: 2023-03-28 12:26:32
+Raw value minimum: 3.09 sec
+Raw value maximum: 3.60 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.09 sec
+Median +- MAD:   3.13 sec +- 0.04 sec
+Mean +- std dev: 3.30 sec +- 0.23 sec
+Maximum:         3.60 sec
+
+  0th percentile: 3.09 sec (-6% of the mean) -- minimum
+  5th percentile: 3.10 sec (-6% of the mean)
+ 25th percentile: 3.11 sec (-6% of the mean) -- Q1
+ 50th percentile: 3.13 sec (-5% of the mean) -- median
+ 75th percentile: 3.55 sec (+8% of the mean) -- Q3
+ 95th percentile: 3.59 sec (+9% of the mean)
+100th percentile: 3.60 sec (+9% of the mean) -- maximum
+
+Number of outlier (out of 2.46 sec..4.20 sec): 0
+
+cl100k_base 64 thread(s)
+------------------------
+
+Total duration: 1 min 10.3 sec
+Start date: 2023-03-28 12:26:34
+End date: 2023-03-28 12:27:45
+Raw value minimum: 3.20 sec
+Raw value maximum: 3.85 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.20 sec
+Median +- MAD:   3.79 sec +- 0.04 sec
+Mean +- std dev: 3.67 sec +- 0.25 sec
+Maximum:         3.85 sec
+
+  0th percentile: 3.20 sec (-13% of the mean) -- minimum
+  5th percentile: 3.22 sec (-12% of the mean)
+ 25th percentile: 3.66 sec (-0% of the mean) -- Q1
+ 50th percentile: 3.79 sec (+3% of the mean) -- median
+ 75th percentile: 3.81 sec (+4% of the mean) -- Q3
+ 95th percentile: 3.85 sec (+5% of the mean)
+100th percentile: 3.85 sec (+5% of the mean) -- maximum
+
+Number of outlier (out of 3.42 sec..4.04 sec): 2
+
+p50k_base 1 thread(s)
+---------------------
+
+Total duration: 7 min 12.3 sec
+Start date: 2023-03-28 12:29:47
+End date: 2023-03-28 12:36:57
+Raw value minimum: 22.9 sec
+Raw value maximum: 24.2 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         22.9 sec
+Median +- MAD:   23.5 sec +- 0.1 sec
+Mean +- std dev: 23.6 sec +- 0.4 sec
+Maximum:         24.2 sec
+
+  0th percentile: 22.9 sec (-3% of the mean) -- minimum
+  5th percentile: 23.0 sec (-2% of the mean)
+ 25th percentile: 23.5 sec (-0% of the mean) -- Q1
+ 50th percentile: 23.5 sec (-0% of the mean) -- median
+ 75th percentile: 23.6 sec (+0% of the mean) -- Q3
+ 95th percentile: 24.2 sec (+3% of the mean)
+100th percentile: 24.2 sec (+3% of the mean) -- maximum
+
+Number of outlier (out of 23.3 sec..23.8 sec): 4
+
+p50k_base 2 thread(s)
+---------------------
+
+Total duration: 3 min 46.2 sec
+Start date: 2023-03-28 12:35:49
+End date: 2023-03-28 12:39:35
+Raw value minimum: 12.1 sec
+Raw value maximum: 12.4 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         12.1 sec
+Median +- MAD:   12.2 sec +- 0.1 sec
+Mean +- std dev: 12.3 sec +- 0.1 sec
+Maximum:         12.4 sec
+
+  0th percentile: 12.1 sec (-1% of the mean) -- minimum
+  5th percentile: 12.1 sec (-1% of the mean)
+ 25th percentile: 12.2 sec (-1% of the mean) -- Q1
+ 50th percentile: 12.2 sec (-0% of the mean) -- median
+ 75th percentile: 12.4 sec (+1% of the mean) -- Q3
+ 95th percentile: 12.4 sec (+1% of the mean)
+100th percentile: 12.4 sec (+1% of the mean) -- maximum
+
+Number of outlier (out of 11.9 sec..12.7 sec): 0
+
+p50k_base 4 thread(s)
+---------------------
+
+Total duration: 2 min 7.9 sec
+Start date: 2023-03-28 12:39:01
+End date: 2023-03-28 12:41:14
+Raw value minimum: 6.40 sec
+Raw value maximum: 8.37 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         6.40 sec
+Median +- MAD:   6.99 sec +- 0.48 sec
+Mean +- std dev: 7.03 sec +- 0.66 sec
+Maximum:         8.37 sec
+
+  0th percentile: 6.40 sec (-9% of the mean) -- minimum
+  5th percentile: 6.42 sec (-9% of the mean)
+ 25th percentile: 6.46 sec (-8% of the mean) -- Q1
+ 50th percentile: 6.99 sec (-1% of the mean) -- median
+ 75th percentile: 7.41 sec (+5% of the mean) -- Q3
+ 95th percentile: 7.95 sec (+13% of the mean)
+100th percentile: 8.37 sec (+19% of the mean) -- maximum
+
+Number of outlier (out of 5.03 sec..8.84 sec): 0
+
+p50k_base 8 thread(s)
+---------------------
+
+Total duration: 1 min 10.3 sec
+Start date: 2023-03-28 12:40:52
+End date: 2023-03-28 12:42:03
+Raw value minimum: 3.56 sec
+Raw value maximum: 3.93 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.56 sec
+Median +- MAD:   3.60 sec +- 0.01 sec
+Mean +- std dev: 3.63 sec +- 0.11 sec
+Maximum:         3.93 sec
+
+  0th percentile: 3.56 sec (-2% of the mean) -- minimum
+  5th percentile: 3.56 sec (-2% of the mean)
+ 25th percentile: 3.58 sec (-1% of the mean) -- Q1
+ 50th percentile: 3.60 sec (-1% of the mean) -- median
+ 75th percentile: 3.61 sec (-0% of the mean) -- Q3
+ 95th percentile: 3.80 sec (+5% of the mean)
+100th percentile: 3.93 sec (+8% of the mean) -- maximum
+
+Number of outlier (out of 3.54 sec..3.65 sec): 1
+
+p50k_base 16 thread(s)
+----------------------
+
+Total duration: 52.1 sec
+Start date: 2023-03-28 12:41:57
+End date: 2023-03-28 12:42:50
+Raw value minimum: 2.54 sec
+Raw value maximum: 2.63 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.54 sec
+Median +- MAD:   2.58 sec +- 0.03 sec
+Mean +- std dev: 2.58 sec +- 0.03 sec
+Maximum:         2.63 sec
+
+  0th percentile: 2.54 sec (-1% of the mean) -- minimum
+  5th percentile: 2.54 sec (-1% of the mean)
+ 25th percentile: 2.55 sec (-1% of the mean) -- Q1
+ 50th percentile: 2.58 sec (+0% of the mean) -- median
+ 75th percentile: 2.60 sec (+1% of the mean) -- Q3
+ 95th percentile: 2.62 sec (+2% of the mean)
+100th percentile: 2.63 sec (+2% of the mean) -- maximum
+
+Number of outlier (out of 2.48 sec..2.67 sec): 0
+
+p50k_base 32 thread(s)
+----------------------
+
+Total duration: 50.2 sec
+Start date: 2023-03-28 12:42:49
+End date: 2023-03-28 12:43:40
+Raw value minimum: 2.40 sec
+Raw value maximum: 2.63 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.40 sec
+Median +- MAD:   2.43 sec +- 0.03 sec
+Mean +- std dev: 2.49 sec +- 0.09 sec
+Maximum:         2.63 sec
+
+  0th percentile: 2.40 sec (-4% of the mean) -- minimum
+  5th percentile: 2.41 sec (-4% of the mean)
+ 25th percentile: 2.42 sec (-3% of the mean) -- Q1
+ 50th percentile: 2.43 sec (-2% of the mean) -- median
+ 75th percentile: 2.59 sec (+4% of the mean) -- Q3
+ 95th percentile: 2.62 sec (+5% of the mean)
+100th percentile: 2.63 sec (+6% of the mean) -- maximum
+
+Number of outlier (out of 2.18 sec..2.83 sec): 0
+
+p50k_base 64 thread(s)
+----------------------
+
+Total duration: 54.2 sec
+Start date: 2023-03-28 12:43:41
+End date: 2023-03-28 12:44:35
+Raw value minimum: 2.53 sec
+Raw value maximum: 2.80 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.53 sec
+Median +- MAD:   2.71 sec +- 0.04 sec
+Mean +- std dev: 2.70 sec +- 0.08 sec
+Maximum:         2.80 sec
+
+  0th percentile: 2.53 sec (-6% of the mean) -- minimum
+  5th percentile: 2.59 sec (-4% of the mean)
+ 25th percentile: 2.68 sec (-1% of the mean) -- Q1
+ 50th percentile: 2.71 sec (+0% of the mean) -- median
+ 75th percentile: 2.74 sec (+2% of the mean) -- Q3
+ 95th percentile: 2.79 sec (+3% of the mean)
+100th percentile: 2.80 sec (+4% of the mean) -- maximum
+
+Number of outlier (out of 2.57 sec..2.85 sec): 1
+
+p50k_edit 1 thread(s)
+---------------------
+
+Total duration: 7 min 8.7 sec
+Start date: 2023-03-28 12:46:40
+End date: 2023-03-28 12:53:52
+Raw value minimum: 23.2 sec
+Raw value maximum: 23.9 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         23.2 sec
+Median +- MAD:   23.5 sec +- 0.2 sec
+Mean +- std dev: 23.5 sec +- 0.2 sec
+Maximum:         23.9 sec
+
+  0th percentile: 23.2 sec (-2% of the mean) -- minimum
+  5th percentile: 23.2 sec (-1% of the mean)
+ 25th percentile: 23.4 sec (-1% of the mean) -- Q1
+ 50th percentile: 23.5 sec (+0% of the mean) -- median
+ 75th percentile: 23.7 sec (+1% of the mean) -- Q3
+ 95th percentile: 23.8 sec (+1% of the mean)
+100th percentile: 23.9 sec (+1% of the mean) -- maximum
+
+Number of outlier (out of 22.9 sec..24.2 sec): 0
+
+p50k_edit 2 thread(s)
+---------------------
+
+Total duration: 3 min 45.4 sec
+Start date: 2023-03-28 12:52:42
+End date: 2023-03-28 12:56:28
+Raw value minimum: 12.1 sec
+Raw value maximum: 12.3 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         12.1 sec
+Median +- MAD:   12.2 sec +- 0.0 sec
+Mean +- std dev: 12.2 sec +- 0.1 sec
+Maximum:         12.3 sec
+
+  0th percentile: 12.1 sec (-1% of the mean) -- minimum
+  5th percentile: 12.1 sec (-1% of the mean)
+ 25th percentile: 12.2 sec (-0% of the mean) -- Q1
+ 50th percentile: 12.2 sec (+0% of the mean) -- median
+ 75th percentile: 12.3 sec (+0% of the mean) -- Q3
+ 95th percentile: 12.3 sec (+1% of the mean)
+100th percentile: 12.3 sec (+1% of the mean) -- maximum
+
+Number of outlier (out of 12.0 sec..12.4 sec): 0
+
+p50k_edit 4 thread(s)
+---------------------
+
+Total duration: 2 min 16.1 sec
+Start date: 2023-03-28 12:55:57
+End date: 2023-03-28 12:58:15
+Raw value minimum: 6.44 sec
+Raw value maximum: 8.15 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         6.44 sec
+Median +- MAD:   7.36 sec +- 0.06 sec
+Mean +- std dev: 7.48 sec +- 0.52 sec
+Maximum:         8.15 sec
+
+  0th percentile: 6.44 sec (-14% of the mean) -- minimum
+  5th percentile: 6.83 sec (-9% of the mean)
+ 25th percentile: 7.31 sec (-2% of the mean) -- Q1
+ 50th percentile: 7.36 sec (-2% of the mean) -- median
+ 75th percentile: 7.89 sec (+6% of the mean) -- Q3
+ 95th percentile: 8.14 sec (+9% of the mean)
+100th percentile: 8.15 sec (+9% of the mean) -- maximum
+
+Number of outlier (out of 6.44 sec..8.76 sec): 0
+
+p50k_edit 8 thread(s)
+---------------------
+
+Total duration: 1 min 10.1 sec
+Start date: 2023-03-28 12:57:53
+End date: 2023-03-28 12:59:03
+Raw value minimum: 3.52 sec
+Raw value maximum: 3.75 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.52 sec
+Median +- MAD:   3.56 sec +- 0.02 sec
+Mean +- std dev: 3.57 sec +- 0.07 sec
+Maximum:         3.75 sec
+
+  0th percentile: 3.52 sec (-1% of the mean) -- minimum
+  5th percentile: 3.53 sec (-1% of the mean)
+ 25th percentile: 3.54 sec (-1% of the mean) -- Q1
+ 50th percentile: 3.56 sec (-0% of the mean) -- median
+ 75th percentile: 3.57 sec (-0% of the mean) -- Q3
+ 95th percentile: 3.68 sec (+3% of the mean)
+100th percentile: 3.75 sec (+5% of the mean) -- maximum
+
+Number of outlier (out of 3.50 sec..3.61 sec): 1
+
+p50k_edit 16 thread(s)
+----------------------
+
+Total duration: 52.3 sec
+Start date: 2023-03-28 12:58:57
+End date: 2023-03-28 12:59:50
+Raw value minimum: 2.56 sec
+Raw value maximum: 2.64 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.56 sec
+Median +- MAD:   2.61 sec +- 0.03 sec
+Mean +- std dev: 2.60 sec +- 0.03 sec
+Maximum:         2.64 sec
+
+  0th percentile: 2.56 sec (-1% of the mean) -- minimum
+  5th percentile: 2.56 sec (-1% of the mean)
+ 25th percentile: 2.57 sec (-1% of the mean) -- Q1
+ 50th percentile: 2.61 sec (+0% of the mean) -- median
+ 75th percentile: 2.62 sec (+1% of the mean) -- Q3
+ 95th percentile: 2.64 sec (+2% of the mean)
+100th percentile: 2.64 sec (+2% of the mean) -- maximum
+
+Number of outlier (out of 2.49 sec..2.71 sec): 0
+
+p50k_edit 32 thread(s)
+----------------------
+
+Total duration: 50.3 sec
+Start date: 2023-03-28 12:59:49
+End date: 2023-03-28 13:00:40
+Raw value minimum: 2.41 sec
+Raw value maximum: 2.63 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.41 sec
+Median +- MAD:   2.45 sec +- 0.03 sec
+Mean +- std dev: 2.50 sec +- 0.10 sec
+Maximum:         2.63 sec
+
+  0th percentile: 2.41 sec (-4% of the mean) -- minimum
+  5th percentile: 2.41 sec (-3% of the mean)
+ 25th percentile: 2.42 sec (-3% of the mean) -- Q1
+ 50th percentile: 2.45 sec (-2% of the mean) -- median
+ 75th percentile: 2.60 sec (+4% of the mean) -- Q3
+ 95th percentile: 2.63 sec (+5% of the mean)
+100th percentile: 2.63 sec (+5% of the mean) -- maximum
+
+Number of outlier (out of 2.14 sec..2.88 sec): 0
+
+p50k_edit 64 thread(s)
+----------------------
+
+Total duration: 54.8 sec
+Start date: 2023-03-28 13:00:41
+End date: 2023-03-28 13:01:37
+Raw value minimum: 2.64 sec
+Raw value maximum: 2.97 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.64 sec
+Median +- MAD:   2.75 sec +- 0.07 sec
+Mean +- std dev: 2.77 sec +- 0.11 sec
+Maximum:         2.97 sec
+
+  0th percentile: 2.64 sec (-4% of the mean) -- minimum
+  5th percentile: 2.65 sec (-4% of the mean)
+ 25th percentile: 2.68 sec (-3% of the mean) -- Q1
+ 50th percentile: 2.75 sec (-1% of the mean) -- median
+ 75th percentile: 2.80 sec (+1% of the mean) -- Q3
+ 95th percentile: 2.95 sec (+7% of the mean)
+100th percentile: 2.97 sec (+8% of the mean) -- maximum
+
+Number of outlier (out of 2.51 sec..2.97 sec): 1
+
+r50k_base 1 thread(s)
+---------------------
+
+Total duration: 7 min 10.6 sec
+Start date: 2023-03-28 13:03:42
+End date: 2023-03-28 13:10:52
+Raw value minimum: 23.0 sec
+Raw value maximum: 24.2 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         23.0 sec
+Median +- MAD:   23.8 sec +- 0.2 sec
+Mean +- std dev: 23.7 sec +- 0.4 sec
+Maximum:         24.2 sec
+
+  0th percentile: 23.0 sec (-3% of the mean) -- minimum
+  5th percentile: 23.1 sec (-3% of the mean)
+ 25th percentile: 23.5 sec (-1% of the mean) -- Q1
+ 50th percentile: 23.8 sec (+0% of the mean) -- median
+ 75th percentile: 23.9 sec (+1% of the mean) -- Q3
+ 95th percentile: 24.1 sec (+2% of the mean)
+100th percentile: 24.2 sec (+2% of the mean) -- maximum
+
+Number of outlier (out of 23.0 sec..24.4 sec): 0
+
+r50k_base 2 thread(s)
+---------------------
+
+Total duration: 3 min 47.4 sec
+Start date: 2023-03-28 13:09:45
+End date: 2023-03-28 13:13:33
+Raw value minimum: 12.1 sec
+Raw value maximum: 12.7 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         12.1 sec
+Median +- MAD:   12.3 sec +- 0.1 sec
+Mean +- std dev: 12.4 sec +- 0.2 sec
+Maximum:         12.7 sec
+
+  0th percentile: 12.1 sec (-2% of the mean) -- minimum
+  5th percentile: 12.1 sec (-2% of the mean)
+ 25th percentile: 12.2 sec (-1% of the mean) -- Q1
+ 50th percentile: 12.3 sec (-0% of the mean) -- median
+ 75th percentile: 12.5 sec (+1% of the mean) -- Q3
+ 95th percentile: 12.6 sec (+2% of the mean)
+100th percentile: 12.7 sec (+2% of the mean) -- maximum
+
+Number of outlier (out of 11.9 sec..12.9 sec): 0
+
+r50k_base 4 thread(s)
+---------------------
+
+Total duration: 2 min 7.2 sec
+Start date: 2023-03-28 13:13:01
+End date: 2023-03-28 13:15:09
+Raw value minimum: 6.45 sec
+Raw value maximum: 7.34 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         6.45 sec
+Median +- MAD:   6.53 sec +- 0.02 sec
+Mean +- std dev: 6.67 sec +- 0.32 sec
+Maximum:         7.34 sec
+
+  0th percentile: 6.45 sec (-3% of the mean) -- minimum
+  5th percentile: 6.47 sec (-3% of the mean)
+ 25th percentile: 6.52 sec (-2% of the mean) -- Q1
+ 50th percentile: 6.53 sec (-2% of the mean) -- median
+ 75th percentile: 6.56 sec (-2% of the mean) -- Q3
+ 95th percentile: 7.28 sec (+9% of the mean)
+100th percentile: 7.34 sec (+10% of the mean) -- maximum
+
+Number of outlier (out of 6.46 sec..6.62 sec): 3
+
+r50k_base 8 thread(s)
+---------------------
+
+Total duration: 1 min 11.7 sec
+Start date: 2023-03-28 13:14:48
+End date: 2023-03-28 13:16:02
+Raw value minimum: 3.56 sec
+Raw value maximum: 3.89 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         3.56 sec
+Median +- MAD:   3.68 sec +- 0.10 sec
+Mean +- std dev: 3.69 sec +- 0.11 sec
+Maximum:         3.89 sec
+
+  0th percentile: 3.56 sec (-3% of the mean) -- minimum
+  5th percentile: 3.56 sec (-3% of the mean)
+ 25th percentile: 3.59 sec (-3% of the mean) -- Q1
+ 50th percentile: 3.68 sec (-0% of the mean) -- median
+ 75th percentile: 3.78 sec (+2% of the mean) -- Q3
+ 95th percentile: 3.84 sec (+4% of the mean)
+100th percentile: 3.89 sec (+5% of the mean) -- maximum
+
+Number of outlier (out of 3.31 sec..4.06 sec): 0
+
+r50k_base 16 thread(s)
+----------------------
+
+Total duration: 53.3 sec
+Start date: 2023-03-28 13:15:55
+End date: 2023-03-28 13:16:49
+Raw value minimum: 2.57 sec
+Raw value maximum: 2.71 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.57 sec
+Median +- MAD:   2.63 sec +- 0.02 sec
+Mean +- std dev: 2.64 sec +- 0.05 sec
+Maximum:         2.71 sec
+
+  0th percentile: 2.57 sec (-3% of the mean) -- minimum
+  5th percentile: 2.59 sec (-2% of the mean)
+ 25th percentile: 2.61 sec (-1% of the mean) -- Q1
+ 50th percentile: 2.63 sec (-0% of the mean) -- median
+ 75th percentile: 2.69 sec (+2% of the mean) -- Q3
+ 95th percentile: 2.71 sec (+2% of the mean)
+100th percentile: 2.71 sec (+3% of the mean) -- maximum
+
+Number of outlier (out of 2.49 sec..2.80 sec): 0
+
+r50k_base 32 thread(s)
+----------------------
+
+Total duration: 50.7 sec
+Start date: 2023-03-28 13:16:48
+End date: 2023-03-28 13:17:39
+Raw value minimum: 2.43 sec
+Raw value maximum: 2.66 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.43 sec
+Median +- MAD:   2.49 sec +- 0.05 sec
+Mean +- std dev: 2.52 sec +- 0.09 sec
+Maximum:         2.66 sec
+
+  0th percentile: 2.43 sec (-4% of the mean) -- minimum
+  5th percentile: 2.44 sec (-4% of the mean)
+ 25th percentile: 2.45 sec (-3% of the mean) -- Q1
+ 50th percentile: 2.49 sec (-1% of the mean) -- median
+ 75th percentile: 2.61 sec (+3% of the mean) -- Q3
+ 95th percentile: 2.64 sec (+5% of the mean)
+100th percentile: 2.66 sec (+5% of the mean) -- maximum
+
+Number of outlier (out of 2.21 sec..2.85 sec): 0
+
+r50k_base 64 thread(s)
+----------------------
+
+Total duration: 55.0 sec
+Start date: 2023-03-28 13:17:41
+End date: 2023-03-28 13:18:37
+Raw value minimum: 2.59 sec
+Raw value maximum: 2.94 sec
+
+Number of calibration run: 1
+Number of run with values: 2
+Total number of run: 3
+
+Number of warmup per run: 1
+Number of value per run: 5
+Loop iterations per value: 1
+Total number of values: 10
+
+Minimum:         2.59 sec
+Median +- MAD:   2.75 sec +- 0.06 sec
+Mean +- std dev: 2.76 sec +- 0.11 sec
+Maximum:         2.94 sec
+
+  0th percentile: 2.59 sec (-6% of the mean) -- minimum
+  5th percentile: 2.62 sec (-5% of the mean)
+ 25th percentile: 2.70 sec (-2% of the mean) -- Q1
+ 50th percentile: 2.75 sec (-0% of the mean) -- median
+ 75th percentile: 2.80 sec (+2% of the mean) -- Q3
+ 95th percentile: 2.92 sec (+6% of the mean)
+100th percentile: 2.94 sec (+6% of the mean) -- maximum
+
+Number of outlier (out of 2.54 sec..2.96 sec): 0
