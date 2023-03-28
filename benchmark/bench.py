@@ -25,7 +25,7 @@ runner = pyperf.Runner()
 def run_benchmark(name, num_threads):
     runner.timeit(
         name=f'{name} {num_threads} thread(s)',
-        stmt=f'{name}.encode_batch(file_contents, num_threads={num_threads})',
+        stmt=f'{name}.encode_ordinary_batch(file_contents, num_threads={num_threads})',
         setup=setup
     )
 
