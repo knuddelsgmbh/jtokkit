@@ -44,6 +44,8 @@ publishing {
 
     publications {
         create<MavenPublication>("mavenJava") {
+            artifactId = "jtokkit"
+
             from(components["java"])
 
             pom {
