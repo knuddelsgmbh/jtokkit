@@ -54,8 +54,20 @@ final class DefaultEncodingRegistry implements EncodingRegistry {
 
 	@Override
 	public Optional<Encoding> getEncodingForModel(final String modelName) {
-		return ModelType.fromName(modelName)
-				.map(this::getEncodingForModel);
+		final Optional<ModelType> modelType = ModelType.fromName(modelName);
+		if (modelType.isPresent()) {
+			return Optional.of(getEncodingForModel(modelType.get()));
+		}
+
+		if (modelName.startsWith("gpt-4")) {
+			return Optional.of(getEncodingForModel(ModelType.GPT_4));
+		}
+
+		if (modelName.startsWith("gpt-3.5-turbo")) {
+			return Optional.of(getEncodingForModel(ModelType.GPT_3_5_TURBO));
+		}
+
+		return Optional.empty();
 	}
 
 	@Override

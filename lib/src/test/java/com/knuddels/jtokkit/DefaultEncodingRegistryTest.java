@@ -58,6 +58,24 @@ class DefaultEncodingRegistryTest {
 	}
 
 	@Test
+	public void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt4() {
+		registry.initializeDefaultEncodings();
+
+		final Optional<Encoding> encoding = registry.getEncodingForModel("gpt-4-32k-0314");
+		assertTrue(encoding.isPresent());
+		assertEquals(encoding.get().getName(), ModelType.GPT_4.getEncodingType().getName());
+	}
+
+	@Test
+	public void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt3Turbo() {
+		registry.initializeDefaultEncodings();
+
+		final Optional<Encoding> encoding = registry.getEncodingForModel("gpt-3.5-turbo-0301");
+		assertTrue(encoding.isPresent());
+		assertEquals(encoding.get().getName(), ModelType.GPT_3_5_TURBO.getEncodingType().getName());
+	}
+
+	@Test
 	public void canRegisterCustomEncoding() {
 		final Encoding encoding = new DummyEncoding();
 

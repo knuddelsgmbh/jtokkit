@@ -30,6 +30,9 @@ public interface EncodingRegistry {
 	/**
 	 * Returns the encoding that is used for the given model type, if it exists. Otherwise, returns an
 	 * empty Optional. Prefer using {@link #getEncodingForModel(ModelType)} for built-in encodings.
+	 * <p>
+	 * Note that you can use this method to retrieve the correct encodings for snapshots of models, for
+	 * example "gpt-4-0314" or "gpt-3.5-turbo-0301".
 	 *
 	 * @param modelName the name of the model to get the encoding for
 	 * @return the encoding, if it exists
