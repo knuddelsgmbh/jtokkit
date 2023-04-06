@@ -42,6 +42,11 @@ final class GptBytePairEncoding implements Encoding {
 			}
 		}
 
+		return encodeOrdinary(text);
+	}
+
+	@Override
+	public List<Integer> encodeOrdinary(final String text) {
 		final List<Integer> out = new ArrayList<>();
 		final Matcher matcher = pattern.matcher(text);
 		while (matcher.find()) {
@@ -59,6 +64,11 @@ final class GptBytePairEncoding implements Encoding {
 	@Override
 	public int countTokens(final String text) {
 		return encode(text).size();
+	}
+
+	@Override
+	public int countTokensOrdinary(final String text) {
+		return encodeOrdinary(text).size();
 	}
 
 	@Override

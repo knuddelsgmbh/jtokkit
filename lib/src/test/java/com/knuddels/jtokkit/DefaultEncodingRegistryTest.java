@@ -85,7 +85,17 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
+		public List<Integer> encodeOrdinary(final String text) {
+			return null;
+		}
+
+		@Override
 		public int countTokens(final String text) {
+			return 0;
+		}
+
+		@Override
+		public int countTokensOrdinary(final String text) {
 			return 0;
 		}
 
