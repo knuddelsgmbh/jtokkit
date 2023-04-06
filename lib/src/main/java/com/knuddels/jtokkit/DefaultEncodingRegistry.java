@@ -53,6 +53,12 @@ final class DefaultEncodingRegistry implements EncodingRegistry {
 	}
 
 	@Override
+	public Optional<Encoding> getEncodingForModel(final String modelName) {
+		return ModelType.fromName(modelName)
+				.map(this::getEncodingForModel);
+	}
+
+	@Override
 	public Encoding getEncodingForModel(final ModelType modelType) {
 		return Objects.requireNonNull(
 				encodings.get(modelType.getEncodingType().getName()),

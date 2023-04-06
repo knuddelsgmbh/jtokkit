@@ -29,6 +29,15 @@ class DefaultEncodingRegistryTest {
 	}
 
 	@Test
+	void getEncodingByNameReturnsCorrectEncoding() {
+		registry.initializeDefaultEncodings();
+
+		final Optional<Encoding> encoding = registry.getEncoding(EncodingType.CL100K_BASE.getName());
+		assertTrue(encoding.isPresent());
+		assertEquals(encoding.get().getName(), EncodingType.CL100K_BASE.getName());
+	}
+
+	@Test
 	public void getEncodingForModelReturnsCorrectsEncoding() {
 		registry.initializeDefaultEncodings();
 
@@ -37,6 +46,15 @@ class DefaultEncodingRegistryTest {
 			assertNotNull(encoding);
 			assertEquals(modelType.getEncodingType().getName(), encoding.getName());
 		}
+	}
+
+	@Test
+	public void getEncodingForModelByNameReturnsCorrectEncoding() {
+		registry.initializeDefaultEncodings();
+
+		final Optional<Encoding> encoding = registry.getEncodingForModel(ModelType.GPT_4.getName());
+		assertTrue(encoding.isPresent());
+		assertEquals(encoding.get().getName(), ModelType.GPT_4.getEncodingType().getName());
 	}
 
 	@Test

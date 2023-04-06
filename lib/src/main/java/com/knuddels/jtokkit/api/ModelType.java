@@ -1,5 +1,7 @@
 package com.knuddels.jtokkit.api;
 
+import java.util.Optional;
+
 public enum ModelType {
 	// chat
 	GPT_4("gpt-4", EncodingType.CL100K_BASE),
@@ -58,5 +60,22 @@ public enum ModelType {
 
 	public EncodingType getEncodingType() {
 		return encodingType;
+	}
+
+	/**
+	 * Returns a {@link ModelType} for the given name, or {@link Optional#empty()} if no
+	 * such model type exists.
+	 *
+	 * @param name the name of the model type
+	 * @return the model type or {@link Optional#empty()}
+	 */
+	public static Optional<ModelType> fromName(final String name) {
+		for (final ModelType modelType : values()) {
+			if (modelType.getName().equals(name)) {
+				return Optional.of(modelType);
+			}
+		}
+
+		return Optional.empty();
 	}
 }

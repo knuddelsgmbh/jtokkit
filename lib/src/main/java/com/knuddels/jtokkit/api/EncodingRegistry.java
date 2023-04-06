@@ -28,6 +28,15 @@ public interface EncodingRegistry {
 	Encoding getEncoding(EncodingType encodingType);
 
 	/**
+	 * Returns the encoding that is used for the given model type, if it exists. Otherwise, returns an
+	 * empty Optional. Prefer using {@link #getEncodingForModel(ModelType)} for built-in encodings.
+	 *
+	 * @param modelName the name of the model to get the encoding for
+	 * @return the encoding, if it exists
+	 */
+	Optional<Encoding> getEncodingForModel(String modelName);
+
+	/**
 	 * Returns the encoding that is used for the given model type.
 	 *
 	 * @param modelType the model type
