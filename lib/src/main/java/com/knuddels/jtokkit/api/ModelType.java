@@ -5,6 +5,7 @@ import java.util.Optional;
 public enum ModelType {
 	// chat
 	GPT_4("gpt-4", EncodingType.CL100K_BASE),
+	GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE),
 	GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE),
 
 	// text
