@@ -46,8 +46,8 @@ public enum ModelType {
 	CODE_SEARCH_BABBAGE_CODE_001("code-search-babbage-code-001", EncodingType.R50K_BASE),
 	CODE_SEARCH_ADA_CODE_001("code-search-ada-code-001", EncodingType.R50K_BASE);
 
-	public final String name;
-	public final EncodingType encodingType;
+	private final String name;
+	private final EncodingType encodingType;
 
 	ModelType(final String name, final EncodingType encodingType) {
 		this.name = name;
