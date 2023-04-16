@@ -130,7 +130,17 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
+		public List<Integer> encode(String text, Integer maxTokens) {
+			return null;
+		}
+
+		@Override
 		public List<Integer> encodeOrdinary(final String text) {
+			return null;
+		}
+
+		@Override
+		public List<Integer> encodeOrdinary(String text, Integer maxTokens) {
 			return null;
 		}
 

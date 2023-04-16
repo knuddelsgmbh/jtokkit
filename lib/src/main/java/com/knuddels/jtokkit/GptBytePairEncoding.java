@@ -36,25 +36,42 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encode(final String text) {
+		return encode(text, null);
+	}
+
+	@Override
+	public List<Integer> encode(final String text, final Integer maxTokens) {
 		for (final String specialToken : specialTokensEncoder.getDecodedTokens()) {
 			if (text.contains(specialToken)) {
 				throw new UnsupportedOperationException("Encoding special tokens is not supported yet.");
 			}
 		}
 
-		return encodeOrdinary(text);
+		return encodeOrdinary(text, maxTokens);
 	}
 
 	@Override
 	public List<Integer> encodeOrdinary(final String text) {
+		return encodeOrdinary(text, null);
+	}
+
+	@Override
+	public List<Integer> encodeOrdinary(final String text, final Integer maxTokens) {
 		final List<Integer> out = new ArrayList<>();
 		final Matcher matcher = pattern.matcher(text);
-		while (matcher.find()) {
+		int tokenCount = 0;
+		while (matcher.find() && maxTokenCountNotReached(maxTokens, tokenCount)) {
 			final ImmutableByteArray match = ImmutableByteArray.from(matcher.group());
 			if (encoder.containsDecodedToken(match)) {
 				out.add(encoder.encode(match));
+				++tokenCount;
 			} else {
-				out.addAll(bytePairMerge(match));
+				List<Integer> tokensToAdd = bytePairMerge(match);
+				if(maxTokenCountExceeded(maxTokens, tokenCount + tokensToAdd.size())) {
+					break;
+				}
+				out.addAll(tokensToAdd);
+				tokenCount += tokensToAdd.size();
 			}
 		}
 
@@ -215,6 +232,14 @@ final class GptBytePairEncoding implements Encoding {
 			out.add(encoder.encode(piece.getBytesBetween(parts.get(i).index, parts.get(i + 1).index)));
 		}
 		return out;
+	}
+
+	private boolean maxTokenCountNotReached(final Integer maxTokenCount, final int tokenCount) {
+		return maxTokenCount == null || maxTokenCount.compareTo(tokenCount) > 0;
+	}
+
+	private boolean maxTokenCountExceeded(final Integer maxTokenCount, final int tokenCount) {
+		return maxTokenCount != null && maxTokenCount.compareTo(tokenCount) < 0;
 	}
 
 	private Optional<Integer> getRank(
