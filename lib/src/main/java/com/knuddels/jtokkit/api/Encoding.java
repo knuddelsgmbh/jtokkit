@@ -39,10 +39,10 @@ public interface Encoding {
 	 * If you want to encode special tokens as ordinary text, use {@link #encodeOrdinary(String, Integer)}.
 	 * <pre>
 	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
-	 * encoding.encode("hello world");
+	 * encoding.encode("hello world", 100);
 	 * // returns [15339, 1917]
 	 *
-	 * encoding.encode("hello &lt;|endoftext|&gt; world");
+	 * encoding.encode("hello &lt;|endoftext|&gt; world", 100);
 	 * // raises an UnsupportedOperationException
 	 * </pre>
 	 *
@@ -79,10 +79,10 @@ public interface Encoding {
 	 * encodes them as if they were ordinary text.
 	 * <pre>
 	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
-	 * encoding.encodeOrdinary("hello world", 10);
+	 * encoding.encodeOrdinary("hello world", 100);
 	 * // returns [15339, 1917]
 	 *
-	 * encoding.encodeOrdinary("hello &lt;|endoftext|&gt; world", 10);
+	 * encoding.encodeOrdinary("hello &lt;|endoftext|&gt; world", 100);
 	 * // returns [15339, 83739, 8862, 728, 428, 91, 29, 1917]
 	 * </pre>
 	 *
