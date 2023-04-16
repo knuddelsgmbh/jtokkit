@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.EncodingType;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,9 @@ public class Cl100kBaseTestTest {
 
 		// With MaxTokens set to 10
 		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-		final List<Integer> actualWithMaxTokens = ENCODING.encode(input, 10);
-		assertEquals(expectedWithMaxTokens, actualWithMaxTokens);
+		EncodingResult encodingResult = ENCODING.encode(input, 10);
+		assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
+		assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
 	}
 
 	@ParameterizedTest
@@ -54,8 +56,9 @@ public class Cl100kBaseTestTest {
 
 		// With MaxTokens set to 10
 		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-		final List<Integer> actualWithMaxTokens = ENCODING.encodeOrdinary(input, 10);
-		assertEquals(expectedWithMaxTokens, actualWithMaxTokens);
+		EncodingResult encodingResult = ENCODING.encodeOrdinary(input, 10);
+		assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
+		assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
 	}
 
 	@ParameterizedTest

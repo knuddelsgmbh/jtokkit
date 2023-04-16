@@ -51,7 +51,7 @@ public interface Encoding {
 	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
 	 * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
 	 */
-	List<Integer> encode(String text, Integer maxTokens);
+	EncodingResult encode(String text, Integer maxTokens);
 
 	/**
 	 * Encodes the given text into a list of token ids, ignoring special tokens.
@@ -90,7 +90,7 @@ public interface Encoding {
 	 * @param maxTokens the maximum number of tokens to encode
 	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
 	 */
-	List<Integer> encodeOrdinary(String text, Integer maxTokens);
+	EncodingResult encodeOrdinary(String text, Integer maxTokens);
 
 	/**
 	 * Encodes the given text into a list of token ids and returns the amount of tokens.

@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 
 import java.nio.charset.StandardCharsets;
@@ -37,13 +38,13 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encode(final String text) {
-		return encode(text, null);
+		return encode(text, null).getTokens();
 	}
 
 	@Override
-	public List<Integer> encode(final String text, final Integer maxTokens) {
+	public EncodingResult encode(final String text, final Integer maxTokens) {
 		if(text == null) {
-			return Collections.emptyList();
+			return new EncodingResult(Collections.emptyList(), false);
 		}
 
 		for (final String specialToken : specialTokensEncoder.getDecodedTokens()) {
@@ -57,13 +58,13 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encodeOrdinary(final String text) {
-		return encodeOrdinary(text, null);
+		return encodeOrdinary(text, null).getTokens();
 	}
 
 	@Override
-	public List<Integer> encodeOrdinary(final String text, final Integer maxTokens) {
+	public EncodingResult encodeOrdinary(final String text, final Integer maxTokens) {
 		if(text == null) {
-			return Collections.emptyList();
+			return new EncodingResult(Collections.emptyList(), false);
 		}
 
 		final List<Integer> out = new ArrayList<>();
@@ -84,14 +85,15 @@ final class GptBytePairEncoding implements Encoding {
 			// Make sure we didn't break the multibyte character
 			for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
 				List<Integer> tokens = out.subList(0, out.size() - tokensToRemove);
-				if (text.startsWith(decode(tokens))) {
+				String decoded = decode(tokens);
+				if (text.startsWith(decoded)) {
 					// If decoded text is equal to the head of the original text, we can safely return the tokens
-					return tokens;
+					return new EncodingResult(tokens, text.length() > decoded.length());
 				}
 			}
 		}
 
-		return out;
+		return new EncodingResult(out, false);
 	}
 
 	/**
@@ -265,12 +267,12 @@ final class GptBytePairEncoding implements Encoding {
 		return out;
 	}
 
-	private boolean maxTokenCountNotReached(final Integer maxTokenCount, final int tokenCount) {
-		return maxTokenCount == null || maxTokenCount.compareTo(tokenCount) > 0;
+	private boolean maxTokenCountReached(final Integer maxTokenCount, final int tokenCount) {
+		return maxTokenCount != null && maxTokenCount.compareTo(tokenCount) <= 0;
 	}
 
-	private boolean maxTokenCountExceeded(final Integer maxTokenCount, final int tokenCount) {
-		return maxTokenCount != null && maxTokenCount.compareTo(tokenCount) < 0;
+	private boolean maxTokenCountNotReached(final Integer maxTokenCount, final int tokenCount) {
+		return !maxTokenCountReached(maxTokenCount, tokenCount);
 	}
 
 	private Optional<Integer> getRank(

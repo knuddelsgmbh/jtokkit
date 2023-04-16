@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.EncodingType;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 import com.knuddels.jtokkit.api.ModelType;
@@ -130,7 +131,7 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
-		public List<Integer> encode(String text, Integer maxTokens) {
+		public EncodingResult encode(String text, Integer maxTokens) {
 			return null;
 		}
 
@@ -140,7 +141,7 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
-		public List<Integer> encodeOrdinary(String text, Integer maxTokens) {
+		public EncodingResult encodeOrdinary(String text, Integer maxTokens) {
 			return null;
 		}
 
