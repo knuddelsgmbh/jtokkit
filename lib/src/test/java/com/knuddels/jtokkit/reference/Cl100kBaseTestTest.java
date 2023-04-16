@@ -18,12 +18,18 @@ public class Cl100kBaseTestTest {
 	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
 	public void cl100kBaseEncodesCorrectly(
 			final String input,
-			final String output
+			final String output,
+			final String outputMaxTokens10
 	) {
+		//
 		final List<Integer> expected = TestUtils.parseEncodingString(output);
 		final List<Integer> actual = ENCODING.encode(input);
+		assertEquals(expected, actual);
 
-		assertEquals(actual, expected);
+		// With MaxTokens set to 10
+		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
+		final List<Integer> actualWithMaxTokens = ENCODING.encode(input, 10);
+		assertEquals(expectedWithMaxTokens, actualWithMaxTokens);
 	}
 
 	@ParameterizedTest
@@ -31,19 +37,25 @@ public class Cl100kBaseTestTest {
 	public void cl100kBaseEncodesStable(final String input) {
 		final String actual = ENCODING.decode(ENCODING.encode(input));
 
-		assertEquals(actual, input);
+		assertEquals(input, actual);
 	}
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
 	public void cl100kBaseEncodeOrdinaryEncodesCorrectly(
 			final String input,
-			final String output
+			final String output,
+			final String outputMaxTokens10
 	) {
+		//
 		final List<Integer> expected = TestUtils.parseEncodingString(output);
 		final List<Integer> actual = ENCODING.encodeOrdinary(input);
+		assertEquals(expected, actual);
 
-		assertEquals(actual, expected);
+		// With MaxTokens set to 10
+		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
+		final List<Integer> actualWithMaxTokens = ENCODING.encodeOrdinary(input, 10);
+		assertEquals(expectedWithMaxTokens, actualWithMaxTokens);
 	}
 
 	@ParameterizedTest
@@ -51,7 +63,7 @@ public class Cl100kBaseTestTest {
 	public void cl100kBaseEncodeOrdinaryEncodesStable(final String input) {
 		final String actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
 
-		assertEquals(actual, input);
+		assertEquals(input, actual);
 	}
 
 	@Test
@@ -59,6 +71,6 @@ public class Cl100kBaseTestTest {
 		final String input = "Hello<|endoftext|>, <|fim_prefix|> <|fim_middle|> world <|fim_suffix|> ! <|endofprompt|>";
 		final String actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
 
-		assertEquals(actual, input);
+		assertEquals(input, actual);
 	}
 }

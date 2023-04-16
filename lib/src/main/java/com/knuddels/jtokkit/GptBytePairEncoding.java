@@ -5,6 +5,7 @@ import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -41,6 +42,10 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encode(final String text, final Integer maxTokens) {
+		if(text == null) {
+			return Collections.emptyList();
+		}
+
 		for (final String specialToken : specialTokensEncoder.getDecodedTokens()) {
 			if (text.contains(specialToken)) {
 				throw new UnsupportedOperationException("Encoding special tokens is not supported yet.");
@@ -57,6 +62,10 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encodeOrdinary(final String text, final Integer maxTokens) {
+		if(text == null) {
+			return Collections.emptyList();
+		}
+
 		final List<Integer> out = new ArrayList<>();
 		final Matcher matcher = pattern.matcher(text);
 		int tokenCount = 0;
@@ -67,15 +76,37 @@ final class GptBytePairEncoding implements Encoding {
 				++tokenCount;
 			} else {
 				List<Integer> tokensToAdd = bytePairMerge(match);
-				if(maxTokenCountExceeded(maxTokens, tokenCount + tokensToAdd.size())) {
-					break;
+				tokenCount += addTokens(out, tokensToAdd, maxTokens);
+			}
+		}
+
+		if (maxTokens != null) {
+			// Make sure we didn't break the multibyte character
+			for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
+				List<Integer> tokens = out.subList(0, out.size() - tokensToRemove);
+				if (text.startsWith(decode(tokens))) {
+					// If decoded text is equal to the head of the original text, we can safely return the tokens
+					return tokens;
 				}
-				out.addAll(tokensToAdd);
-				tokenCount += tokensToAdd.size();
 			}
 		}
 
 		return out;
+	}
+
+	/**
+	 * Adds tokens from 'tokensToAdd' to 'out' until either 'maxTokens' is reached or 'tokensToAdd' is exhausted.
+	 *
+	 * @return the number of tokens added to 'out'
+	 */
+	private int addTokens(List<Integer> out, List<Integer> tokensToAdd, Integer maxTokens) {
+		if (maxTokens != null) {
+			List<Integer> sublist = tokensToAdd.subList(0, Math.min(maxTokens - out.size(), tokensToAdd.size()));
+			out.addAll(sublist);
+			return sublist.size();
+		}
+		out.addAll(tokensToAdd);
+		return tokensToAdd.size();
 	}
 
 	@Override

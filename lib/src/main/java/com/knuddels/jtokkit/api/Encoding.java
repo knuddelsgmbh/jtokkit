@@ -36,7 +36,7 @@ public interface Encoding {
 	 * in a text, so if the text contains special tokens, this method will throw an
 	 * {@link UnsupportedOperationException}.
 	 * <p>
-	 * If you want to encode special tokens as ordinary text, use {@link #encodeOrdinary(String)}.
+	 * If you want to encode special tokens as ordinary text, use {@link #encodeOrdinary(String, Integer)}.
 	 * <pre>
 	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
 	 * encoding.encode("hello world");
@@ -48,7 +48,7 @@ public interface Encoding {
 	 *
 	 * @param text the text to encode
 	 * @param maxTokens the maximum number of tokens to encode
-	 * @return the list of token ids
+	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
 	 * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
 	 */
 	List<Integer> encode(String text, Integer maxTokens);
@@ -88,7 +88,7 @@ public interface Encoding {
 	 *
 	 * @param text the text to encode
 	 * @param maxTokens the maximum number of tokens to encode
-	 * @return the list of token ids
+	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
 	 */
 	List<Integer> encodeOrdinary(String text, Integer maxTokens);
 
