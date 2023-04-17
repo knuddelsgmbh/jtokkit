@@ -43,7 +43,7 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public EncodingResult encode(final String text, final Integer maxTokens) {
-		if(text == null) {
+		if (text == null) {
 			return new EncodingResult(Collections.emptyList(), false);
 		}
 
@@ -63,7 +63,7 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public EncodingResult encodeOrdinary(final String text, final Integer maxTokens) {
-		if(text == null) {
+		if (text == null) {
 			return new EncodingResult(Collections.emptyList(), false);
 		}
 

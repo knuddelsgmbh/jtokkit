@@ -22,6 +22,7 @@ final class EncodingFactory {
 	private static final String ENDOFPROMPT = "<|endofprompt|>";
 
 	private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
+
 	static {
 		final Map<String, Integer> map = new HashMap<>();
 		map.put(ENDOFTEXT, 50256);
@@ -29,6 +30,7 @@ final class EncodingFactory {
 	}
 
 	private static final Map<String, Integer> SPECIAL_TOKENS_P50K_EDIT;
+
 	static {
 		final Map<String, Integer> map = new HashMap<>();
 		map.put(ENDOFTEXT, 50256);
@@ -39,6 +41,7 @@ final class EncodingFactory {
 	}
 
 	private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
+
 	static {
 		final Map<String, Integer> map = new HashMap<>();
 		map.put(ENDOFTEXT, 100257);
