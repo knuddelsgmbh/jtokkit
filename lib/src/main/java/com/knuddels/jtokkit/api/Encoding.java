@@ -29,6 +29,31 @@ public interface Encoding {
 	List<Integer> encode(String text);
 
 	/**
+	 * Encodes the given text into a list of token ids.
+	 * <p>
+	 * Special tokens are artificial tokens used to unlock capabilities from a model,
+	 * such as fill-in-the-middle. There is currently no support for parsing special tokens
+	 * in a text, so if the text contains special tokens, this method will throw an
+	 * {@link UnsupportedOperationException}.
+	 * <p>
+	 * If you want to encode special tokens as ordinary text, use {@link #encodeOrdinary(String, Integer)}.
+	 * <pre>
+	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
+	 * encoding.encode("hello world", 100);
+	 * // returns [15339, 1917]
+	 *
+	 * encoding.encode("hello &lt;|endoftext|&gt; world", 100);
+	 * // raises an UnsupportedOperationException
+	 * </pre>
+	 *
+	 * @param text the text to encode
+	 * @param maxTokens the maximum number of tokens to encode
+	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
+	 * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
+	 */
+	EncodingResult encode(String text, Integer maxTokens);
+
+	/**
 	 * Encodes the given text into a list of token ids, ignoring special tokens.
 	 * <p>
 	 * This method does not throw an exception if the text contains special tokens, but instead
@@ -46,6 +71,26 @@ public interface Encoding {
 	 * @return the list of token ids
 	 */
 	List<Integer> encodeOrdinary(String text);
+
+	/**
+	 * Encodes the given text into a list of token ids, ignoring special tokens.
+	 * <p>
+	 * This method does not throw an exception if the text contains special tokens, but instead
+	 * encodes them as if they were ordinary text.
+	 * <pre>
+	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
+	 * encoding.encodeOrdinary("hello world", 100);
+	 * // returns [15339, 1917]
+	 *
+	 * encoding.encodeOrdinary("hello &lt;|endoftext|&gt; world", 100);
+	 * // returns [15339, 83739, 8862, 728, 428, 91, 29, 1917]
+	 * </pre>
+	 *
+	 * @param text the text to encode
+	 * @param maxTokens the maximum number of tokens to encode
+	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
+	 */
+	EncodingResult encodeOrdinary(String text, Integer maxTokens);
 
 	/**
 	 * Encodes the given text into a list of token ids and returns the amount of tokens.

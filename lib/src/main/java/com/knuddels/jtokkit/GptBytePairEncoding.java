@@ -1,10 +1,12 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -36,29 +38,77 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encode(final String text) {
+		return encode(text, null).getTokens();
+	}
+
+	@Override
+	public EncodingResult encode(final String text, final Integer maxTokens) {
+		if(text == null) {
+			return new EncodingResult(Collections.emptyList(), false);
+		}
+
 		for (final String specialToken : specialTokensEncoder.getDecodedTokens()) {
 			if (text.contains(specialToken)) {
 				throw new UnsupportedOperationException("Encoding special tokens is not supported yet.");
 			}
 		}
 
-		return encodeOrdinary(text);
+		return encodeOrdinary(text, maxTokens);
 	}
 
 	@Override
 	public List<Integer> encodeOrdinary(final String text) {
+		return encodeOrdinary(text, null).getTokens();
+	}
+
+	@Override
+	public EncodingResult encodeOrdinary(final String text, final Integer maxTokens) {
+		if(text == null) {
+			return new EncodingResult(Collections.emptyList(), false);
+		}
+
 		final List<Integer> out = new ArrayList<>();
 		final Matcher matcher = pattern.matcher(text);
-		while (matcher.find()) {
+		int tokenCount = 0;
+		while (matcher.find() && maxTokenCountNotReached(maxTokens, tokenCount)) {
 			final ImmutableByteArray match = ImmutableByteArray.from(matcher.group());
 			if (encoder.containsDecodedToken(match)) {
 				out.add(encoder.encode(match));
+				++tokenCount;
 			} else {
-				out.addAll(bytePairMerge(match));
+				List<Integer> tokensToAdd = bytePairMerge(match);
+				tokenCount += addTokens(out, tokensToAdd, maxTokens);
 			}
 		}
 
-		return out;
+		if (maxTokens != null) {
+			// Make sure we didn't break the multibyte character
+			for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
+				List<Integer> tokens = out.subList(0, out.size() - tokensToRemove);
+				String decoded = decode(tokens);
+				if (text.startsWith(decoded)) {
+					// If decoded text is equal to the head of the original text, we can safely return the tokens
+					return new EncodingResult(tokens, text.length() > decoded.length());
+				}
+			}
+		}
+
+		return new EncodingResult(out, false);
+	}
+
+	/**
+	 * Adds tokens from 'tokensToAdd' to 'out' until either 'maxTokens' is reached or 'tokensToAdd' is exhausted.
+	 *
+	 * @return the number of tokens added to 'out'
+	 */
+	private int addTokens(List<Integer> out, List<Integer> tokensToAdd, Integer maxTokens) {
+		if (maxTokens != null) {
+			List<Integer> sublist = tokensToAdd.subList(0, Math.min(maxTokens - out.size(), tokensToAdd.size()));
+			out.addAll(sublist);
+			return sublist.size();
+		}
+		out.addAll(tokensToAdd);
+		return tokensToAdd.size();
 	}
 
 	@Override
@@ -215,6 +265,14 @@ final class GptBytePairEncoding implements Encoding {
 			out.add(encoder.encode(piece.getBytesBetween(parts.get(i).index, parts.get(i + 1).index)));
 		}
 		return out;
+	}
+
+	private boolean maxTokenCountReached(final Integer maxTokenCount, final int tokenCount) {
+		return maxTokenCount != null && maxTokenCount.compareTo(tokenCount) <= 0;
+	}
+
+	private boolean maxTokenCountNotReached(final Integer maxTokenCount, final int tokenCount) {
+		return !maxTokenCountReached(maxTokenCount, tokenCount);
 	}
 
 	private Optional<Integer> getRank(
