@@ -27,9 +27,7 @@ final class GptBytePairEncoding implements Encoding {
 	 *
 	 * @param params the parameters to use for the encoding
 	 */
-	GptBytePairEncoding(
-			final GptBytePairEncodingParams params
-	) {
+	GptBytePairEncoding(final GptBytePairEncodingParams params) {
 		this.name = params.getName();
 		this.pattern = params.getPattern();
 		this.encoder = new TokenEncoder<>(params.getEncoder(), ImmutableByteArray::from);
@@ -38,11 +36,15 @@ final class GptBytePairEncoding implements Encoding {
 
 	@Override
 	public List<Integer> encode(final String text) {
-		return encode(text, null).getTokens();
+		return encodeInternal(text, null).getTokens();
 	}
 
 	@Override
-	public EncodingResult encode(final String text, final Integer maxTokens) {
+	public EncodingResult encode(final String text, final int maxTokens) {
+		return encodeInternal(text, maxTokens);
+	}
+
+	private EncodingResult encodeInternal(final String text, final Integer maxTokens) {
 		if (text == null) {
 			return new EncodingResult(Collections.emptyList(), false);
 		}
@@ -53,16 +55,20 @@ final class GptBytePairEncoding implements Encoding {
 			}
 		}
 
-		return encodeOrdinary(text, maxTokens);
+		return encodeOrdinaryInternal(text, maxTokens);
 	}
 
 	@Override
 	public List<Integer> encodeOrdinary(final String text) {
-		return encodeOrdinary(text, null).getTokens();
+		return encodeOrdinaryInternal(text, null).getTokens();
 	}
 
 	@Override
-	public EncodingResult encodeOrdinary(final String text, final Integer maxTokens) {
+	public EncodingResult encodeOrdinary(final String text, final int maxTokens) {
+		return encodeOrdinaryInternal(text, maxTokens);
+	}
+
+	private EncodingResult encodeOrdinaryInternal(final String text, final Integer maxTokens) {
 		if (text == null) {
 			return new EncodingResult(Collections.emptyList(), false);
 		}
@@ -74,9 +80,9 @@ final class GptBytePairEncoding implements Encoding {
 			final ImmutableByteArray match = ImmutableByteArray.from(matcher.group());
 			if (encoder.containsDecodedToken(match)) {
 				out.add(encoder.encode(match));
-				++tokenCount;
+				tokenCount++;
 			} else {
-				List<Integer> tokensToAdd = bytePairMerge(match);
+				final List<Integer> tokensToAdd = bytePairMerge(match);
 				tokenCount += addTokens(out, tokensToAdd, maxTokens);
 			}
 		}
@@ -84,8 +90,8 @@ final class GptBytePairEncoding implements Encoding {
 		if (maxTokens != null) {
 			// Make sure we didn't break the multibyte character
 			for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
-				List<Integer> tokens = out.subList(0, out.size() - tokensToRemove);
-				String decoded = decode(tokens);
+				final List<Integer> tokens = out.subList(0, out.size() - tokensToRemove);
+				final String decoded = decode(tokens);
 				if (text.startsWith(decoded)) {
 					// If decoded text is equal to the head of the original text, we can safely return the tokens
 					return new EncodingResult(tokens, text.length() > decoded.length());
@@ -101,12 +107,13 @@ final class GptBytePairEncoding implements Encoding {
 	 *
 	 * @return the number of tokens added to 'out'
 	 */
-	private int addTokens(List<Integer> out, List<Integer> tokensToAdd, Integer maxTokens) {
+	private int addTokens(final List<Integer> out, final List<Integer> tokensToAdd, final Integer maxTokens) {
 		if (maxTokens != null) {
-			List<Integer> sublist = tokensToAdd.subList(0, Math.min(maxTokens - out.size(), tokensToAdd.size()));
+			final List<Integer> sublist = tokensToAdd.subList(0, Math.min(maxTokens - out.size(), tokensToAdd.size()));
 			out.addAll(sublist);
 			return sublist.size();
 		}
+
 		out.addAll(tokensToAdd);
 		return tokensToAdd.size();
 	}

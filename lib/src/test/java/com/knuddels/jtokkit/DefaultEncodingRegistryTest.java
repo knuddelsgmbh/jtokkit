@@ -131,7 +131,7 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
-		public EncodingResult encode(String text, Integer maxTokens) {
+		public EncodingResult encode(String text, int maxTokens) {
 			return null;
 		}
 
@@ -141,7 +141,7 @@ class DefaultEncodingRegistryTest {
 		}
 
 		@Override
-		public EncodingResult encodeOrdinary(String text, Integer maxTokens) {
+		public EncodingResult encodeOrdinary(String text, int maxTokens) {
 			return null;
 		}
 
