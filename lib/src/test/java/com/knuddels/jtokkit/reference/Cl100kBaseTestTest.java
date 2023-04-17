@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit.reference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
@@ -19,19 +20,12 @@ public class Cl100kBaseTestTest {
 	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
 	public void cl100kBaseEncodesCorrectly(
 			final String input,
-			final String output,
-			final String outputMaxTokens10
+			final String output
 	) {
-		//
 		final List<Integer> expected = TestUtils.parseEncodingString(output);
 		final List<Integer> actual = ENCODING.encode(input);
-		assertEquals(expected, actual);
 
-		// With MaxTokens set to 10
-		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-		EncodingResult encodingResult = ENCODING.encode(input, 10);
-		assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
-		assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
+		assertEquals(expected, actual);
 	}
 
 	@ParameterizedTest
@@ -44,19 +38,50 @@ public class Cl100kBaseTestTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+	public void cl100kBaseEncodesCorrectlyWithMaxTokensSet(
+			final String input,
+			final String output,
+			final String outputMaxTokens10
+	) {
+		final List<Integer> expected = TestUtils.parseEncodingString(output);
+		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
+		final EncodingResult encodingResult = ENCODING.encode(input, 10);
+
+		assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
+		assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+	public void cl100kBaseEncodesStableWithMaxTokensSet(final String input) {
+		final String actual = ENCODING.decode(ENCODING.encode(input, 10).getTokens());
+
+		assertTrue(input.startsWith(actual));
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+	public void cl100kBaseEncodeOrdinaryEncodesCorrectly(
+			final String input,
+			final String output
+	) {
+		final List<Integer> expected = TestUtils.parseEncodingString(output);
+		final List<Integer> actual = ENCODING.encodeOrdinary(input);
+
+		assertEquals(expected, actual);
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
 	public void cl100kBaseEncodeOrdinaryEncodesCorrectly(
 			final String input,
 			final String output,
 			final String outputMaxTokens10
 	) {
-		//
 		final List<Integer> expected = TestUtils.parseEncodingString(output);
-		final List<Integer> actual = ENCODING.encodeOrdinary(input);
-		assertEquals(expected, actual);
-
-		// With MaxTokens set to 10
 		final List<Integer> expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-		EncodingResult encodingResult = ENCODING.encodeOrdinary(input, 10);
+		final EncodingResult encodingResult = ENCODING.encodeOrdinary(input, 10);
+
 		assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
 		assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
 	}
@@ -67,6 +92,14 @@ public class Cl100kBaseTestTest {
 		final String actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
 
 		assertEquals(input, actual);
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+	public void cl100kBaseEncodeOrdinaryEncodesStableWithMaxTokensSet(final String input) {
+		final String actual = ENCODING.decode(ENCODING.encodeOrdinary(input, 10).getTokens());
+
+		assertTrue(input.startsWith(actual));
 	}
 
 	@Test
