@@ -37,6 +37,13 @@ public interface Encoding {
 	 * {@link UnsupportedOperationException}.
 	 * <p>
 	 * If you want to encode special tokens as ordinary text, use {@link #encodeOrdinary(String, int)}.
+	 * <p>
+	 * This method will truncate the list of token ids if the number of tokens exceeds the
+	 * given maxTokens parameter. Note that it will try to keep characters together, that are encoded into
+	 * multiple tokens. For example, if the text contains a character which is encoded into 3 tokens,
+	 * and due to the maxTokens parameter the last token of the character is truncated, the first two
+	 * tokens of the character will also be truncated. Therefore, the actual number of tokens may be
+	 * less than the given maxTokens parameter.
 	 * <pre>
 	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
 	 * encoding.encode("hello world", 100);
@@ -48,7 +55,7 @@ public interface Encoding {
 	 *
 	 * @param text the text to encode
 	 * @param maxTokens the maximum number of tokens to encode
-	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
+	 * @return the {@link EncodingResult} containing a list of token ids and whether the tokens were truncated due to the maxTokens parameter
 	 * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
 	 */
 	EncodingResult encode(String text, int maxTokens);
@@ -77,6 +84,13 @@ public interface Encoding {
 	 * <p>
 	 * This method does not throw an exception if the text contains special tokens, but instead
 	 * encodes them as if they were ordinary text.
+	 * <p>
+	 * It will truncate the list of token ids if the number of tokens exceeds the
+	 * given maxTokens parameter. Note that it will try to keep characters together, that are encoded into
+	 * multiple tokens. For example, if the text contains a character which is encoded into 3 tokens,
+	 * and due to the maxTokens parameter the last token of the character is truncated, the first two
+	 * tokens of the character will also be truncated. Therefore, the actual number of tokens may be
+	 * less than the given maxTokens parameter.
 	 * <pre>
 	 * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
 	 * encoding.encodeOrdinary("hello world", 100);
@@ -88,7 +102,7 @@ public interface Encoding {
 	 *
 	 * @param text the text to encode
 	 * @param maxTokens the maximum number of tokens to encode
-	 * @return the list of token ids. If 'maxTokens' is provided, the method will return up to 'maxTokens' tokens.
+	 * @return the {@link EncodingResult} containing a list of token ids and whether the tokens were truncated due to the maxTokens parameter
 	 */
 	EncodingResult encodeOrdinary(String text, int maxTokens);
 
