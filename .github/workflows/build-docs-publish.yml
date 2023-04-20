@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: docs
+
 jobs:
   deploy:
     name: Deploy to GitHub Pages
@@ -16,13 +20,12 @@ jobs:
         with:
           node-version: 18
           cache: npm
+          cache-dependency-path: docs/package-lock.json
 
       - name: Install dependencies
-        working-directory: docs
         run: npm ci
 
       - name: Build docs
-        working-directory: docs
         run: npm run build
 
       - name: Deploy to GitHub Pages
