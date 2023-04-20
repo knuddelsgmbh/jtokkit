@@ -1,0 +1,16 @@
+:root {
+    --ifm-color-primary: rgba(164, 126, 231, 1);
+    --ifm-color-primary-dark: rgba(164, 126, 231, 1);
+    --ifm-color-primary-darker: rgba(164, 126, 231, 1);
+    --ifm-color-primary-darkest: rgba(164, 126, 231, 1);
+    --ifm-color-primary-light: rgba(164, 126, 231, 1);
+    --ifm-color-primary-lighter: rgba(164, 126, 231, 1);
+    --ifm-color-primary-lightest: rgba(164, 126, 231, 1);
+    --ifm-code-font-size: 95%;
+    --ifm-navbar-shadow: none;
+}
+
+:root[data-theme='dark'] {
+    --ifm-navbar-background-color: #1a202c;
+    --ifm-background-color: #1a202c;
+}

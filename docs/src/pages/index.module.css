@@ -1,0 +1,37 @@
+.intro {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: -60px;
+}
+
+.introText {
+    color: var(--ifm-color-primary);
+    font-size: 4rem;
+    max-width: 16ch;
+    margin: 0 auto;
+    line-height: 1.1;
+}
+
+.introSubtext {
+    font-size: 2rem;
+    margin: 0 auto;
+    line-height: 1.1;
+}
+
+.buttonIntro {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    background: var(--ifm-color-primary);
+    color: white;
+    border: none;
+}
+
+.buttonIntroContainer {
+    display: flex;
+    margin-top: 40px;
+}
