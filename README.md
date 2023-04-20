@@ -15,6 +15,10 @@ assertEquals("hello world", enc.decode(enc.encode("hello world")));
 enc = registry.getEncodingForModel(ModelType.TEXT_EMBEDDING_ADA_002);
 ```
 
+## 💡 Quickstart
+
+For a quick getting started, see our [documentation](https://jtokkit.knuddels.de/).
+
 ## 📖 Introduction
 JTokkit aims to be a fast and efficient tokenizer designed for use in natural
 language processing tasks using the OpenAI models. It provides an easy-to-use
