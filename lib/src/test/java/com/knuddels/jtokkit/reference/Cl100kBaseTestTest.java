@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 
 public class Cl100kBaseTestTest {
 
-	private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.CL100K_BASE);
+	private static final Encoding ENCODING = Encodings.newEagerEncodingRegistry().getEncoding(EncodingType.CL100K_BASE);
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)

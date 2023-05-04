@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DefaultEncodingRegistryTest {
+class EagerEncodingRegistryTest {
 
-	private final DefaultEncodingRegistry registry = new DefaultEncodingRegistry();
+	private final EagerEncodingRegistry registry = new EagerEncodingRegistry();
 
 	@Test
 	public void getEncodingReturnsCorrectEncoding() {

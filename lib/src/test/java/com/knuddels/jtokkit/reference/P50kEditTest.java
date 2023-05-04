@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class P50kEditTest {
 
-	private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.P50K_EDIT);
+	private static final Encoding ENCODING = Encodings.newEagerEncodingRegistry().getEncoding(EncodingType.P50K_EDIT);
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)

@@ -10,12 +10,21 @@ public final class Encodings {
 	 *
 	 * @return the new {@link EncodingRegistry}
 	 */
-	public static EncodingRegistry newDefaultEncodingRegistry() {
-		final DefaultEncodingRegistry registry = new DefaultEncodingRegistry();
+	public static EncodingRegistry newEagerEncodingRegistry() {
+		final EagerEncodingRegistry registry = new EagerEncodingRegistry();
 		registry.initializeDefaultEncodings();
 		return registry;
 	}
-
+	
+	/**
+	 * Creates a new {@link EncodingRegistry} without any {@link EncodingType} registered.
+	 *
+	 * @return the new {@link EncodingRegistry}
+	 */
+	public static EncodingRegistry newLazyEncodingRegistry() {
+		return new LazyEncodingRegistry();
+	}
+	
 	private Encodings() {
 	}
 }
