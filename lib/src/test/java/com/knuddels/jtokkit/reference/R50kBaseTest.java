@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class R50kBaseTest {
 
-	private static final Encoding ENCODING = Encodings.newEagerEncodingRegistry().getEncoding(EncodingType.R50K_BASE);
+	private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.R50K_BASE);
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/r50k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)

@@ -10,7 +10,7 @@ public final class Encodings {
 	 *
 	 * @return the new {@link EncodingRegistry}
 	 */
-	public static EncodingRegistry newEagerEncodingRegistry() {
+	public static EncodingRegistry newDefaultEncodingRegistry() {
 		final DefaultEncodingRegistry registry = new DefaultEncodingRegistry();
 		registry.initializeDefaultEncodings();
 		return registry;

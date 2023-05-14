@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 
 public class P50kBaseTest {
 
-	private static final Encoding ENCODING = Encodings.newEagerEncodingRegistry().getEncoding(EncodingType.P50K_BASE);
+	private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.P50K_BASE);
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/p50k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
