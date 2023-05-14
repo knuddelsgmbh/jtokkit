@@ -6,7 +6,7 @@ import com.knuddels.jtokkit.api.*;
  * Thread-safe default implementation of {@link EncodingRegistry}. During initialization, it registers the default encodings
  * for the different {@link EncodingType}s.
  */
-final class EagerEncodingRegistry extends AbstractEncodingRegistry {
+final class DefaultEncodingRegistry extends AbstractEncodingRegistry {
 
 	/**
 	 * Initializes the registry with the default encodings.
