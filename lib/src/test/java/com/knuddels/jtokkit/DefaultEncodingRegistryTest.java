@@ -1,21 +1,7 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.Encoding;
-import com.knuddels.jtokkit.api.EncodingResult;
-import com.knuddels.jtokkit.api.EncodingType;
-import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
-import com.knuddels.jtokkit.api.ModelType;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultEncodingRegistryTest extends BaseEncodingRegistryTest {
 
