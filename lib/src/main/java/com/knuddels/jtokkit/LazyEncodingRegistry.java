@@ -3,7 +3,9 @@ package com.knuddels.jtokkit;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 import com.knuddels.jtokkit.api.EncodingType;
+import com.knuddels.jtokkit.api.ModelType;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Optional;
  * When one of these methods is called, the requested {@link EncodingType} is registered.
  */
 public class LazyEncodingRegistry extends AbstractEncodingRegistry {
+
     @Override
     public Encoding getEncoding(EncodingType encodingType) {
         addEncoding(encodingType);
@@ -22,5 +25,11 @@ public class LazyEncodingRegistry extends AbstractEncodingRegistry {
     public Optional<Encoding> getEncoding(String encodingName) {
         addEncoding(EncodingType.valueOf(encodingName));
         return super.getEncoding(encodingName);
+    }
+
+    @Override
+    public Encoding getEncodingForModel(final ModelType modelType) {
+        addEncoding(modelType.getEncodingType());
+        return super.getEncodingForModel(modelType);
     }
 }

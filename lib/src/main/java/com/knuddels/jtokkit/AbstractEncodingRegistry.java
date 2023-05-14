@@ -75,16 +75,16 @@ public abstract class AbstractEncodingRegistry implements EncodingRegistry {
     protected void addEncoding(EncodingType encodingType) {
         switch (encodingType) {
             case R50K_BASE:
-                encodings.put(encodingType.getName(), EncodingFactory.r50kBase());
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.r50kBase());
                 break;
             case P50K_BASE:
-                encodings.put(encodingType.getName(), EncodingFactory.p50kBase());
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.p50kBase());
                 break;
             case P50K_EDIT:
-                encodings.put(encodingType.getName(), EncodingFactory.p50kEdit());
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.p50kEdit());
                 break;
             case CL100K_BASE:
-                encodings.put(encodingType.getName(), EncodingFactory.cl100kBase());
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.cl100kBase());
                 break;
             default:
                 throw new IllegalStateException("Unknown encoding type " + encodingType.getName());
