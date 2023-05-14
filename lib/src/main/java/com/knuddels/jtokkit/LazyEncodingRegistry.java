@@ -23,7 +23,13 @@ public class LazyEncodingRegistry extends AbstractEncodingRegistry {
 
     @Override
     public Optional<Encoding> getEncoding(String encodingName) {
-        addEncoding(EncodingType.valueOf(encodingName));
+        Optional<Encoding> encoding = super.getEncoding(encodingName);
+        if (encoding.isPresent()) {
+            return encoding;
+        }
+
+        addEncoding(EncodingType.fromName(encodingName).orElseThrow(() -> new IllegalArgumentException("Unknown encoding type: " + encodingName)));
+
         return super.getEncoding(encodingName);
     }
 
