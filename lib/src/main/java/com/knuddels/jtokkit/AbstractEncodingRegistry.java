@@ -10,8 +10,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractEncodingRegistry implements EncodingRegistry {
-    protected final ConcurrentHashMap<String, Encoding> encodings = new ConcurrentHashMap<>();
+abstract class AbstractEncodingRegistry implements EncodingRegistry {
+    private final ConcurrentHashMap<String, Encoding> encodings = new ConcurrentHashMap<>();
     
     @Override
     public Optional<Encoding> getEncoding(final String encodingName) {
@@ -72,7 +72,7 @@ public abstract class AbstractEncodingRegistry implements EncodingRegistry {
         return this;
     }
 
-    protected void addEncoding(EncodingType encodingType) {
+    protected final void addEncoding(final EncodingType encodingType) {
         switch (encodingType) {
             case R50K_BASE:
                 encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.r50kBase());

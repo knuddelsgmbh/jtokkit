@@ -12,7 +12,7 @@ import java.util.Optional;
  * {@link #getEncoding(EncodingType)} or {@link #getEncoding(String)} method is called. 
  * When one of these methods is called, the requested {@link EncodingType} is registered.
  */
-public class LazyEncodingRegistry extends AbstractEncodingRegistry {
+final class LazyEncodingRegistry extends AbstractEncodingRegistry {
 
     @Override
     public Encoding getEncoding(EncodingType encodingType) {

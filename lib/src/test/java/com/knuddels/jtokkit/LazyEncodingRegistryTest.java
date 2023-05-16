@@ -2,7 +2,6 @@ package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -17,11 +16,12 @@ class LazyEncodingRegistryTest extends BaseEncodingRegistryTest {
 		registry = new LazyEncodingRegistry();
 	}
 
-	@Order(1)
 	@Test
+	@SuppressWarnings("unchecked")
 	public void initializeWithEmptyEncoding() throws NoSuchFieldException, IllegalAccessException {
-		Field field = AbstractEncodingRegistry.class.getDeclaredField("encodings");
-		ConcurrentHashMap<String, Encoding> encodings = (ConcurrentHashMap<String, Encoding>) field.get(registry);
+		final Field field = AbstractEncodingRegistry.class.getDeclaredField("encodings");
+		field.setAccessible(true);
+		final ConcurrentHashMap<String, Encoding> encodings = (ConcurrentHashMap<String, Encoding>) field.get(registry);
 		assertTrue(encodings.isEmpty());
 	}
 }
