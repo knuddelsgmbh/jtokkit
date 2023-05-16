@@ -15,7 +15,16 @@ public final class Encodings {
 		registry.initializeDefaultEncodings();
 		return registry;
 	}
-
+	
+	/**
+	 * Creates a new {@link EncodingRegistry} without any {@link EncodingType} registered.
+	 *
+	 * @return the new {@link EncodingRegistry}
+	 */
+	public static EncodingRegistry newLazyEncodingRegistry() {
+		return new LazyEncodingRegistry();
+	}
+	
 	private Encodings() {
 	}
 }
