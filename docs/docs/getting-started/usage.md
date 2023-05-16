@@ -11,6 +11,17 @@ EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
 
 Make sure to keep a reference to the registry, as the creation of the registry is expensive. Creating the registry loads the vocabularies from the classpath. The registry itself handles caching of the loaded encodings. It is thread-safe and can safely be used concurrently by multiple components.
 
+If you do not want to automatically load all vocabularies of all encodings on registry creation, you can use the following lazy loading registry.
+
+```java
+EncodingRegistry registry = Encodings.newLazyEncodingRegistry();
+```
+
+This encoding registry only loads the vocabularies from encodings that are actually accessed. Vocabularies are only
+loaded once on first accessed. As with the default encoding registry, make sure to keep a reference to the registry
+to make use of the in-built caching of the vocabularies. It is thread-safe and can safely be used concurrently by
+multiple components.
+
 ## Getting an encoding from the registry
 
 You can use the registry to get the encodings you need:
