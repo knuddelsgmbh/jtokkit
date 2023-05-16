@@ -299,13 +299,13 @@ final class GptBytePairEncoding implements Encoding {
 		return encoder.encodeIfPresent(encoderIndex);
 	}
 
-	private byte[] decodeToken(int token) {
-		Optional<ImmutableByteArray> decodedToken = encoder.decodeIfPresent(token);
+	private byte[] decodeToken(final int token) {
+		final Optional<ImmutableByteArray> decodedToken = encoder.decodeIfPresent(token);
 		if (decodedToken.isPresent()) {
 			return decodedToken.get().getRawArray();
 		}
 
-		Optional<String> decodedSpecialToken = specialTokensEncoder.decodeIfPresent(token);
+		final Optional<String> decodedSpecialToken = specialTokensEncoder.decodeIfPresent(token);
 		if (decodedSpecialToken.isPresent()) {
 			return decodedSpecialToken.get().getBytes(StandardCharsets.UTF_8);
 		}
@@ -317,7 +317,7 @@ final class GptBytePairEncoding implements Encoding {
 		private final int index;
 		private int rank;
 
-		public PieceIndexToRank(int index, int rank) {
+		public PieceIndexToRank(final int index, final int rank) {
 			this.index = index;
 			this.rank = rank;
 		}

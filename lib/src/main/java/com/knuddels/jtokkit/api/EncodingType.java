@@ -25,7 +25,7 @@ public enum EncodingType {
 		return name;
 	}
 
-	public static Optional<EncodingType> fromName(String name) {
+	public static Optional<EncodingType> fromName(final String name) {
 		return Optional.ofNullable(nameToEncodingType.get(name));
 	}
 }

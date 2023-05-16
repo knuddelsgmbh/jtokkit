@@ -61,7 +61,7 @@ public enum ModelType {
 	ModelType(
 			final String name,
 			final EncodingType encodingType,
-			int maxContextLength
+			final int maxContextLength
 	) {
 		this.name = name;
 		this.encodingType = encodingType;

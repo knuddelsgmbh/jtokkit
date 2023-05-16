@@ -130,7 +130,7 @@ final class EncodingFactory {
 	}
 
 	private static Map<byte[], Integer> loadMergeableRanks(final String fileName) {
-		try (InputStream in = EncodingFactory.class.getResourceAsStream(fileName)) {
+		try (final InputStream in = EncodingFactory.class.getResourceAsStream(fileName)) {
 			if (in == null) {
 				throw new IllegalStateException("Could not find " + fileName + " in resources");
 			}

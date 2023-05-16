@@ -15,7 +15,7 @@ import java.util.Optional;
 final class LazyEncodingRegistry extends AbstractEncodingRegistry {
 
     @Override
-    public Encoding getEncoding(EncodingType encodingType) {
+    public Encoding getEncoding(final EncodingType encodingType) {
         addEncoding(encodingType);
         return super.getEncoding(encodingType);
     }

@@ -9,7 +9,7 @@ public final class EncodingResult {
 	private final List<Integer> tokens;
 	private final boolean truncated;
 
-	public EncodingResult(List<Integer> tokens, boolean truncated) {
+	public EncodingResult(final List<Integer> tokens, final boolean truncated) {
 		this.tokens = tokens;
 		this.truncated = truncated;
 	}

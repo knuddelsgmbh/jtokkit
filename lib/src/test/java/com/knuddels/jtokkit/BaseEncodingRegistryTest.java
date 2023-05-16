@@ -17,11 +17,11 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
     protected final T registry;
     protected final Consumer<T> initializer;
 
-    public BaseEncodingRegistryTest(T registry) {
+    public BaseEncodingRegistryTest(final T registry) {
         this(registry, __ -> {});
     }
 
-    public BaseEncodingRegistryTest(T registry, Consumer<T> initializer) {
+    public BaseEncodingRegistryTest(final T registry, final Consumer<T> initializer) {
         this.registry = registry;
         this.initializer = initializer;
     }
@@ -141,7 +141,7 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
         }
 
         @Override
-        public EncodingResult encode(String text, int maxTokens) {
+        public EncodingResult encode(final String text, final int maxTokens) {
             return null;
         }
 
@@ -151,7 +151,7 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
         }
 
         @Override
-        public EncodingResult encodeOrdinary(String text, int maxTokens) {
+        public EncodingResult encodeOrdinary(final String text, final int maxTokens) {
             return null;
         }
 

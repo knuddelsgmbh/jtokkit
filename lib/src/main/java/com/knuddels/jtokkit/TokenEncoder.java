@@ -35,7 +35,7 @@ final class TokenEncoder<K, V> {
 	 * @param input     the input map
 	 * @param keyMapper the key mapper
 	 */
-	public <T> TokenEncoder(final Map<T, V> input, Function<T, K> keyMapper) {
+	public <T> TokenEncoder(final Map<T, V> input, final Function<T, K> keyMapper) {
 		for (final Map.Entry<T, V> entry : input.entrySet()) {
 			final K key = keyMapper.apply(entry.getKey());
 			final V value = entry.getValue();
