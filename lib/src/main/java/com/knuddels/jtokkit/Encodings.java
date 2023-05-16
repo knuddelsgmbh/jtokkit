@@ -17,7 +17,11 @@ public final class Encodings {
 	}
 	
 	/**
-	 * Creates a new {@link EncodingRegistry} without any {@link EncodingType} registered.
+	 * Creates a new {@link EncodingRegistry} without any {@link EncodingType} registered. Encodings will be
+	 * loaded on-demand when they are first requested. For example, if you call
+	 * {@link EncodingRegistry#getEncoding(EncodingType)} with {@link EncodingType#CL100K_BASE} for the first time,
+	 * it will be loaded from the classpath. Subsequent calls with {@link EncodingType#CL100K_BASE} will re-use the
+	 * already loaded encoded.
 	 *
 	 * @return the new {@link EncodingRegistry}
 	 */
