@@ -126,6 +126,13 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
         assertThrows(IllegalStateException.class, () -> registry.registerCustomEncoding(encoding));
     }
 
+    @Test
+    public void getEncodingReturnsEmptyOptionalForNonExistingEncodingName() {
+        final Optional<Encoding> result = registry.getEncoding("nonexistent");
+
+        assertFalse(result.isPresent());
+    }
+
     private static class DummyEncoding implements Encoding {
 
         @Override

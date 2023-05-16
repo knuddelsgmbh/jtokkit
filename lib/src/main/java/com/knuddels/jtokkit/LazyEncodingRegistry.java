@@ -21,13 +21,8 @@ final class LazyEncodingRegistry extends AbstractEncodingRegistry {
     }
 
     @Override
-    public Optional<Encoding> getEncoding(String encodingName) {
-        Optional<Encoding> encoding = super.getEncoding(encodingName);
-        if (encoding.isPresent()) {
-            return encoding;
-        }
-
-        addEncoding(EncodingType.fromName(encodingName).orElseThrow(() -> new IllegalArgumentException("Unknown encoding type: " + encodingName)));
+    public Optional<Encoding> getEncoding(final String encodingName) {
+        EncodingType.fromName(encodingName).ifPresent(this::addEncoding);
 
         return super.getEncoding(encodingName);
     }
