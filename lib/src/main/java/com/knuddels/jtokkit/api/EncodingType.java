@@ -12,7 +12,9 @@ public enum EncodingType {
 	P50K_EDIT("p50k_edit"),
 	CL100K_BASE("cl100k_base");
 
-	private static Map<String, EncodingType> nameToEncodingType = Arrays.stream(values()).collect(Collectors.toMap(EncodingType::getName, Function.identity()));
+	private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
+			.collect(Collectors.toMap(EncodingType::getName, Function.identity()));
+
 	private final String name;
 
 	EncodingType(final String name) {

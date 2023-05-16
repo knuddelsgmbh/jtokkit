@@ -1,6 +1,10 @@
 package com.knuddels.jtokkit.api;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum ModelType {
 	// chat
@@ -46,6 +50,9 @@ public enum ModelType {
 	TEXT_SEARCH_ADA_DOC_001("text-search-ada-doc-001", EncodingType.R50K_BASE, 2046),
 	CODE_SEARCH_BABBAGE_CODE_001("code-search-babbage-code-001", EncodingType.R50K_BASE, 2046),
 	CODE_SEARCH_ADA_CODE_001("code-search-ada-code-001", EncodingType.R50K_BASE, 2046);
+
+	private static final Map<String, ModelType> nameToModelType = Arrays.stream(values())
+			.collect(Collectors.toMap(ModelType::getName, Function.identity()));
 
 	private final String name;
 	private final EncodingType encodingType;
@@ -98,12 +105,6 @@ public enum ModelType {
 	 * @return the model type or {@link Optional#empty()}
 	 */
 	public static Optional<ModelType> fromName(final String name) {
-		for (final ModelType modelType : values()) {
-			if (modelType.getName().equals(name)) {
-				return Optional.of(modelType);
-			}
-		}
-
-		return Optional.empty();
+		return Optional.ofNullable(nameToModelType.get(name));
 	}
 }
