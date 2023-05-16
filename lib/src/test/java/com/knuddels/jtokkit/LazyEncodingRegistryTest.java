@@ -1,7 +1,6 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -9,11 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class LazyEncodingRegistryTest extends BaseEncodingRegistryTest {
+public class LazyEncodingRegistryTest extends BaseEncodingRegistryTest<LazyEncodingRegistry> {
 
-	@BeforeEach
-	void initializeLazyEncodingRegistry() {
-		registry = new LazyEncodingRegistry();
+	public LazyEncodingRegistryTest() {
+		super(new LazyEncodingRegistry());
 	}
 
 	@Test

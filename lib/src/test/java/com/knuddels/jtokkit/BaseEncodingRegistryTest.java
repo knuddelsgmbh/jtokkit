@@ -1,27 +1,35 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.Encoding;
-import com.knuddels.jtokkit.api.EncodingResult;
-import com.knuddels.jtokkit.api.EncodingType;
-import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
-import com.knuddels.jtokkit.api.ModelType;
-import org.junit.jupiter.api.MethodOrderer;
+import com.knuddels.jtokkit.api.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class BaseEncodingRegistryTest {
+public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
 
-    protected AbstractEncodingRegistry registry;
+    protected final T registry;
+    protected final Consumer<T> initializer;
+
+    public BaseEncodingRegistryTest(T registry) {
+        this(registry, __ -> {});
+    }
+
+    public BaseEncodingRegistryTest(T registry, Consumer<T> initializer) {
+        this.registry = registry;
+        this.initializer = initializer;
+    }
+
+    @BeforeEach
+    public void setup() {
+        initializer.accept(registry);
+    }
 
     @Test
     public void getEncodingReturnsCorrectEncoding() {
@@ -34,9 +42,11 @@ public abstract class BaseEncodingRegistryTest {
 
     @Test
     void getEncodingByNameReturnsCorrectEncoding() {
-        final Optional<Encoding> encoding = registry.getEncoding(EncodingType.CL100K_BASE.getName());
-        assertTrue(encoding.isPresent());
-        assertEquals(encoding.get().getName(), EncodingType.CL100K_BASE.getName());
+        for (final EncodingType type : EncodingType.values()) {
+            final Optional<Encoding> encoding = registry.getEncoding(type.getName());
+            assertTrue(encoding.isPresent());
+            assertEquals(encoding.get().getName(), type.getName());
+        }
     }
 
     @Test
@@ -50,9 +60,11 @@ public abstract class BaseEncodingRegistryTest {
 
     @Test
     public void getEncodingForModelByNameReturnsCorrectEncoding() {
-        final Optional<Encoding> encoding = registry.getEncodingForModel(ModelType.GPT_4.getName());
-        assertTrue(encoding.isPresent());
-        assertEquals(encoding.get().getName(), ModelType.GPT_4.getEncodingType().getName());
+        for (final ModelType modelType : ModelType.values()) {
+            final Optional<Encoding> encoding = registry.getEncodingForModel(modelType.getName());
+            assertTrue(encoding.isPresent());
+            assertEquals(encoding.get().getName(), modelType.getEncodingType().getName());
+        }
     }
 
     @Test
