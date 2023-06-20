@@ -124,7 +124,7 @@ final class EncodingFactory {
 			final String fileName,
 			final Map<String, Integer> specialTokens
 	) {
-		final Pattern regex = Pattern.compile(patternString);
+		final Pattern regex = Pattern.compile(patternString, Pattern.UNICODE_CHARACTER_CLASS);
 		final GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, loadMergeableRanks(fileName), specialTokens);
 		return fromParameters(params);
 	}
