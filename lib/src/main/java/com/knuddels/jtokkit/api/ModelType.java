@@ -9,8 +9,14 @@ import java.util.stream.Collectors;
 public enum ModelType {
 	// chat
 	GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
+	GPT_4_0301("gpt-4-0301", EncodingType.CL100K_BASE, 8192),
+	GPT_4_0613("gpt-4-0613", EncodingType.CL100K_BASE, 8192),
 	GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
 	GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 4097),
+	GPT_3_5_TURBO_0301("gpt-3.5-turbo-0301", EncodingType.CL100K_BASE, 4097),
+	GPT_3_5_TURBO_0613("gpt-3.5-turbo-0613", EncodingType.CL100K_BASE, 4097),
+	GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k", EncodingType.CL100K_BASE, 16384),
+	GPT_3_5_TURBO_16K_0613("gpt-3.5-turbo-16k-0613", EncodingType.CL100K_BASE, 16384),
 
 	// text
 	TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
