@@ -72,6 +72,8 @@ dependencies {
 }
 ```
 
+Note that the intended targets of the library are servers. Previous support of Android was incidental. Since `0.5.1`, the library uses a feature that is not supported by all Android Java Runtimes. You can still use `0.5.0` on these platforms. I may introduce multi-release builds to tackle this issue sometime in the future, but as of now there is no timeline for when that will happen.
+
 ## 🔰 Getting Started
 To use JTokkit, simply create a new `EncodingRegistry` and use `getEncoding` to
 retrieve the encoding you want to use. You can then use the `encode` and
