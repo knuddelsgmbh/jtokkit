@@ -89,6 +89,13 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
     }
 
     @Test
+    public void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt3Turbo16k() {
+        final Optional<Encoding> encoding = registry.getEncodingForModel("gpt-3.5-turbo-16k-0613");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.GPT_3_5_TURBO_16K.getEncodingType().getName());
+    }
+
+    @Test
     public void canRegisterCustomEncoding() {
         final Encoding encoding = new DummyEncoding();
 
