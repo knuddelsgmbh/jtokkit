@@ -60,7 +60,7 @@ You can install JTokkit by adding the following dependency to your Maven project
 <dependency>
     <groupId>com.knuddels</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@ Or alternatively using Gradle:
 
 ```groovy
 dependencies {
-    implementation 'com.knuddels:jtokkit:0.6.0'
+    implementation 'com.knuddels:jtokkit:0.6.1'
 }
 ```
 
