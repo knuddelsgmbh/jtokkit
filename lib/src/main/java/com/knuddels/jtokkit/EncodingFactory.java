@@ -124,7 +124,14 @@ final class EncodingFactory {
 			final String fileName,
 			final Map<String, Integer> specialTokens
 	) {
-		final Pattern regex = Pattern.compile(patternString, Pattern.UNICODE_CHARACTER_CLASS);
+		Pattern regex;
+		try {
+			regex = Pattern.compile(patternString, Pattern.UNICODE_CHARACTER_CLASS);
+		} catch (final IllegalArgumentException exception) {
+			// Workaround for Android where an IllegalArgumentException is thrown when using UNICODE_CHARACTER_CLASS
+			regex = Pattern.compile(patternString);
+		}
+
 		final GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, loadMergeableRanks(fileName), specialTokens);
 		return fromParameters(params);
 	}
