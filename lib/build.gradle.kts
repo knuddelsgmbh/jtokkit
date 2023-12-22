@@ -1,7 +1,7 @@
 plugins {
-    id("java-library")
-    id("maven-publish")
-    id("signing")
+    `java-library`
+    `maven-publish`
+    signing
 }
 
 group = "com.knuddels"
@@ -12,12 +12,13 @@ repositories {
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
-
     withSourcesJar()
     withJavadocJar()
+}
+
+tasks.withType<JavaCompile> {
+    val javaVersion = if (name == "compileTestJava") 21 else 8
+    javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(javaVersion) }
 }
 
 dependencies {
@@ -25,9 +26,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
 }
-
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+    maxParallelForks = 4
 }
 
 publishing {

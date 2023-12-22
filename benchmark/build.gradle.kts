@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    java
     id("me.champeau.jmh") version "0.7.2"
 }
 
@@ -9,7 +9,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -18,8 +18,9 @@ dependencies {
 }
 
 jmh {
-    warmupIterations.set(1)
-    iterations.set(5)
-    fork.set(2)
-    benchmarkMode.set(listOf("ss"))
+    warmupIterations = 1
+    iterations = 5
+    fork = 2
+    benchmarkMode = listOf("ss")
+    // profilers = listOf("stack")
 }
