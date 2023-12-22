@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class Cl100kBaseTest {
+class Cl100kTest {
     private static final String PUNCTUATION = "'\".,?!:()";
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
     private static final String NUMBERS = "0123456789½";
