@@ -91,27 +91,31 @@ final class TokenEncoder {
         return previousIndex;
     }
 
-    public int addTokensAndGetCount(Integer maxTokenCount, byte[] utf8Bytes, List<Integer> out, List<Integer> ranks) {
+    public int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, List<Integer> ranks) {
         ImmutableByteArray match = ImmutableByteArray.from(utf8Bytes);
         int encoded = encode(match);
         if (encoded != MAX_RANK) {
-            out.add(encoded);
+            if (keepEncodings) {
+                out.add(encoded);
+            }
             return 1;
         } else {
             int length = match.length();
-            return addTokensAndGetCount(maxTokenCount, out, ranks, match, length);
+            return addTokensAndGetCount(maxTokenCount, keepEncodings, out, ranks, match, length);
         }
     }
 
-    private int addTokensAndGetCount(Integer maxTokenCount, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
+    private int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
         int validRanks = initRanks(match, length, ranks);
         int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks);
-        for (int start = 0, end = 1; end < ranks.size() && (maxTokenCount == null || out.size() < maxTokenCount); end++) {
-            if (ranks.get(end) != DUMMY_RANK) {
-                int token = encode(match, start, end);
-                assert token != MAX_RANK : "Token should not be MAX_RANK";
-                out.add(token);
-                start = end;
+        if (keepEncodings) {
+            for (int start = 0, end = 1; end < ranks.size() && out.size() < maxTokenCount; end++) {
+                if (ranks.get(end) != DUMMY_RANK) {
+                    int token = encode(match, start, end);
+                    assert token != MAX_RANK : "Token should not be MAX_RANK";
+                    out.add(token);
+                    start = end;
+                }
             }
         }
         return tokenCount;

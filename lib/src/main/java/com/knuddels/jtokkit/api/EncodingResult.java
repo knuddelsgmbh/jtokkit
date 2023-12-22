@@ -1,38 +1,52 @@
 package com.knuddels.jtokkit.api;
 
+
 import java.util.List;
 
 /**
  * The result of encoding operation.
  */
 public final class EncodingResult {
-	private final List<Integer> tokens;
-	private final boolean truncated;
+    private final List<Integer> tokens;
+    private final boolean truncated;
+    private int tokenCount;
 
-	public EncodingResult(final List<Integer> tokens, final boolean truncated) {
-		this.tokens = tokens;
-		this.truncated = truncated;
-	}
+    public EncodingResult(List<Integer> tokens, int tokenCount, boolean truncated) {
+        this.tokens = tokens;
+        this.tokenCount = tokenCount;
+        this.truncated = truncated;
+    }
 
-	/**
-	 * @return the list of token ids
-	 */
-	public List<Integer> getTokens() {
-		return tokens;
-	}
+    /**
+     * @return the list of token ids
+     */
+    public List<Integer> getTokens() {
+        if (tokens.size() != getTokenCount()) {
+            throw new IllegalStateException("Token count does not match token list size (tokenCount=" + tokenCount + ", tokens size=" + tokens.size() + ")");
+        }
+        return tokens;
+    }
 
-	/**
-	 * @return true if the token list was truncated because the maximum token length was exceeded
-	 */
-	public boolean isTruncated() {
-		return truncated;
-	}
+    public int getTokenCount() {
+        if (tokenCount < 0) {
+            tokenCount = tokens.size();
+        }
+        return tokenCount;
+    }
 
-	@Override
-	public String toString() {
-		return "EncodingResult{"
-				+ "tokens=" + tokens
-				+ ", truncated=" + truncated
-				+ '}';
-	}
+    /**
+     * @return true if the token list was truncated because the maximum token length was exceeded
+     */
+    public boolean isTruncated() {
+        return truncated;
+    }
+
+    @Override
+    public String toString() {
+        return "EncodingResult{"
+                + "tokens=" + getTokens()
+                + ", tokenCount=" + getTokenCount()
+                + ", truncated=" + truncated
+                + '}';
+    }
 }

@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * Implementation of the byte pair encoding algorithm as used by the OpenAI tiktoken tokenizer.
  */
 class GptBytePairEncoding implements Encoding {
+
     private final String name;
     private final Pattern pattern;
     private final TokenEncoder encoder;
@@ -41,44 +42,43 @@ class GptBytePairEncoding implements Encoding {
 
     @Override
     public List<Integer> encode(String text) {
-        return encodeInternal(text, null).getTokens();
+        return encode(text, Integer.MAX_VALUE).getTokens();
     }
 
     @Override
     public EncodingResult encode(String text, int maxTokenCount) {
-        return encodeInternal(text, maxTokenCount);
+        return encodeInternal(text, maxTokenCount, true);
     }
 
-    private EncodingResult encodeInternal(String text, Integer maxTokenCount) {
+    private EncodingResult encodeInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(emptyList(), false);
+            return new EncodingResult(emptyList(), -1, false);
         }
 
         specialEncoder.checkForSpecialTokens(text);
 
-        return encodeOrdinaryInternal(text, maxTokenCount);
+        return encodeOrdinaryInternal(text, maxTokenCount, keepEncodings);
     }
 
     @Override
     public List<Integer> encodeOrdinary(String text) {
-        return encodeOrdinaryInternal(text, null).getTokens();
+        return encodeOrdinary(text, Integer.MAX_VALUE).getTokens();
     }
 
     @Override
     public EncodingResult encodeOrdinary(String text, int maxTokenCount) {
-        return encodeOrdinaryInternal(text, maxTokenCount);
+        return encodeOrdinaryInternal(text, maxTokenCount, true);
     }
 
-    private EncodingResult encodeOrdinaryInternal(String text, Integer maxTokenCount) {
+    private EncodingResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(emptyList(), false);
+            return new EncodingResult(emptyList(), -1, false);
         }
 
         List<Integer> out = new ArrayList<>();
-        int tokenCount = encodeOrdinaryInternal(text, maxTokenCount, out);
-        assert maxTokenCount != null || tokenCount == out.size();
+        int tokenCount = encodeOrdinaryInternal(text, maxTokenCount, keepEncodings, out);
 
-        if (maxTokenCount != null) {
+        if (keepEncodings && maxTokenCount != Integer.MAX_VALUE) {
             // Make sure we didn't break the multibyte character
             for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
                 int size = out.size() - tokensToRemove;
@@ -89,32 +89,27 @@ class GptBytePairEncoding implements Encoding {
                 String decoded = decode(tokens);
                 if (text.startsWith(decoded)) {
                     // If decoded text is equal to the head of the original text, we can safely return the tokens
-                    return new EncodingResult(tokens, text.length() > decoded.length());
+                    return new EncodingResult(tokens, -1, text.length() > decoded.length());
                 }
             }
         }
 
-        return new EncodingResult(out, false);
+        return new EncodingResult(out, tokenCount, false);
     }
 
-    int encodeOrdinaryInternal(String text, Integer maxTokenCount, List<Integer> out) {
+    int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
         int tokenCount = 0;
         List<Integer> ranks = new ArrayList<>(); // reused to avoid allocations
-        for (Matcher matcher = pattern.matcher(text); (maxTokenCount == null || tokenCount < maxTokenCount) && matcher.find(); ) {
+        for (Matcher matcher = pattern.matcher(text); tokenCount < maxTokenCount && matcher.find(); ) {
             byte[] bytes = matcher.group().getBytes(UTF_8);
-            tokenCount += encoder.addTokensAndGetCount(maxTokenCount, bytes, out, ranks);
+            tokenCount += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, bytes, out, ranks);
         }
         return tokenCount;
     }
 
     @Override
     public int countTokens(String text) {
-        return encode(text).size();
-    }
-
-    @Override
-    public int countTokensOrdinary(String text) {
-        return encodeOrdinary(text).size();
+        return encodeInternal(text, Integer.MAX_VALUE, false).getTokenCount();
     }
 
     @Override
