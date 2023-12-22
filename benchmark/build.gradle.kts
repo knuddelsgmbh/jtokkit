@@ -22,5 +22,6 @@ jmh {
     iterations = 5
     fork = 2
     benchmarkMode = listOf("ss")
+    includes = listOf("SingleThreadedBenchmark")
     // profilers = listOf("stack")
 }
