@@ -1,80 +1,196 @@
 package com.knuddels.jtokkit;
 
-import java.util.HashMap;
+
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * A TokenEncoder is used to encode and decode tokens. It is initialized with a map
- * that contains the decoded tokens as keys and the encoded tokens as values. The
- * TokenEncoder can then be used to encode and decode tokens.
- */
-class TokenEncoder {
+final class TokenEncoder {
+    public static final int DUMMY_RANK = Integer.MAX_VALUE;
+    public static final int MAX_RANK = Integer.MAX_VALUE - 1;
+    private final Map<ImmutableByteArray, Integer>[] encoders;
+    private int length = 0;
 
-    private final Map<ImmutableByteArray, Integer> decodedToEncoded = new HashMap<>();
-
-    /**
-     * Creates a new TokenEncoder with the given input map. The keys of the map are
-     * the decoded tokens and the values are the encoded tokens.
-     *
-     * @param input the input map
-     */
-    public TokenEncoder(Map<ImmutableByteArray, Integer> input) {
-        this(input, Function.identity());
-    }
-
-    /**
-     * Creates a new TokenEncoder with the given input map. The keys of the map are
-     * the decoded tokens and the values are the encoded tokens. The keyMapper is
-     * applied to the keys of the input map before they are added to the internal
-     * maps.
-     *
-     * @param input     the input map
-     * @param keyMapper the key mapper
-     */
-    public <T> TokenEncoder(Map<T, Integer> input, Function<T, ImmutableByteArray> keyMapper) {
-        for (Map.Entry<T, Integer> entry : input.entrySet()) {
-            ImmutableByteArray key = keyMapper.apply(entry.getKey());
-            Integer value = entry.getValue();
-            decodedToEncoded.put(key, value);
+    public TokenEncoder(Map<byte[], Integer> encoder) {
+        if (!encoder.isEmpty()) {
+            TreeMap<Integer, Map<ImmutableByteArray, Integer>> tempEncoders = new TreeMap<>();
+            encoder.forEach((k, v) -> {
+                length++;
+                ImmutableByteArray key = ImmutableByteArray.from(k);
+                tempEncoders.computeIfAbsent(k.length, integer -> new ConcurrentHashMap<>()).put(key, v);
+            });
+            //noinspection unchecked
+            encoders = new ConcurrentHashMap[tempEncoders.lastKey() + 1];
+            tempEncoders.forEach((k, v) -> encoders[k] = v);
+        } else {
+            //noinspection unchecked
+            encoders = new Map[0]; // for testing
         }
     }
 
-    /**
-     * Checks if the given decoded token is contained in this encoder.
-     *
-     * @param decodedToken the decoded token
-     * @return true if the decoded token is contained in this encoder, false otherwise
-     */
-    public boolean containsDecodedToken(ImmutableByteArray decodedToken) {
-        return decodedToEncoded.containsKey(decodedToken);
-    }
+    public static int getMinRankIndex(List<Integer> ranks) {
+        int minRankIndex = -1;
+        int minRank = MAX_RANK;
 
-    /**
-     * Encodes the given decoded token.
-     *
-     * @param decodedToken the decoded token
-     * @return the encoded token
-     * @throws IllegalArgumentException if the decoded token is not contained in this encoder
-     */
-    public Integer encode(ImmutableByteArray decodedToken) {
-        Integer encoded = decodedToEncoded.get(decodedToken);
-        if (encoded == null) {
-            throw new IllegalArgumentException("Unknown token for encoding: " + decodedToken);
+        int i = 0;
+        int length = ranks.size() - 3;
+        for (; i < length - 2; i += 4) { // Unrolled loop
+            {
+                int r = ranks.get(i);
+                if (r < minRank) {
+                    minRankIndex = i;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 1);
+                if (r < minRank) {
+                    minRankIndex = i + 1;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 2);
+                if (r < minRank) {
+                    minRankIndex = i + 2;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 3);
+                if (r < minRank) {
+                    minRankIndex = i + 3;
+                    minRank = r;
+                }
+            }
         }
 
-        return encoded;
+        for (; i <= length; i++) {
+            int r = ranks.get(i);
+            if (r < minRank) {
+                minRankIndex = i;
+                minRank = r;
+            }
+        }
+
+        return minRankIndex;
     }
 
-    /**
-     * Encodes the given decoded token if it is contained in this encoder. Otherwise,
-     * an empty optional is returned.
-     *
-     * @param decodedToken the decoded token
-     * @return the encoded token or an empty optional
-     */
-    public Optional<Integer> encodeIfPresent(ImmutableByteArray decodedToken) {
-        return Optional.ofNullable(decodedToEncoded.get(decodedToken));
+    public static int getNextIndex(List<Integer> ranks, int nextIndex) {
+        while (nextIndex < ranks.size() && ranks.get(nextIndex) == DUMMY_RANK) {
+            nextIndex++;
+        }
+        return nextIndex;
+    }
+
+    public static int getPreviousIndex(List<Integer> ranks, int previousIndex) {
+        while (previousIndex >= 0 && ranks.get(previousIndex) == DUMMY_RANK) {
+            previousIndex--;
+        }
+        return previousIndex;
+    }
+
+    public int addTokensAndGetCount(Integer maxTokenCount, byte[] utf8Bytes, List<Integer> out, List<Integer> ranks) {
+        ImmutableByteArray match = ImmutableByteArray.from(utf8Bytes);
+        int encoded = encode(match);
+        if (encoded != MAX_RANK) {
+            out.add(encoded);
+            return 1;
+        } else {
+            int length = match.length();
+            return addTokensAndGetCount(maxTokenCount, out, ranks, match, length);
+        }
+    }
+
+    private int addTokensAndGetCount(Integer maxTokenCount, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
+        int validRanks = initRanks(match, length, ranks);
+        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks);
+        for (int start = 0, end = 1; end < ranks.size() && (maxTokenCount == null || out.size() < maxTokenCount); end++) {
+            if (ranks.get(end) != DUMMY_RANK) {
+                int token = encode(match, start, end);
+                assert token != MAX_RANK : "Token should not be MAX_RANK";
+                out.add(token);
+                start = end;
+            }
+        }
+        return tokenCount;
+    }
+
+    int initRanks(ImmutableByteArray piece, int tokenCount, List<Integer> ranks) {
+        assert tokenCount > 1 : "Already filtered out";
+        ranks.clear();
+        int validRanks = 0;
+        for (int i = 0; i < tokenCount + 1; i++) {
+            int encoded = encode(piece, i, i + 2);
+            if (encoded != MAX_RANK) {
+                validRanks++;
+            }
+            ranks.add(encoded);
+        }
+        return validRanks;
+    }
+
+    int mergeBytesAndGetTokenCount(ImmutableByteArray piece, int length, List<Integer> ranks, int validRanks) {
+        assert true;
+        while (true) {
+            if (validRanks == 0) {
+                assert getMinRankIndex(ranks) < 0;
+                break;
+            }
+            int minRankIndex = getMinRankIndex(ranks);
+            assert minRankIndex >= 0;
+
+            int previousIndex = getPreviousIndex(ranks, minRankIndex - 1);
+            int nextIndex = getNextIndex(ranks, minRankIndex + 1);
+            int nextNextIndex = getNextIndex(ranks, nextIndex + 1);
+            int nextNextNextIndex = getNextIndex(ranks, nextNextIndex + 1);
+
+            if (previousIndex >= 0) {
+                assert ranks.get(previousIndex) != DUMMY_RANK;
+                int newRank = encode(piece, previousIndex, nextNextIndex);
+                int oldRank = ranks.set(previousIndex, newRank);
+                if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
+                    validRanks -= (newRank == MAX_RANK) ? 1 : -1;
+                }
+            }
+            assert ranks.get(minRankIndex) != DUMMY_RANK;
+            int newRank = encode(piece, minRankIndex, nextNextNextIndex);
+            int oldRank = ranks.set(minRankIndex, newRank);
+            if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
+                validRanks--;
+            }
+
+            int oldDeletedRank = ranks.set(nextIndex, DUMMY_RANK);
+            if (oldDeletedRank != MAX_RANK) {
+                validRanks--;
+            }
+
+            length--;
+        }
+        return length;
+    }
+
+    int encode(ImmutableByteArray payload) {
+        if (payload.length() < encoders.length) {
+            Map<ImmutableByteArray, Integer> encoder = encoders[payload.length()];
+            return encoder == null ? MAX_RANK : encoder.getOrDefault(payload, MAX_RANK);
+        } else {
+            return MAX_RANK;
+        }
+    }
+
+    int encode(ImmutableByteArray piece, int start, int end) {
+        if (end > piece.length()) {
+            return MAX_RANK;
+        } else if (end - start == piece.length()) {
+            return encode(piece);
+        } else {
+            return encode(piece.getBytesBetween(start, end));
+        }
+    }
+
+    public int length() {
+        return length;
     }
 }
