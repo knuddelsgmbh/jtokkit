@@ -7,23 +7,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class EncodingFactory {
+    private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
+    private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
+    private static final Map<String, Integer> SPECIAL_TOKENS_P50K_EDIT;
+
     private static final String ENDOFTEXT = "<|endoftext|>";
     private static final String FIM_PREFIX = "<|fim_prefix|>";
     private static final String FIM_MIDDLE = "<|fim_middle|>";
     private static final String FIM_SUFFIX = "<|fim_suffix|>";
     private static final String ENDOFPROMPT = "<|endofprompt|>";
-
-    private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
-    private static final Map<String, Integer> SPECIAL_TOKENS_P50K_EDIT;
-    private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
 
     static {
         Map<String, Integer> map = new HashMap<>();
@@ -61,9 +60,10 @@ public class EncodingFactory {
     public static Encoding r50kBase() {
         return fromPredefinedParameters(
                 "r50k_base",
-                "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
+                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/r50k_base.tiktoken",
-                SPECIAL_TOKENS_X50K_BASE
+                SPECIAL_TOKENS_X50K_BASE,
+                false
         );
     }
 
@@ -75,9 +75,10 @@ public class EncodingFactory {
     public static Encoding p50kBase() {
         return fromPredefinedParameters(
                 "p50k_base",
-                "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
+                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
-                SPECIAL_TOKENS_X50K_BASE
+                SPECIAL_TOKENS_X50K_BASE,
+                false
         );
     }
 
@@ -89,9 +90,10 @@ public class EncodingFactory {
     public static Encoding p50kEdit() {
         return fromPredefinedParameters(
                 "p50k_edit",
-                "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
+                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
-                SPECIAL_TOKENS_P50K_EDIT
+                SPECIAL_TOKENS_P50K_EDIT,
+                false
         );
     }
 
@@ -103,9 +105,10 @@ public class EncodingFactory {
     public static Encoding cl100kBase() {
         return fromPredefinedParameters(
                 "cl100k_base",
-                "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+",
+                "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/cl100k_base.tiktoken",
-                SPECIAL_TOKENS_CL100K_BASE
+                SPECIAL_TOKENS_CL100K_BASE,
+                true
         );
     }
 
@@ -123,18 +126,26 @@ public class EncodingFactory {
             String name,
             String patternString,
             String fileName,
-            Map<String, Integer> specialTokens
+            Map<String, Integer> specialTokens,
+            boolean caseInsensitive
     ) {
-        Pattern regex;
+        Pattern regex = compileRegex(patternString, caseInsensitive);
+        Map<byte[], Integer> mergeableRanks = loadMergeableRanks(fileName);
+        GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, mergeableRanks, specialTokens);
+        return fromParameters(params);
+    }
+
+    static Pattern compileRegex(String patternString, boolean caseInsensitive) {
         try {
-            regex = Pattern.compile(patternString, Pattern.UNICODE_CHARACTER_CLASS);
+            int flags = Pattern.UNICODE_CHARACTER_CLASS;
+            if (caseInsensitive) {
+                flags |= Pattern.CASE_INSENSITIVE;
+            }
+            return Pattern.compile(patternString, flags);
         } catch (IllegalArgumentException exception) {
             // Workaround for Android where an IllegalArgumentException is thrown when using UNICODE_CHARACTER_CLASS
-            regex = Pattern.compile(patternString);
+            return Pattern.compile(patternString);
         }
-
-        GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, loadMergeableRanks(fileName), specialTokens);
-        return fromParameters(params);
     }
 
     public static Map<byte[], Integer> loadMergeableRanks(String fileName) {
@@ -143,17 +154,15 @@ public class EncodingFactory {
                 throw new IllegalStateException("Could not find " + fileName + " in resources");
             }
 
-            Map<byte[], Integer> mergeableRanks = new HashMap<>();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            Map<byte[], Integer> mergeableRanks = new LinkedHashMap<>(); // keep order to optimize collisions
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\s+", 2);
-                if (parts.length != 2) {
-                    throw new IllegalStateException("Invalid line in " + fileName + ": " + line);
-                }
+                int firstSpaceIndex = line.indexOf(' ');
+                assert firstSpaceIndex != -1 : "Invalid line in " + fileName + ": " + line;
 
-                byte[] token = Base64.getDecoder().decode(parts[0].getBytes(StandardCharsets.UTF_8));
-                int rank = Integer.parseInt(parts[1]);
+                byte[] token = Base64.getDecoder().decode(line.substring(0, firstSpaceIndex).getBytes(UTF_8));
+                int rank = parseInt(line.substring(firstSpaceIndex + 1));
 
                 mergeableRanks.put(token, rank);
             }
