@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class EncodingFactory {
+public class EncodingFactory {
     private static final String ENDOFTEXT = "<|endoftext|>";
     private static final String FIM_PREFIX = "<|fim_prefix|>";
     private static final String FIM_MIDDLE = "<|fim_middle|>";
@@ -26,13 +26,13 @@ public final class EncodingFactory {
     private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
 
     static {
-        final Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         map.put(ENDOFTEXT, 50256);
         SPECIAL_TOKENS_X50K_BASE = Collections.unmodifiableMap(map);
     }
 
     static {
-        final Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         map.put(ENDOFTEXT, 50256);
         map.put(FIM_PREFIX, 50281);
         map.put(FIM_MIDDLE, 50282);
@@ -41,7 +41,7 @@ public final class EncodingFactory {
     }
 
     static {
-        final Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         map.put(ENDOFTEXT, 100257);
         map.put(FIM_PREFIX, 100258);
         map.put(FIM_MIDDLE, 100259);
@@ -115,51 +115,51 @@ public final class EncodingFactory {
      * @param parameters the GPT BytePairEncoding parameters
      * @return an {@link Encoding} instance for the given GPT BytePairEncoding parameters
      */
-    public static Encoding fromParameters(final GptBytePairEncodingParams parameters) {
+    public static Encoding fromParameters(GptBytePairEncodingParams parameters) {
         return new GptBytePairEncoding(parameters);
     }
 
     private static Encoding fromPredefinedParameters(
-            final String name,
-            final String patternString,
-            final String fileName,
-            final Map<String, Integer> specialTokens
+            String name,
+            String patternString,
+            String fileName,
+            Map<String, Integer> specialTokens
     ) {
         Pattern regex;
         try {
             regex = Pattern.compile(patternString, Pattern.UNICODE_CHARACTER_CLASS);
-        } catch (final IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             // Workaround for Android where an IllegalArgumentException is thrown when using UNICODE_CHARACTER_CLASS
             regex = Pattern.compile(patternString);
         }
 
-        final GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, loadMergeableRanks(fileName), specialTokens);
+        GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, loadMergeableRanks(fileName), specialTokens);
         return fromParameters(params);
     }
 
-    public static Map<byte[], Integer> loadMergeableRanks(final String fileName) {
-        try (final InputStream in = EncodingFactory.class.getResourceAsStream(fileName)) {
+    public static Map<byte[], Integer> loadMergeableRanks(String fileName) {
+        try (InputStream in = EncodingFactory.class.getResourceAsStream(fileName)) {
             if (in == null) {
                 throw new IllegalStateException("Could not find " + fileName + " in resources");
             }
 
-            final Map<byte[], Integer> mergeableRanks = new HashMap<>();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            Map<byte[], Integer> mergeableRanks = new HashMap<>();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             String line;
             while ((line = reader.readLine()) != null) {
-                final String[] parts = line.split("\\s+", 2);
+                String[] parts = line.split("\\s+", 2);
                 if (parts.length != 2) {
                     throw new IllegalStateException("Invalid line in " + fileName + ": " + line);
                 }
 
-                final byte[] token = Base64.getDecoder().decode(parts[0].getBytes(StandardCharsets.UTF_8));
-                final int rank = Integer.parseInt(parts[1]);
+                byte[] token = Base64.getDecoder().decode(parts[0].getBytes(StandardCharsets.UTF_8));
+                int rank = Integer.parseInt(parts[1]);
 
                 mergeableRanks.put(token, rank);
             }
 
             return mergeableRanks;
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new IllegalStateException("Could not load " + fileName + " from resources", e);
         }
     }
