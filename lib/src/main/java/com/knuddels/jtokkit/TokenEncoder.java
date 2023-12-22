@@ -1,19 +1,22 @@
 package com.knuddels.jtokkit;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.knuddels.jtokkit.TokenEncoderLarge.addTokensAndGetCountLarge;
+
 final class TokenEncoder {
     public static final int DUMMY_RANK = Integer.MAX_VALUE;
     public static final int MAX_RANK = Integer.MAX_VALUE - 1;
     private final Map<ImmutableByteArray, Integer>[] encoders;
+    private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
     private int length = 0;
 
     public TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
+            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = Integer.parseInt(System.getProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", "500"));
             TreeMap<Integer, Map<ImmutableByteArray, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
                 length++;
@@ -101,13 +104,32 @@ final class TokenEncoder {
             return 1;
         } else {
             int length = match.length();
-            return addTokensAndGetCount(maxTokenCount, keepEncodings, out, ranks, match, length);
+            if (length < VERY_LARGE_TOKENIZER_BYTE_THRESHOLD) {
+                return addTokensAndGetCountSmall(maxTokenCount, keepEncodings, out, ranks, match, length);
+            } else {
+                return addTokensAndGetCountLarge(this, maxTokenCount, keepEncodings, out, match, length);
+            }
         }
     }
 
-    private int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
-        int validRanks = initRanks(match, length, ranks);
-        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks);
+    private int addTokensAndGetCountSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
+        assert length > 1 : "Already filtered out";
+        ranks.clear();
+
+        int validRanks = 0;
+        int minRankIndex = -1;
+        for (int i = 0, minRank = MAX_RANK; i < length + 1; i++) {
+            int encoded = encode(match, i, i + 2);
+            if (encoded != MAX_RANK) {
+                validRanks++;
+                if (encoded < minRank) {
+                    minRankIndex = i;
+                    minRank = encoded;
+                }
+            }
+            ranks.add(encoded);
+        }
+        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks, minRankIndex);
         if (keepEncodings) {
             for (int start = 0, end = 1; end < ranks.size() && out.size() < maxTokenCount; end++) {
                 if (ranks.get(end) != DUMMY_RANK) {
@@ -121,28 +143,8 @@ final class TokenEncoder {
         return tokenCount;
     }
 
-    int initRanks(ImmutableByteArray piece, int tokenCount, List<Integer> ranks) {
-        assert tokenCount > 1 : "Already filtered out";
-        ranks.clear();
-        int validRanks = 0;
-        for (int i = 0; i < tokenCount + 1; i++) {
-            int encoded = encode(piece, i, i + 2);
-            if (encoded != MAX_RANK) {
-                validRanks++;
-            }
-            ranks.add(encoded);
-        }
-        return validRanks;
-    }
-
-    int mergeBytesAndGetTokenCount(ImmutableByteArray piece, int length, List<Integer> ranks, int validRanks) {
-        assert true;
-        while (true) {
-            if (validRanks == 0) {
-                assert getMinRankIndex(ranks) < 0;
-                break;
-            }
-            int minRankIndex = getMinRankIndex(ranks);
+    int mergeBytesAndGetTokenCount(ImmutableByteArray piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
+        while (validRanks > 0) {
             assert minRankIndex >= 0;
 
             int previousIndex = getPreviousIndex(ranks, minRankIndex - 1);
@@ -171,17 +173,24 @@ final class TokenEncoder {
             }
 
             length--;
+
+            minRankIndex = getMinRankIndex(ranks);
         }
+        assert getMinRankIndex(ranks) < 0;
         return length;
     }
 
     int encode(ImmutableByteArray payload) {
         if (payload.length() < encoders.length) {
             Map<ImmutableByteArray, Integer> encoder = encoders[payload.length()];
-            return encoder == null ? MAX_RANK : encoder.getOrDefault(payload, MAX_RANK);
-        } else {
-            return MAX_RANK;
+            if (encoder != null) {
+                Integer result = encoder.get(payload);
+                if (result != null) {
+                    return result;
+                }
+            }
         }
+        return MAX_RANK;
     }
 
     int encode(ImmutableByteArray piece, int start, int end) {
