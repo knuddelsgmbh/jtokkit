@@ -10,17 +10,17 @@ import static com.knuddels.jtokkit.TokenEncoderLarge.addTokensAndGetCountLarge;
 final class TokenEncoder {
     public static final int DUMMY_RANK = Integer.MAX_VALUE;
     public static final int MAX_RANK = Integer.MAX_VALUE - 1;
-    private final Map<ImmutableByteArray, Integer>[] encoders;
+    private final Map<ByteArrayWrapper, Integer>[] encoders;
     private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
     private int length = 0;
 
     public TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
             VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = Integer.parseInt(System.getProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", "500"));
-            TreeMap<Integer, Map<ImmutableByteArray, Integer>> tempEncoders = new TreeMap<>();
+            TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
                 length++;
-                ImmutableByteArray key = ImmutableByteArray.from(k);
+                ByteArrayWrapper key = new ByteArrayWrapper(k);
                 tempEncoders.computeIfAbsent(k.length, integer -> new ConcurrentHashMap<>()).put(key, v);
             });
             //noinspection unchecked
@@ -95,7 +95,7 @@ final class TokenEncoder {
     }
 
     public int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, List<Integer> ranks) {
-        ImmutableByteArray match = ImmutableByteArray.from(utf8Bytes);
+        ByteArrayWrapper match = new ByteArrayWrapper(utf8Bytes);
         int encoded = encode(match);
         if (encoded != MAX_RANK) {
             if (keepEncodings) {
@@ -112,7 +112,7 @@ final class TokenEncoder {
         }
     }
 
-    private int addTokensAndGetCountSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ImmutableByteArray match, int length) {
+    private int addTokensAndGetCountSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ByteArrayWrapper match, int length) {
         assert length > 1 : "Already filtered out";
         ranks.clear();
 
@@ -143,7 +143,7 @@ final class TokenEncoder {
         return tokenCount;
     }
 
-    int mergeBytesAndGetTokenCount(ImmutableByteArray piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
+    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
         while (validRanks > 0) {
             assert minRankIndex >= 0;
 
@@ -180,9 +180,9 @@ final class TokenEncoder {
         return length;
     }
 
-    int encode(ImmutableByteArray payload) {
+    int encode(ByteArrayWrapper payload) {
         if (payload.length() < encoders.length) {
-            Map<ImmutableByteArray, Integer> encoder = encoders[payload.length()];
+            Map<ByteArrayWrapper, Integer> encoder = encoders[payload.length()];
             if (encoder != null) {
                 Integer result = encoder.get(payload);
                 if (result != null) {
@@ -193,7 +193,7 @@ final class TokenEncoder {
         return MAX_RANK;
     }
 
-    int encode(ImmutableByteArray piece, int start, int end) {
+    int encode(ByteArrayWrapper piece, int start, int end) {
         if (end > piece.length()) {
             return MAX_RANK;
         } else if (end - start == piece.length()) {
