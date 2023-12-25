@@ -4,6 +4,7 @@ import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,19 +120,14 @@ class GptBytePairEncoding implements Encoding {
 
     @Override
     public byte[] decodeBytes(List<Integer> tokens) {
-        List<Byte> out = new ArrayList<>();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(10 * tokens.size());
         for (int token : tokens) {
             byte[] decodedToken = decodeToken(token);
             for (byte b : decodedToken) {
-                out.add(b);
+                out.write(b);
             }
         }
-
-        byte[] outArray = new byte[out.size()];
-        for (int i = 0; i < out.size(); i++) {
-            outArray[i] = out.get(i);
-        }
-        return outArray;
+        return out.toByteArray();
     }
 
     @Override
