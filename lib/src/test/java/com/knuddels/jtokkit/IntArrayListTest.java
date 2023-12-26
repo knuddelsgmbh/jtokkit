@@ -1,5 +1,6 @@
 package com.knuddels.jtokkit;
 
+import com.knuddels.jtokkit.api.IntArrayList;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -7,23 +8,19 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ByteArrayListTest {
-
-    private static byte randomByte(Random random) {
-        return (byte) (random.nextInt() & 0xFF);
-    }
+class IntArrayListTest {
 
     @Test
     void testArrayListOperations() {
-        var byteArrayList = new ByteArrayList();
-        var standardList = new ArrayList<Byte>();
+        var byteArrayList = new IntArrayList();
+        var standardList = new ArrayList<Integer>();
         var random = new Random();
 
         assertTrue(byteArrayList.isEmpty());
 
         for (var i = 0; i < 1_000; i++) {
             // Add
-            var element = randomByte(random);
+            var element = random.nextInt();
             byteArrayList.add(element);
             standardList.add(element);
             assertEquals(standardList.get(standardList.size() - 1), byteArrayList.get(byteArrayList.size() - 1));
@@ -31,7 +28,7 @@ class ByteArrayListTest {
             // Set
             if (!byteArrayList.isEmpty() && random.nextBoolean()) {
                 var randomIndex = random.nextInt(byteArrayList.size());
-                var newElement = randomByte(random);
+                var newElement = random.nextInt();
                 byteArrayList.set(randomIndex, newElement);
                 standardList.set(randomIndex, newElement);
                 assertEquals(standardList.get(randomIndex), byteArrayList.get(randomIndex));
@@ -42,7 +39,7 @@ class ByteArrayListTest {
             assertEquals(standardList.isEmpty(), byteArrayList.isEmpty());
 
             // Clear
-            if (randomByte(random) % 10 == 0) {
+            if (random.nextInt() % 10 == 0) {
                 byteArrayList.clear();
                 standardList.clear();
                 assertEquals(standardList.size(), byteArrayList.size());
@@ -57,13 +54,13 @@ class ByteArrayListTest {
         }
 
         // Test Equals and HashCode
-        var anotherByteArrayList = new ByteArrayList();
-        standardList.forEach(anotherByteArrayList::add);
+        var anotherIntArrayList = new IntArrayList();
+        standardList.forEach(anotherIntArrayList::add);
 
-        assertEquals(byteArrayList, anotherByteArrayList);
+        assertEquals(byteArrayList, anotherIntArrayList);
         if (!byteArrayList.isEmpty()) {
-            assertNotEquals(byteArrayList, new ByteArrayList());
+            assertNotEquals(byteArrayList, new IntArrayList());
         }
-        assertEquals(byteArrayList.hashCode(), anotherByteArrayList.hashCode());
+        assertEquals(byteArrayList.hashCode(), anotherIntArrayList.hashCode());
     }
 }

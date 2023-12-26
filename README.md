@@ -80,7 +80,7 @@ retrieve the encoding you want to use. You can then use the `encode` and
 ```java
 EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
 Encoding enc = registry.getEncoding(EncodingType.CL100K_BASE);
-List<Integer> encoded = enc.encode("This is a sample sentence.");
+IntArrayList encoded = enc.encode("This is a sample sentence.");
 // encoded = [2028, 374, 264, 6205, 11914, 13]
         
 String decoded = enc.decode(encoded);

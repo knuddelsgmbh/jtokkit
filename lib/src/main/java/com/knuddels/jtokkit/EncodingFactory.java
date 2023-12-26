@@ -2,6 +2,7 @@ package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
+import com.knuddels.jtokkit.api.IntArrayList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -180,11 +181,11 @@ class EncodingFactory {
         }
 
         @Override
-        int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
+        int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, IntArrayList out) {
             int[] tokenCount = {0};
-            ArrayList<Integer> ranks = new ArrayList<>();
+            IntArrayList ranks = new IntArrayList();
             Cl100kParser.split(text, utf8BytesList -> {
-                tokenCount[0] += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, utf8BytesList.toByteArray(), out, ranks);
+                tokenCount[0] += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, utf8BytesList.toArray(), out, ranks);
                 return tokenCount[0] >= maxTokenCount;
             });
             return tokenCount[0];

@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.IntArrayList;
 import org.openjdk.jmh.annotations.Benchmark;
 
 import java.util.List;
@@ -34,5 +35,5 @@ public abstract class AbstractBenchmark {
      * @param fileContents the file contents to encode
      * @return a list of encoded token lists
      */
-    protected abstract List<List<Integer>> encodeAll(Encoding encoding, List<String> fileContents);
+    protected abstract List<IntArrayList> encodeAll(Encoding encoding, List<String> fileContents);
 }

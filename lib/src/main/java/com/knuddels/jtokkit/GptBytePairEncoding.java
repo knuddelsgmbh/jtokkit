@@ -3,15 +3,12 @@ package com.knuddels.jtokkit;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
+import com.knuddels.jtokkit.api.IntArrayList;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,7 +34,7 @@ class GptBytePairEncoding implements Encoding {
     }
 
     @Override
-    public List<Integer> encode(String text) {
+    public IntArrayList encode(String text) {
         return encode(text, Integer.MAX_VALUE).getTokens();
     }
 
@@ -48,7 +45,7 @@ class GptBytePairEncoding implements Encoding {
 
     private EncodingResult encodeInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(emptyList(), -1, false);
+            return new EncodingResult(new IntArrayList(0), -1, false);
         }
 
         specialEncoder.checkForSpecialTokens(text);
@@ -57,7 +54,7 @@ class GptBytePairEncoding implements Encoding {
     }
 
     @Override
-    public List<Integer> encodeOrdinary(String text) {
+    public IntArrayList encodeOrdinary(String text) {
         return encodeOrdinary(text, Integer.MAX_VALUE).getTokens();
     }
 
@@ -68,17 +65,17 @@ class GptBytePairEncoding implements Encoding {
 
     private EncodingResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(emptyList(), -1, false);
+            return new EncodingResult(new IntArrayList(0), -1, false);
         }
 
-        List<Integer> out = new ArrayList<>();
+        IntArrayList out = new IntArrayList();
         int tokenCount = encodeOrdinaryInternal(text, maxTokenCount, keepEncodings, out);
 
         if (keepEncodings && maxTokenCount != Integer.MAX_VALUE) {
             // Make sure we didn't break the multibyte character
             for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
                 int size = out.size() - tokensToRemove;
-                ArrayList<Integer> tokens = new ArrayList<>(size);
+                IntArrayList tokens = new IntArrayList(size);
                 for (int i = 0; i < size; i++) {
                     tokens.add(out.get(i));
                 }
@@ -93,9 +90,9 @@ class GptBytePairEncoding implements Encoding {
         return new EncodingResult(out, tokenCount, false);
     }
 
-    int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
+    int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, IntArrayList out) {
         int tokenCount = 0;
-        ArrayList<Integer> ranks = new ArrayList<>(); // reused to avoid allocations
+        IntArrayList ranks = new IntArrayList(); // reused to avoid allocations
         for (Matcher matcher = pattern.matcher(text); tokenCount < maxTokenCount && matcher.find(); ) {
             byte[] bytes = matcher.group().getBytes(UTF_8);
             tokenCount += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, bytes, out, ranks);
@@ -109,20 +106,20 @@ class GptBytePairEncoding implements Encoding {
     }
 
     @Override
-    public String decode(List<Integer> tokens) {
+    public String decode(IntArrayList tokens) {
         return new String(decodeBytes(tokens), UTF_8);
     }
 
     @Override
-    public byte[] decodeBytes(List<Integer> tokens) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(10 * tokens.size());
-        for (int token : tokens) {
-            byte[] decodedToken = decodeToken(token);
+    public byte[] decodeBytes(IntArrayList tokens) {
+        ByteArrayList out = new ByteArrayList(10 * tokens.size());
+        for (int i = 0; i < tokens.size(); i++) {
+            byte[] decodedToken = decodeToken(tokens.get(i));
             for (byte b : decodedToken) {
-                out.write(b);
+                out.add(b);
             }
         }
-        return out.toByteArray();
+        return out.toArray();
     }
 
     @Override

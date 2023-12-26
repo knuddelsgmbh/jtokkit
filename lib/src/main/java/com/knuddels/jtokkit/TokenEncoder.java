@@ -1,6 +1,10 @@
 package com.knuddels.jtokkit;
 
-import java.util.*;
+import com.knuddels.jtokkit.api.IntArrayList;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
 import static java.lang.Integer.MAX_VALUE;
@@ -9,7 +13,7 @@ import static java.util.Collections.emptyMap;
 
 public final class TokenEncoder {
     public static final int MAX_RANK = MAX_VALUE - 1;
-    static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
+    public static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
     static final int DUMMY_RANK = MAX_VALUE;
     private final Map<ByteArrayWrapper, Integer>[] encoders;
     private final Map<Integer, byte[]> decoder;
@@ -33,11 +37,11 @@ public final class TokenEncoder {
         } else {
             //noinspection unchecked
             encoders = new Map[0]; // for testing
-            this.decoder = emptyMap();
+            decoder = emptyMap();
         }
     }
 
-    private static int getMinRankIndex(List<Integer> ranks) {
+    private static int getMinRankIndex(IntArrayList ranks) {
         int minRankIndex = -1;
         int minRank = MAX_RANK;
 
@@ -85,21 +89,21 @@ public final class TokenEncoder {
         return minRankIndex;
     }
 
-    private static int getNextIndex(List<Integer> ranks, int nextIndex) {
+    private static int getNextIndex(IntArrayList ranks, int nextIndex) {
         while (nextIndex < ranks.size() && ranks.get(nextIndex) == DUMMY_RANK) {
             nextIndex++;
         }
         return nextIndex;
     }
 
-    private static int getPreviousIndex(List<Integer> ranks, int previousIndex) {
+    private static int getPreviousIndex(IntArrayList ranks, int previousIndex) {
         while (previousIndex >= 0 && ranks.get(previousIndex) == DUMMY_RANK) {
             previousIndex--;
         }
         return previousIndex;
     }
 
-    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] byteArray, List<Integer> out, ArrayList<Integer> ranks) {
+    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] byteArray, IntArrayList out, IntArrayList ranks) {
         ByteArrayWrapper match = new ByteArrayWrapper(byteArray);
         int encoded = encode(match);
         if (encoded != MAX_RANK) {
@@ -117,7 +121,7 @@ public final class TokenEncoder {
         }
     }
 
-    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, ArrayList<Integer> ranks, ByteArrayWrapper match, int length) {
+    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, IntArrayList out, IntArrayList ranks, ByteArrayWrapper match, int length) {
         assert length > 1 : "Already filtered out";
         ranks.clear();
         ranks.ensureCapacity(length + 1);
@@ -149,7 +153,7 @@ public final class TokenEncoder {
         return tokenCount;
     }
 
-    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
+    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, IntArrayList ranks, int validRanks, int minRankIndex) {
         assert getMinRankIndex(ranks) == minRankIndex;
         while (validRanks > 0) {
             assert minRankIndex >= 0;

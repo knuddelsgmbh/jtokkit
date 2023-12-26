@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -143,7 +142,7 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
     private static class DummyEncoding implements Encoding {
 
         @Override
-        public List<Integer> encode(String text) {
+        public IntArrayList encode(String text) {
             return null;
         }
 
@@ -153,7 +152,7 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
         }
 
         @Override
-        public List<Integer> encodeOrdinary(String text) {
+        public IntArrayList encodeOrdinary(String text) {
             return null;
         }
 
@@ -168,12 +167,12 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
         }
 
         @Override
-        public String decode(List<Integer> tokens) {
+        public String decode(IntArrayList tokens) {
             return null;
         }
 
         @Override
-        public byte[] decodeBytes(List<Integer> tokens) {
+        public byte[] decodeBytes(IntArrayList tokens) {
             return new byte[0];
         }
 

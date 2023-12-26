@@ -149,8 +149,8 @@ public class DataDownloader {
         var patterns = new String[]{
                 "'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'x",
                 "x",
+                "ő",
                 "123",
-                "a",
                 ",.!?:; \n",
                 "\n   \n",
                 "     ",
@@ -177,7 +177,7 @@ public class DataDownloader {
         }
 
         var totalSize = calculateTotalFileSize(rootFolder);
-        if (totalSize != 99_925_295) {
+        if (totalSize != 99_945_274) {
             throw new AssertionError("Total size did not match expected value, actual: " + totalSize);
         }
     }

@@ -35,7 +35,7 @@ class Cl100kTest {
                 .toString();
     }
 
-    static String normalizeStringForTesting(String testString) {
+    private static String normalizeStringForTesting(String testString) {
         return testString
                 .replaceAll("\\r", "\\\\r")
                 .replaceAll("\\n", "\\\\n")

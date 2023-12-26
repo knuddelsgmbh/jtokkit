@@ -1,37 +1,37 @@
-package com.knuddels.jtokkit;
+package com.knuddels.jtokkit.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ByteArrayList {
-    private byte[] array;
+public class IntArrayList {
+    private int[] array;
     private int size = 0;
 
-    public ByteArrayList() {
+    public IntArrayList() {
         this(10);
     }
 
-    public ByteArrayList(int size) {
-        array = new byte[size];
+    public IntArrayList(int size) {
+        array = new int[size];
     }
 
     public void clear() {
         size = 0;
     }
 
-    public void add(byte element) {
+    public void add(int element) {
         if (size >= array.length) {
             resize();
         }
         array[size++] = element;
     }
 
-    public byte get(int index) {
+    public int get(int index) {
         return array[index];
     }
 
-    public int set(int index, byte element) {
+    public int set(int index, int element) {
         int old = array[index];
         array[index] = element;
         return old;
@@ -45,7 +45,7 @@ public class ByteArrayList {
         if (targetSize <= size) {
             return;
         }
-        byte[] newArray = new byte[targetSize];
+        int[] newArray = new int[targetSize];
         if (size > 0) {
             System.arraycopy(array, 0, newArray, 0, size);
         }
@@ -60,12 +60,12 @@ public class ByteArrayList {
         return size == 0;
     }
 
-    public byte[] toArray() {
+    public int[] toArray() {
         return Arrays.copyOf(array, size);
     }
 
-    public List<Byte> boxed() {
-        List<Byte> list = new ArrayList<>(size);
+    public List<Integer> boxed() {
+        List<Integer> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             list.add(array[i]);
         }
@@ -79,7 +79,7 @@ public class ByteArrayList {
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ByteArrayList that = (ByteArrayList) o;
+        IntArrayList that = (IntArrayList) o;
         if (size != that.size) {
             return false;
         }

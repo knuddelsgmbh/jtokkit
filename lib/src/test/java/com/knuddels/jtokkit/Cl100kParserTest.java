@@ -18,8 +18,7 @@ import static java.lang.Character.MIN_CODE_POINT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Cl100kParserTest {
-
+class Cl100kParserTest {
     public static Map<Integer, String> fetchUnicodeData() {
         var url = "https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt";
         Map<Integer, String> unicodeMap = new HashMap<>();
@@ -41,7 +40,7 @@ public class Cl100kParserTest {
 
     @Disabled // Takes too long
     @Test
-    public void testToUtf8BytesOnFetchedUnicodeData() throws Exception {
+    void testToUtf8BytesOnFetchedUnicodeData() throws Exception {
         fetchUnicodeData().entrySet().stream().parallel().forEach(e -> {
             var expected = Character.toString(e.getKey());
             if (isValidUTF8(expected)) {
@@ -56,7 +55,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsApostophed() {
+    void testIsApostophed() {
         var count = 0;
         var pattern = compileRegex("^(?:'s|'t|'re|'ve|'m|'ll|'d)$", true);
 
@@ -89,7 +88,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsNumeric() {
+    void testIsNumeric() {
         var count = 0;
         assertFalse(Cl100kParser.isNumeric(-1));
         var pattern = compileRegex("^\\p{N}$", true);
@@ -107,7 +106,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsLetter() {
+    void testIsLetter() {
         var count = 0;
         assertFalse(Cl100kParser.isLetter(-1));
         var pattern = compileRegex("^\\p{L}$", true);
@@ -124,7 +123,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsUnicodeWhitespace() {
+    void testIsUnicodeWhitespace() {
         var count = 0;
         assertFalse(Cl100kParser.isWhitespace(-1));
         var pattern = compileRegex("^\\s$", true);
@@ -141,7 +140,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsLetterOrNumeric() {
+    void testIsLetterOrNumeric() {
         var count = 0;
         assertFalse(Cl100kParser.isLetterOrNumeric(-1));
         var pattern = compileRegex("^[\\p{L}\\p{N}]$", true);
@@ -158,7 +157,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsNotWhitespaceOrLetterOrNumeric() {
+    void testIsNotWhitespaceOrLetterOrNumeric() {
         var count = 0;
         assertFalse(Cl100kParser.isNotWhitespaceOrLetterOrNumeric(-1));
         var pattern = compileRegex("^[^\\s\\p{L}\\p{N}]$", true);
@@ -175,7 +174,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsNotNewlineOrLetterOrNumeric() {
+    void testIsNotNewlineOrLetterOrNumeric() {
         var count = 0;
         assertFalse(Cl100kParser.isNotNewlineOrLetterOrNumeric(-1));
         var pattern = compileRegex("^[^\r\n\\p{L}\\p{N}]$", true);
@@ -192,7 +191,7 @@ public class Cl100kParserTest {
     }
 
     @Test
-    public void testIsNewline() {
+    void testIsNewline() {
         var count = 0;
         assertFalse(Cl100kParser.isNewline(-1));
         var pattern = compileRegex("^[\r\n]$", true);
