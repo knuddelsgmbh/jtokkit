@@ -19,9 +19,9 @@ import static java.util.Objects.requireNonNull;
  */
 class GptBytePairEncoding implements Encoding {
 
+    final TokenEncoder encoder;
     private final String name;
     private final Pattern pattern;
-    private final TokenEncoder encoder;
     private final SpecialEncoder specialEncoder;
 
     /**
@@ -78,7 +78,7 @@ class GptBytePairEncoding implements Encoding {
             // Make sure we didn't break the multibyte character
             for (int tokensToRemove = 0; tokensToRemove <= out.size(); tokensToRemove++) {
                 int size = out.size() - tokensToRemove;
-                List<Integer> tokens = new ArrayList<>(size);
+                ArrayList<Integer> tokens = new ArrayList<>(size);
                 for (int i = 0; i < size; i++) {
                     tokens.add(out.get(i));
                 }

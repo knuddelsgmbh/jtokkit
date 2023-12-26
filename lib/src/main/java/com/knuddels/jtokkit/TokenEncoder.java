@@ -8,17 +8,17 @@ import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyMap;
 
 public final class TokenEncoder {
-    public static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
-    public static final int DUMMY_RANK = MAX_VALUE;
     public static final int MAX_RANK = MAX_VALUE - 1;
+    static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
+    static final int DUMMY_RANK = MAX_VALUE;
     private final Map<ByteArrayWrapper, Integer>[] encoders;
     private final Map<Integer, byte[]> decoder;
 
     private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
 
-    public TokenEncoder(Map<byte[], Integer> encoder) {
+    TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
-            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "500"));
+            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "1500"));
             TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
                 ByteArrayWrapper key = new ByteArrayWrapper(k);

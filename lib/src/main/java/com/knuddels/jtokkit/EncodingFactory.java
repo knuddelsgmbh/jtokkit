@@ -103,13 +103,10 @@ class EncodingFactory {
      * @return an {@link Encoding} instance for the cl100k_base encoding
      */
     public static Encoding cl100kBase() {
-        return fromPredefinedParameters(
-                "cl100k_base",
-                "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+",
-                "/com/knuddels/jtokkit/cl100k_base.tiktoken",
-                SPECIAL_TOKENS_CL100K_BASE,
-                true
-        );
+        // "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+"
+        Map<byte[], Integer> mergeableRanks = loadMergeableRanks("/com/knuddels/jtokkit/cl100k_base.tiktoken");
+        GptBytePairEncodingParams params = new GptBytePairEncodingParams("cl100k_base", null, mergeableRanks, SPECIAL_TOKENS_CL100K_BASE);
+        return new Cl100kGptBytePairEncoding(params);
     }
 
     /**
@@ -174,6 +171,27 @@ class EncodingFactory {
             return mergeableRanks;
         } catch (IOException e) {
             throw new IllegalStateException("Could not load " + fileName + " from resources", e);
+        }
+    }
+
+    private static class Cl100kGptBytePairEncoding extends GptBytePairEncoding {
+        public Cl100kGptBytePairEncoding(GptBytePairEncodingParams params) {
+            super(params);
+        }
+
+        @Override
+        int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
+            int[] tokenCount = {0};
+            ArrayList<Integer> ranks = new ArrayList<>();
+            Cl100kParser.split(text, utf8BytesList -> {
+                byte[] utf8Bytes = new byte[utf8BytesList.size()];
+                for (int i = 0; i < utf8BytesList.size(); i++) {
+                    utf8Bytes[i] = utf8BytesList.get(i);
+                }
+                tokenCount[0] += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, utf8Bytes, out, ranks);
+                return tokenCount[0] >= maxTokenCount;
+            });
+            return tokenCount[0];
         }
     }
 }
