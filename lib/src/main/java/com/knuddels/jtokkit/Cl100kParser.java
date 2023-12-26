@@ -1,9 +1,7 @@
 package com.knuddels.jtokkit;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
 
 import static java.lang.Character.*;
@@ -15,9 +13,9 @@ public class Cl100kParser {
     private static final String SIMPLE_WHITESPACES = "\t\n\u000B\u000C\r";
     private static final int[] REMAINING_WHITESPACES = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".codePoints().sorted().toArray();
 
-    public static void split(String input, Predicate<List<Byte>> fragmentConsumer) {
+    public static void split(String input, Predicate<ByteArrayList> fragmentConsumer) {
         assert isValidUTF8(input) : "Input is not UTF-8: " + input;
-        List<Byte> utf8Bytes = new ArrayList<>();
+        ByteArrayList utf8Bytes = new ByteArrayList();
         boolean finished = false;
         for (int endIndex = 0; endIndex < input.length() && !finished; ) {
             int startIndex = endIndex;
@@ -220,7 +218,7 @@ public class Cl100kParser {
         }
     }
 
-    static List<Byte> addUtf8Bytes(String input, int start, int end, List<Byte> dst) {
+    static ByteArrayList addUtf8Bytes(String input, int start, int end, ByteArrayList dst) {
         dst.clear();
         for (int i = start; i < end; i++) {
             int cp = input.codePointAt(i);

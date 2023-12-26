@@ -4,8 +4,6 @@ package com.knuddels.jtokkit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
 
-import java.util.ArrayList;
-
 public class Cl100kParserBenchmark {
     @Benchmark
     public void benchmarkIsLetter(BenchmarkingState state, Blackhole bh) {
@@ -58,7 +56,7 @@ public class Cl100kParserBenchmark {
 
     @Benchmark
     public void benchmarkToUtf8Conversion(BenchmarkingState state, Blackhole bh) {
-        var dst = new ArrayList<Byte>();
+        var dst = new ByteArrayList();
         for (var fileContent : state.fileContents) {
             bh.consume(Cl100kParser.addUtf8Bytes(fileContent, 0, fileContent.length(), dst));
         }

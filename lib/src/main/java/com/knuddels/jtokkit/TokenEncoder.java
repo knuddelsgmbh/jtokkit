@@ -99,8 +99,8 @@ public final class TokenEncoder {
         return previousIndex;
     }
 
-    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, ArrayList<Integer> ranks) {
-        ByteArrayWrapper match = new ByteArrayWrapper(utf8Bytes);
+    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] byteArray, List<Integer> out, ArrayList<Integer> ranks) {
+        ByteArrayWrapper match = new ByteArrayWrapper(byteArray);
         int encoded = encode(match);
         if (encoded != MAX_RANK) {
             if (keepEncodings) {

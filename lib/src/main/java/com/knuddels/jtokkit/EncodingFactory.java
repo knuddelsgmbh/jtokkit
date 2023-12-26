@@ -184,11 +184,7 @@ class EncodingFactory {
             int[] tokenCount = {0};
             ArrayList<Integer> ranks = new ArrayList<>();
             Cl100kParser.split(text, utf8BytesList -> {
-                byte[] utf8Bytes = new byte[utf8BytesList.size()];
-                for (int i = 0; i < utf8BytesList.size(); i++) {
-                    utf8Bytes[i] = utf8BytesList.get(i);
-                }
-                tokenCount[0] += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, utf8Bytes, out, ranks);
+                tokenCount[0] += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, utf8BytesList.toByteArray(), out, ranks);
                 return tokenCount[0] >= maxTokenCount;
             });
             return tokenCount[0];
