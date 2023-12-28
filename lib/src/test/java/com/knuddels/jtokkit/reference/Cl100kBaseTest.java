@@ -10,13 +10,13 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class P50kEditTest {
+class Cl100kBaseTest {
 
-    private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.P50K_EDIT);
+    private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.CL100K_BASE);
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodesCorrectly(
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodesCorrectly(
             String input,
             String output
     ) {
@@ -27,16 +27,16 @@ class P50kEditTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodesStable(String input) {
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodesStable(String input) {
         var actual = ENCODING.decode(ENCODING.encode(input));
 
         assertEquals(input, actual);
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodesCorrectlyWithMaxTokensSet(
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodesCorrectlyWithMaxTokensSet(
             String input,
             String output,
             String outputMaxTokens10
@@ -50,16 +50,16 @@ class P50kEditTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodesStableWithMaxTokensSet(String input) {
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodesStableWithMaxTokensSet(String input) {
         var actual = ENCODING.decode(ENCODING.encode(input, 10).getTokens());
 
         assertTrue(input.startsWith(actual));
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodeOrdinaryEncodesCorrectly(
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodeOrdinaryEncodesCorrectly(
             String input,
             String output
     ) {
@@ -70,8 +70,8 @@ class P50kEditTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodeOrdinaryEncodesCorrectly(
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodeOrdinaryEncodesCorrectly(
             String input,
             String output,
             String outputMaxTokens10
@@ -85,23 +85,23 @@ class P50kEditTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodeOrdinaryEncodesStable(String input) {
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodeOrdinaryEncodesStable(String input) {
         var actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
 
         assertEquals(input, actual);
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/p50k_edit_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
-    void p50kEditEncodeOrdinaryEncodesStableWithMaxTokensSet(String input) {
+    @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
+    void cl100kBaseEncodeOrdinaryEncodesStableWithMaxTokensSet(String input) {
         var actual = ENCODING.decode(ENCODING.encodeOrdinary(input, 10).getTokens());
 
         assertTrue(input.startsWith(actual));
     }
 
     @Test
-    void p50kEditEncodeOrdinaryEncodesSpecialTokensCorrectly() {
+    void cl100kBaseEncodeOrdinaryEncodesSpecialTokensCorrectly() {
         var input = "Hello<|endoftext|>, <|fim_prefix|> <|fim_middle|> world <|fim_suffix|> ! <|endofprompt|>";
         var actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
 

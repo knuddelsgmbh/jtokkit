@@ -1,8 +1,8 @@
 package com.knuddels.jtokkit;
 
-public class DefaultEncodingRegistryTest extends BaseEncodingRegistryTest<DefaultEncodingRegistry> {
+class DefaultEncodingRegistryTest extends BaseEncodingRegistryTest<DefaultEncodingRegistry> {
 
-	public DefaultEncodingRegistryTest() {
-		super(new DefaultEncodingRegistry(), DefaultEncodingRegistry::initializeDefaultEncodings);
-	}
+    DefaultEncodingRegistryTest() {
+        super(new DefaultEncodingRegistry(), DefaultEncodingRegistry::initializeDefaultEncodings);
+    }
 }
