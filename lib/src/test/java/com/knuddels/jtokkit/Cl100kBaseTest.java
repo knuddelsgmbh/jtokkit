@@ -1,6 +1,5 @@
-package com.knuddels.jtokkit.reference;
+package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.EncodingFactory;
 import com.knuddels.jtokkit.api.Encoding;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,38 +15,32 @@ import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Cl100kBaseTest {
-    public static final String PUNCTUATION = "'\".,?!:()";
-    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
-    private static final String NUMBERS = "0123456789½";
-    private static final String NEWLINES = "\n\r";
-    private static final String WHITESPACES = " \t " + NEWLINES;
-    private static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = " \t🤚🏾😩" + PUNCTUATION;
-    private static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = NOT_NEWLINE_OR_LETTER_OR_NUMERIC + NEWLINES;
-    private static final List<String> SPECIAL = List.of("'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'ſ", "'x", "🤚🏾", "😩", "　", "½");
+class Cl100kBaseTest {
+    static final String PUNCTUATION = "'\".,?!:()";
+    static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
+    static final String NUMBERS = "0123456789½";
+    static final String NEWLINES = "\n\r";
+    static final String WHITESPACES = " \t " + NEWLINES;
+    static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = " \t🤚🏾😩" + PUNCTUATION;
+    static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = NOT_NEWLINE_OR_LETTER_OR_NUMERIC + NEWLINES;
+    static final List<String> SPECIAL = List.of("'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'ſ", "'x", "🤚🏾", "😩", "　", "½");
 
-    private static final Encoding ENCODING = EncodingFactory.cl100kBase();
+    static final Encoding ENCODING = EncodingFactory.cl100kBase();
 
-    static String normalizeStringForTesting(String testString) {
+    private static String normalizeStringForTesting(String testString) {
         return testString
                 .replaceAll("\\r", "\\\\r")
                 .replaceAll("\\n", "\\\\n")
                 .replaceAll(" ", "␣");
     }
 
-    private static ThreadLocalRandom rand() {
+    static ThreadLocalRandom rand() {
         return ThreadLocalRandom.current();
-    }
-
-    private static String getMessage(String testString, Encoding originalEncoder, Encoding encoder, int maxTokenCount) {
-        var expected = originalEncoder.encode(testString, maxTokenCount).getTokens();
-        var actual = encoder.encode(testString, maxTokenCount).getTokens();
-        return "`" + testString + "` should have mapped to: " + expected + " for maxTokenCount = " + maxTokenCount + ", but was: " + actual;
     }
 
     @Disabled
     @Test
-    public void measureEncodingSpeeds() {
+    void measureEncodingSpeeds() {
         var input = new StringBuilder();
         var measurements = new TreeMap<Integer, Long>();
 
@@ -150,7 +143,7 @@ public class Cl100kBaseTest {
     }
 
     @Test
-    public void testRoundTripWithRandomStrings() throws Exception {
+    void testRoundTripWithRandomStrings() throws Exception {
         var singleTokenStrings = getAllTokens();
         IntStream.range(0, 10_000).parallel().forEach(i -> {
             String testString;
@@ -176,7 +169,7 @@ public class Cl100kBaseTest {
                 .toList();
     }
 
-    private String generateRandomString(int maxStringLength, List<String> singleTokenStrings) {
+    String generateRandomString(int maxStringLength, List<String> singleTokenStrings) {
         var length = rand().nextInt(1, maxStringLength);
         return rand()
                 .ints(length, 0, 20)
@@ -186,7 +179,7 @@ public class Cl100kBaseTest {
                 .collect(joining());
     }
 
-    private char[] getRandomCharFromCategory(int category, List<String> singleTokenStrings) {
+    char[] getRandomCharFromCategory(int category, List<String> singleTokenStrings) {
         switch (category) {
             case 0:
                 return new char[]{' '};

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class EncodingFactory {
+class EncodingFactory {
     private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_P50K_EDIT;
@@ -144,7 +144,11 @@ public class EncodingFactory {
             return Pattern.compile(patternString, flags);
         } catch (IllegalArgumentException exception) {
             // Workaround for Android where an IllegalArgumentException is thrown when using UNICODE_CHARACTER_CLASS
-            return Pattern.compile(patternString);
+            int flags = 0;
+            if (caseInsensitive) {
+                flags = Pattern.CASE_INSENSITIVE;
+            }
+            return Pattern.compile(patternString, flags);
         }
     }
 
