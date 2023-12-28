@@ -1,11 +1,8 @@
 package com.knuddels.jtokkit;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
-import static com.knuddels.jtokkit.TokenEncoderLarge.addTokensAndGetCountLarge;
+import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
 
 final class TokenEncoder {
     public static final int DUMMY_RANK = Integer.MAX_VALUE;
@@ -21,10 +18,10 @@ final class TokenEncoder {
             encoder.forEach((k, v) -> {
                 length++;
                 ByteArrayWrapper key = new ByteArrayWrapper(k);
-                tempEncoders.computeIfAbsent(k.length, integer -> new ConcurrentHashMap<>()).put(key, v);
+                tempEncoders.computeIfAbsent(k.length, integer -> new HashMap<>()).put(key, v);
             });
             //noinspection unchecked
-            encoders = new ConcurrentHashMap[tempEncoders.lastKey() + 1];
+            encoders = new Map[tempEncoders.lastKey() + 1];
             tempEncoders.forEach((k, v) -> encoders[k] = v);
         } else {
             //noinspection unchecked
@@ -32,7 +29,7 @@ final class TokenEncoder {
         }
     }
 
-    public static int getMinRankIndex(List<Integer> ranks) {
+    private static int getMinRankIndex(List<Integer> ranks) {
         int minRankIndex = -1;
         int minRank = MAX_RANK;
 
@@ -80,14 +77,14 @@ final class TokenEncoder {
         return minRankIndex;
     }
 
-    public static int getNextIndex(List<Integer> ranks, int nextIndex) {
+    private static int getNextIndex(List<Integer> ranks, int nextIndex) {
         while (nextIndex < ranks.size() && ranks.get(nextIndex) == DUMMY_RANK) {
             nextIndex++;
         }
         return nextIndex;
     }
 
-    public static int getPreviousIndex(List<Integer> ranks, int previousIndex) {
+    private static int getPreviousIndex(List<Integer> ranks, int previousIndex) {
         while (previousIndex >= 0 && ranks.get(previousIndex) == DUMMY_RANK) {
             previousIndex--;
         }
@@ -182,7 +179,7 @@ final class TokenEncoder {
         return length;
     }
 
-    int encode(ByteArrayWrapper payload) {
+    private int encode(ByteArrayWrapper payload) {
         if (payload.length() < encoders.length) {
             Map<ByteArrayWrapper, Integer> encoder = encoders[payload.length()];
             if (encoder != null) {
@@ -203,9 +200,5 @@ final class TokenEncoder {
         } else {
             return encode(piece.getBytesBetween(start, end));
         }
-    }
-
-    public int length() {
-        return length;
     }
 }

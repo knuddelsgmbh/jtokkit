@@ -1,7 +1,7 @@
 package com.knuddels.jtokkit;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -11,7 +11,7 @@ final class SpecialEncoder {
     private final Map<Integer, String> encodedToDecoded;
 
     public SpecialEncoder(Map<String, Integer> encoder) {
-        this.encodedToDecoded = new ConcurrentHashMap<>(encoder.size());
+        this.encodedToDecoded = new HashMap<>(encoder.size());
         for (Map.Entry<String, Integer> entry : encoder.entrySet()) {
             String key = entry.getKey();
             Integer value = entry.getValue();
