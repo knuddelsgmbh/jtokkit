@@ -16,16 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Cl100kBaseTest {
-    static final String PUNCTUATION = "'\".,?!:()";
-    static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
-    static final String NUMBERS = "0123456789½";
-    static final String NEWLINES = "\n\r";
-    static final String WHITESPACES = " \t " + NEWLINES;
-    static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = " \t🤚🏾😩" + PUNCTUATION;
-    static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = NOT_NEWLINE_OR_LETTER_OR_NUMERIC + NEWLINES;
-    static final List<String> SPECIAL = List.of("'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'ſ", "'x", "🤚🏾", "😩", "　", "½");
+    private static final String PUNCTUATION = "'\".,?!:()";
+    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
+    private static final String NUMBERS = "0123456789½";
+    private static final String NEWLINES = "\n\r";
+    private static final String WHITESPACES = " \t " + NEWLINES;
+    private static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = " \t🤚🏾😩" + PUNCTUATION;
+    private static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = NOT_NEWLINE_OR_LETTER_OR_NUMERIC + NEWLINES;
+    private static final List<String> SPECIAL = List.of("'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'ſ", "'x", "🤚🏾", "😩", "　", "½");
 
-    static final Encoding ENCODING = EncodingFactory.cl100kBase();
+    private static final Encoding ENCODING = EncodingFactory.cl100kBase();
 
     private static String normalizeStringForTesting(String testString) {
         return testString
@@ -34,7 +34,7 @@ class Cl100kBaseTest {
                 .replaceAll(" ", "␣");
     }
 
-    static ThreadLocalRandom rand() {
+    private static ThreadLocalRandom rand() {
         return ThreadLocalRandom.current();
     }
 

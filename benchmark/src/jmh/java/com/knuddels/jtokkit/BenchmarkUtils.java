@@ -7,25 +7,24 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.*;
 
 public class BenchmarkUtils {
 
     private static final Charset FILE_CHARSET = StandardCharsets.UTF_8;
 
-    public static void main(final String[] args) throws IOException {
-        final var folder = args.length > 0 ? args[0] : null;
+    public static void main(String[] args) throws IOException {
+        var folder = args.length > 0 ? args[0] : null;
         if (folder == null) {
             System.out.println("Please specify the path to the data folder");
             return;
         }
 
-        final var files = loadData(folder);
-        final var totalBytes = files.stream()
+        var files = loadData(folder);
+        var totalBytes = files.stream()
                 .mapToInt(it -> it.getBytes(FILE_CHARSET).length)
                 .sum();
-        final var totalMegaBytes = totalBytes / 1024.0 / 1024.0;
+        var totalMegaBytes = totalBytes / 1024.0 / 1024.0;
 
         System.out.println("Total files: " + files.size());
         System.out.println("Total megabytes: " + totalMegaBytes);
@@ -39,7 +38,7 @@ public class BenchmarkUtils {
                 files.forEach(file -> {
                     if (isRegularFile(file)) {
                         try {
-                            var content = readString(file, UTF_8);
+                            var content = readString(file, FILE_CHARSET);
                             if (!content.isEmpty()) {
                                 fileContents.add(content);
                             }
