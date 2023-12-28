@@ -100,7 +100,7 @@ class GptBytePairEncoding implements Encoding {
 
     int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
         int tokenCount = 0;
-        List<Integer> ranks = new ArrayList<>(); // reused to avoid allocations
+        ArrayList<Integer> ranks = new ArrayList<>(); // reused to avoid allocations
         for (Matcher matcher = pattern.matcher(text); tokenCount < maxTokenCount && matcher.find(); ) {
             byte[] bytes = matcher.group().getBytes(UTF_8);
             tokenCount += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, bytes, out, ranks);

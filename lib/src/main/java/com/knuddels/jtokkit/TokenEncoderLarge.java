@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
 
 final class TokenEncoderLarge {
-    static int addTokensAndGetCountLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, List<Integer> out, ByteArrayWrapper match, int length) {
+    static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, List<Integer> out, ByteArrayWrapper match, int length) {
         assert length > 1 : "Already filtered out";
 
         TreeMap<Integer, TreeMap<Integer, RankNode>> rankMap = new TreeMap<>();

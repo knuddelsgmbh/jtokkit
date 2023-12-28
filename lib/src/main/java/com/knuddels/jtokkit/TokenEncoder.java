@@ -94,7 +94,7 @@ final class TokenEncoder {
         return previousIndex;
     }
 
-    public int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, List<Integer> ranks) {
+    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, ArrayList<Integer> ranks) {
         ByteArrayWrapper match = new ByteArrayWrapper(utf8Bytes);
         int encoded = encode(match);
         if (encoded != MAX_RANK) {
@@ -105,16 +105,17 @@ final class TokenEncoder {
         } else {
             int length = match.length();
             if (length < VERY_LARGE_TOKENIZER_BYTE_THRESHOLD) {
-                return addTokensAndGetCountSmall(maxTokenCount, keepEncodings, out, ranks, match, length);
+                return calculateTokensSmall(maxTokenCount, keepEncodings, out, ranks, match, length);
             } else {
-                return addTokensAndGetCountLarge(this, maxTokenCount, keepEncodings, out, match, length);
+                return calculateTokensLarge(this, maxTokenCount, keepEncodings, out, match, length);
             }
         }
     }
 
-    private int addTokensAndGetCountSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, List<Integer> ranks, ByteArrayWrapper match, int length) {
+    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, ArrayList<Integer> ranks, ByteArrayWrapper match, int length) {
         assert length > 1 : "Already filtered out";
         ranks.clear();
+        ranks.ensureCapacity(length + 1);
 
         int validRanks = 0;
         int minRankIndex = -1;
@@ -144,6 +145,7 @@ final class TokenEncoder {
     }
 
     int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
+        assert getMinRankIndex(ranks) == minRankIndex;
         while (validRanks > 0) {
             assert minRankIndex >= 0;
 
