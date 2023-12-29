@@ -130,7 +130,8 @@ class Cl100kTest {
                 "෫𞅄",
                 "𬕹\n  ",
                 " 😈b\n\uD844\uDDAE'ſ\uD84F\uDDB8\uD84C\uDD2CƘ淚",
-                "𗭾  󻥹\n\uD875\uDDB0蛇"
+                "𗭾  󻥹\n\uD875\uDDB0蛇",
+                "こんにちは世界"
         );
 
         IntStream.range(0, testStrings.size()).forEachOrdered(i -> {

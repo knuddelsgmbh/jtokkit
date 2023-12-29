@@ -9,14 +9,12 @@ final class TokenEncoder {
     public static final int MAX_RANK = Integer.MAX_VALUE - 1;
     private final Map<ByteArrayWrapper, Integer>[] encoders;
     private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
-    private int length = 0;
 
     public TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
             VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = Integer.parseInt(System.getProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", "500"));
             TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
-                length++;
                 ByteArrayWrapper key = new ByteArrayWrapper(k);
                 tempEncoders.computeIfAbsent(k.length, integer -> new HashMap<>()).put(key, v);
             });
