@@ -6,9 +6,7 @@ import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +23,6 @@ class GptBytePairEncoding implements Encoding {
     private final Pattern pattern;
     private final TokenEncoder encoder;
     private final SpecialEncoder specialEncoder;
-    private final Map<Integer, byte[]> encodedToDecoded;
 
     /**
      * Creates a new instance of {@link GptBytePairEncoding}.
@@ -37,8 +34,6 @@ class GptBytePairEncoding implements Encoding {
         this.pattern = params.getPattern();
         this.encoder = new TokenEncoder(params.getEncoder());
         this.specialEncoder = new SpecialEncoder(params.getSpecialTokensEncoder());
-        this.encodedToDecoded = new HashMap<>(params.getEncoder().size());
-        params.getEncoder().forEach((k, v) -> encodedToDecoded.put(v, k));
     }
 
     @Override
@@ -136,7 +131,7 @@ class GptBytePairEncoding implements Encoding {
     }
 
     private byte[] decodeToken(int token) {
-        byte[] decodedToken = encodedToDecoded.computeIfAbsent(token, specialEncoder::decodeIfPresent);
+        byte[] decodedToken = encoder.decodeToken(token, specialEncoder);
         return requireNonNull(decodedToken, "Unknown token for decoding: " + token);
     }
 }

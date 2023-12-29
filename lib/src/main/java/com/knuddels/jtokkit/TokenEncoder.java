@@ -3,11 +3,14 @@ package com.knuddels.jtokkit;
 import java.util.*;
 
 import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
+import static java.util.Collections.emptyMap;
 
 final class TokenEncoder {
     public static final int DUMMY_RANK = Integer.MAX_VALUE;
     public static final int MAX_RANK = Integer.MAX_VALUE - 1;
     private final Map<ByteArrayWrapper, Integer>[] encoders;
+    private final Map<Integer, byte[]> decoder;
+
     private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
 
     public TokenEncoder(Map<byte[], Integer> encoder) {
@@ -21,9 +24,13 @@ final class TokenEncoder {
             //noinspection unchecked
             encoders = new Map[tempEncoders.lastKey() + 1];
             tempEncoders.forEach((k, v) -> encoders[k] = v);
+
+            this.decoder = new HashMap<>(encoder.size());
+            encoder.forEach((k, v) -> decoder.put(v, k));
         } else {
             //noinspection unchecked
             encoders = new Map[0]; // for testing
+            this.decoder = emptyMap();
         }
     }
 
@@ -198,5 +205,9 @@ final class TokenEncoder {
         } else {
             return encode(piece.getBytesBetween(start, end));
         }
+    }
+
+    public byte[] decodeToken(int token, SpecialEncoder specialEncoder) {
+        return decoder.computeIfAbsent(token, specialEncoder::decodeIfPresent);
     }
 }
