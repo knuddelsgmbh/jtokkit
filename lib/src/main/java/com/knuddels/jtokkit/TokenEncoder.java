@@ -3,11 +3,14 @@ package com.knuddels.jtokkit;
 import java.util.*;
 
 import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyMap;
 
-final class TokenEncoder {
-    public static final int DUMMY_RANK = Integer.MAX_VALUE;
-    public static final int MAX_RANK = Integer.MAX_VALUE - 1;
+public final class TokenEncoder {
+    public static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
+    public static final int DUMMY_RANK = MAX_VALUE;
+    public static final int MAX_RANK = MAX_VALUE - 1;
     private final Map<ByteArrayWrapper, Integer>[] encoders;
     private final Map<Integer, byte[]> decoder;
 
@@ -15,7 +18,7 @@ final class TokenEncoder {
 
     public TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
-            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = Integer.parseInt(System.getProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", "500"));
+            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "500"));
             TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
                 ByteArrayWrapper key = new ByteArrayWrapper(k);

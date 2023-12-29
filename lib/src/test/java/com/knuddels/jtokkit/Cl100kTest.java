@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
+import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
 import static java.lang.Character.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
@@ -146,10 +147,10 @@ class Cl100kTest {
 
     @Test
     void testRoundTripWithRandomStrings() throws Exception {
-        System.setProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", String.valueOf(Integer.MAX_VALUE));
+        System.setProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(Integer.MAX_VALUE));
         var arrayEncoder = EncodingFactory.cl100kBase();
 
-        System.setProperty("VERY_LARGE_TOKENIZER_BYTE_THRESHOLD", String.valueOf(0));
+        System.setProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(0));
         var mapEncoder = EncodingFactory.cl100kBase();
         var singleTokenStrings = getAllTokens();
         IntStream.range(0, 10_000).parallel().forEach(i -> {
