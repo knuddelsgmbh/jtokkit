@@ -150,7 +150,7 @@ public class DataDownloader {
                 "'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'x",
                 "x",
                 "123",
-                "ő",
+                "a",
                 ",.!?:; \n",
                 "\n   \n",
                 "     ",
@@ -177,7 +177,7 @@ public class DataDownloader {
         }
 
         var totalSize = calculateTotalFileSize(rootFolder);
-        if (totalSize != 99_945_290) {
+        if (totalSize != 99_925_295) {
             throw new AssertionError("Total size did not match expected value, actual: " + totalSize);
         }
     }

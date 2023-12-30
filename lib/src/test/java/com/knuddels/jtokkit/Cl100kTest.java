@@ -1,7 +1,6 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
-import com.knuddels.jtokkit.api.EncodingType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +106,7 @@ class Cl100kTest {
                 "Many words map to one token, but some don't: indivisible.\n\nUnicode characters like emojis may be split into many tokens containing the underlying bytes: \uD83E\uDD1A\uD83C\uDFFE\n\nSequences of characters commonly found next to each other may be grouped together: 1234567890",
                 "I paid $123,456 to 9876543210 people!",
                 "Mixed script: 你好 world! 🌍",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "Unicode snowman: ☃️",
                 "I'm:  0\n",
                 "We'll meet at 3 o'clock.",
