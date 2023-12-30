@@ -1,16 +1,15 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
 import static java.lang.Character.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
@@ -40,6 +39,10 @@ class Cl100kTest {
         return ThreadLocalRandom.current();
     }
 
+    Encoding getEncoding() {
+        return ENCODING;
+    }
+
     @Disabled
     @Test
     void measureEncodingSpeeds() {
@@ -54,12 +57,12 @@ class Cl100kTest {
             var inputString = input.toString();
 
             for (var j = 0; j < 10 * iterations; j++) {
-                var warmup = ENCODING.encode(inputString);
+                var warmup = getEncoding().encode(inputString);
                 assert !warmup.isEmpty();
             }
             var startTime = System.nanoTime();
             for (var j = 0; j < iterations; j++) {
-                var encodingResult = ENCODING.encode(inputString);
+                var encodingResult = getEncoding().encode(inputString);
                 assert !encodingResult.isEmpty();
             }
             var endTime = System.nanoTime();
@@ -112,6 +115,7 @@ class Cl100kTest {
                 "Hello \n\n World  !",
                 " It's 2:30pm;\n\n\n\nlet's eat, sleep , and code!",
                 "'Thank God, here it is.' But when we took up the trunk...",
+                "What in the world are you doing???!!!",
                 "user@example.com",
                 "this is a 'quoted' word",
                 "　　a",
@@ -139,41 +143,31 @@ class Cl100kTest {
             var testString = testStrings.get(i);
             System.out.println("Validating `" + normalizeStringForTesting(testString) + "`");
 
-            var actualTokens = ENCODING.encode(testString);
-            var decoded = ENCODING.decode(actualTokens);
+            var actualTokens = getEncoding().encode(testString);
+            var decoded = getEncoding().decode(actualTokens);
             assertEquals(testString, decoded, decoded);
         });
     }
 
     @Test
     void testRoundTripWithRandomStrings() throws Exception {
-        System.setProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(Integer.MAX_VALUE));
-        var arrayEncoder = EncodingFactory.cl100kBase();
-
-        System.setProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(0));
-        var mapEncoder = EncodingFactory.cl100kBase();
         var singleTokenStrings = getAllTokens();
-        IntStream.range(0, 10_000).parallel().forEach(i -> {
+        IntStream.range(0, 100_000).parallel().forEach(i -> {
             String testString;
             do {
                 testString = generateRandomString(10, singleTokenStrings);
             } while (!UTF_8.newEncoder().canEncode(testString));
 
             var maxTokenCount = rand().nextInt(1, 2 * testString.length());
+            var actualTokens = getEncoding().encode(testString);
+            assertEquals(actualTokens.size(), getEncoding().countTokens(testString));
 
-            var encoders = Map.of(arrayEncoder, "arrayEncoder", mapEncoder, "mapEncoder");
-            for (Encoding encoder : encoders.keySet()) {
-//                System.out.println("Validating `" + normalizeStringForTesting(testString) + "` with " + encoders.get(encoder) + " and maxTokenCount = " + maxTokenCount);
-                var actualTokens = encoder.encode(testString);
-                assertEquals(actualTokens.size(), encoder.countTokens(testString));
+            var decodedTokens = getEncoding().decode(actualTokens);
+            assertEquals(testString, decodedTokens, decodedTokens);
 
-                var decodedTokens = encoder.decode(actualTokens);
-                assertEquals(testString, decodedTokens, decodedTokens);
-
-                var actualTrimmedTokens = encoder.encode(testString, maxTokenCount).getTokens();
-                var decodedTrimmedTokens = encoder.decode(actualTrimmedTokens);
-                assertTrue(testString.startsWith(decodedTrimmedTokens));
-            }
+            var actualTrimmedTokens = getEncoding().encode(testString, maxTokenCount).getTokens();
+            var decodedTrimmedTokens = getEncoding().decode(actualTrimmedTokens);
+            assertTrue(testString.startsWith(decodedTrimmedTokens));
         });
     }
 
