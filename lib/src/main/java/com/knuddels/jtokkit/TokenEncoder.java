@@ -1,103 +1,216 @@
 package com.knuddels.jtokkit;
 
 import java.util.*;
-import java.util.function.Function;
 
-/**
- * A TokenEncoder is used to encode and decode tokens. It is initialized with a map
- * that contains the decoded tokens as keys and the encoded tokens as values. The
- * TokenEncoder can then be used to encode and decode tokens.
- *
- * @param <K> the type of the decoded tokens
- * @param <V> the type of the encoded tokens
- */
-final class TokenEncoder<K, V> {
+import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.parseInt;
+import static java.util.Collections.emptyMap;
 
-	private final Map<K, V> decodedToEncoded = new HashMap<>();
-	private final Map<V, K> encodedToDecoded = new HashMap<>();
+public final class TokenEncoder {
+    public static final String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
+    public static final int DUMMY_RANK = MAX_VALUE;
+    public static final int MAX_RANK = MAX_VALUE - 1;
+    private final Map<ByteArrayWrapper, Integer>[] encoders;
+    private final Map<Integer, byte[]> decoder;
 
-	/**
-	 * Creates a new TokenEncoder with the given input map. The keys of the map are
-	 * the decoded tokens and the values are the encoded tokens.
-	 *
-	 * @param input the input map
-	 */
-	public TokenEncoder(final Map<K, V> input) {
-		this(input, Function.identity());
-	}
+    private int VERY_LARGE_TOKENIZER_BYTE_THRESHOLD;
 
-	/**
-	 * Creates a new TokenEncoder with the given input map. The keys of the map are
-	 * the decoded tokens and the values are the encoded tokens. The keyMapper is
-	 * applied to the keys of the input map before they are added to the internal
-	 * maps.
-	 *
-	 * @param input     the input map
-	 * @param keyMapper the key mapper
-	 */
-	public <T> TokenEncoder(final Map<T, V> input, final Function<T, K> keyMapper) {
-		for (final Map.Entry<T, V> entry : input.entrySet()) {
-			final K key = keyMapper.apply(entry.getKey());
-			final V value = entry.getValue();
-			decodedToEncoded.put(key, value);
-			encodedToDecoded.put(value, key);
-		}
-	}
+    public TokenEncoder(Map<byte[], Integer> encoder) {
+        if (!encoder.isEmpty()) {
+            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "500"));
+            TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
+            encoder.forEach((k, v) -> {
+                ByteArrayWrapper key = new ByteArrayWrapper(k);
+                tempEncoders.computeIfAbsent(k.length, integer -> new HashMap<>()).put(key, v);
+            });
+            //noinspection unchecked
+            encoders = new Map[tempEncoders.lastKey() + 1];
+            tempEncoders.forEach((k, v) -> encoders[k] = v);
 
-	/**
-	 * Checks if the given decoded token is contained in this encoder.
-	 *
-	 * @param decodedToken the decoded token
-	 * @return true if the decoded token is contained in this encoder, false otherwise
-	 */
-	public boolean containsDecodedToken(final K decodedToken) {
-		return decodedToEncoded.containsKey(decodedToken);
-	}
+            this.decoder = new HashMap<>(encoder.size());
+            encoder.forEach((k, v) -> decoder.put(v, k));
+        } else {
+            //noinspection unchecked
+            encoders = new Map[0]; // for testing
+            this.decoder = emptyMap();
+        }
+    }
 
-	/**
-	 * Encodes the given decoded token.
-	 *
-	 * @param decodedToken the decoded token
-	 * @return the encoded token
-	 * @throws IllegalArgumentException if the decoded token is not contained in this encoder
-	 */
-	public V encode(final K decodedToken) {
-		final V encoded = decodedToEncoded.get(decodedToken);
-		if (encoded == null) {
-			throw new IllegalArgumentException("Unknown token for encoding: " + decodedToken);
-		}
+    private static int getMinRankIndex(List<Integer> ranks) {
+        int minRankIndex = -1;
+        int minRank = MAX_RANK;
 
-		return encoded;
-	}
+        int i = 0;
+        int length = ranks.size() - 3;
+        for (; i < length - 2; i += 4) { // Unrolled loop
+            {
+                int r = ranks.get(i);
+                if (r < minRank) {
+                    minRankIndex = i;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 1);
+                if (r < minRank) {
+                    minRankIndex = i + 1;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 2);
+                if (r < minRank) {
+                    minRankIndex = i + 2;
+                    minRank = r;
+                }
+            }
+            {
+                int r = ranks.get(i + 3);
+                if (r < minRank) {
+                    minRankIndex = i + 3;
+                    minRank = r;
+                }
+            }
+        }
 
-	/**
-	 * Encodes the given decoded token if it is contained in this encoder. Otherwise,
-	 * an empty optional is returned.
-	 *
-	 * @param decodedToken the decoded token
-	 * @return the encoded token or an empty optional
-	 */
-	public Optional<V> encodeIfPresent(final K decodedToken) {
-		return Optional.ofNullable(decodedToEncoded.get(decodedToken));
-	}
+        for (; i <= length; i++) {
+            int r = ranks.get(i);
+            if (r < minRank) {
+                minRankIndex = i;
+                minRank = r;
+            }
+        }
 
-	/**
-	 * Decodes the given encoded token if it is contained in this encoder. Otherwise,
-	 * an empty optional is returned.
-	 *
-	 * @param encodedToken the encoded token
-	 * @return the decoded token or an empty optional
-	 */
-	public Optional<K> decodeIfPresent(final V encodedToken) {
-		return Optional.ofNullable(encodedToDecoded.get(encodedToken));
-	}
+        return minRankIndex;
+    }
 
-	/**
-	 * Returns an unmodifiable set of all decoded tokens contained in this encoder.
-	 *
-	 * @return an unmodifiable set of all decoded tokens
-	 */
-	public Set<K> getDecodedTokens() {
-		return Collections.unmodifiableSet(decodedToEncoded.keySet());
-	}
+    private static int getNextIndex(List<Integer> ranks, int nextIndex) {
+        while (nextIndex < ranks.size() && ranks.get(nextIndex) == DUMMY_RANK) {
+            nextIndex++;
+        }
+        return nextIndex;
+    }
+
+    private static int getPreviousIndex(List<Integer> ranks, int previousIndex) {
+        while (previousIndex >= 0 && ranks.get(previousIndex) == DUMMY_RANK) {
+            previousIndex--;
+        }
+        return previousIndex;
+    }
+
+    int addTokensAndGetCount(int maxTokenCount, boolean keepEncodings, byte[] utf8Bytes, List<Integer> out, ArrayList<Integer> ranks) {
+        ByteArrayWrapper match = new ByteArrayWrapper(utf8Bytes);
+        int encoded = encode(match);
+        if (encoded != MAX_RANK) {
+            if (keepEncodings) {
+                out.add(encoded);
+            }
+            return 1;
+        } else {
+            int length = match.length();
+            if (length < VERY_LARGE_TOKENIZER_BYTE_THRESHOLD) {
+                return calculateTokensSmall(maxTokenCount, keepEncodings, out, ranks, match, length);
+            } else {
+                return calculateTokensLarge(this, maxTokenCount, keepEncodings, out, match, length);
+            }
+        }
+    }
+
+    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, List<Integer> out, ArrayList<Integer> ranks, ByteArrayWrapper match, int length) {
+        assert length > 1 : "Already filtered out";
+        ranks.clear();
+        ranks.ensureCapacity(length + 1);
+
+        int validRanks = 0;
+        int minRankIndex = -1;
+        for (int i = 0, minRank = MAX_RANK; i < length + 1; i++) {
+            int encoded = encode(match, i, i + 2);
+            if (encoded != MAX_RANK) {
+                validRanks++;
+                if (encoded < minRank) {
+                    minRankIndex = i;
+                    minRank = encoded;
+                }
+            }
+            ranks.add(encoded);
+        }
+        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks, minRankIndex);
+        if (keepEncodings) {
+            for (int start = 0, end = 1; end < ranks.size() && out.size() < maxTokenCount; end++) {
+                if (ranks.get(end) != DUMMY_RANK) {
+                    int token = encode(match, start, end);
+                    assert token != MAX_RANK : "Token should not be MAX_RANK";
+                    out.add(token);
+                    start = end;
+                }
+            }
+        }
+        return tokenCount;
+    }
+
+    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, List<Integer> ranks, int validRanks, int minRankIndex) {
+        assert getMinRankIndex(ranks) == minRankIndex;
+        while (validRanks > 0) {
+            assert minRankIndex >= 0;
+
+            int previousIndex = getPreviousIndex(ranks, minRankIndex - 1);
+            int nextIndex = getNextIndex(ranks, minRankIndex + 1);
+            int nextNextIndex = getNextIndex(ranks, nextIndex + 1);
+            int nextNextNextIndex = getNextIndex(ranks, nextNextIndex + 1);
+
+            if (previousIndex >= 0) {
+                assert ranks.get(previousIndex) != DUMMY_RANK;
+                int newRank = encode(piece, previousIndex, nextNextIndex);
+                int oldRank = ranks.set(previousIndex, newRank);
+                if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
+                    validRanks -= (newRank == MAX_RANK) ? 1 : -1;
+                }
+            }
+            assert ranks.get(minRankIndex) != DUMMY_RANK;
+            int newRank = encode(piece, minRankIndex, nextNextNextIndex);
+            int oldRank = ranks.set(minRankIndex, newRank);
+            if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
+                validRanks--;
+            }
+
+            int oldDeletedRank = ranks.set(nextIndex, DUMMY_RANK);
+            if (oldDeletedRank != MAX_RANK) {
+                validRanks--;
+            }
+
+            length--;
+
+            minRankIndex = getMinRankIndex(ranks);
+        }
+        assert getMinRankIndex(ranks) < 0;
+        return length;
+    }
+
+    private int encode(ByteArrayWrapper payload) {
+        if (payload.length() < encoders.length) {
+            Map<ByteArrayWrapper, Integer> encoder = encoders[payload.length()];
+            if (encoder != null) {
+                Integer result = encoder.get(payload);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return MAX_RANK;
+    }
+
+    int encode(ByteArrayWrapper piece, int start, int end) {
+        if (end > piece.length()) {
+            return MAX_RANK;
+        } else if (end - start == piece.length()) {
+            return encode(piece);
+        } else {
+            return encode(piece.getBytesBetween(start, end));
+        }
+    }
+
+    public byte[] decodeToken(int token, SpecialEncoder specialEncoder) {
+        return decoder.computeIfAbsent(token, specialEncoder::decodeIfPresent);
+    }
 }

@@ -14,6 +14,10 @@ class Cl100kBaseTest {
 
     private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry().getEncoding(EncodingType.CL100K_BASE);
 
+    Encoding getEncoding() {
+        return ENCODING;
+    }
+
     @ParameterizedTest
     @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
     void cl100kBaseEncodesCorrectly(
@@ -21,7 +25,7 @@ class Cl100kBaseTest {
             String output
     ) {
         var expected = TestUtils.parseEncodingString(output);
-        var actual = ENCODING.encode(input);
+        var actual = getEncoding().encode(input);
 
         assertEquals(expected, actual);
     }
@@ -29,7 +33,7 @@ class Cl100kBaseTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
     void cl100kBaseEncodesStable(String input) {
-        var actual = ENCODING.decode(ENCODING.encode(input));
+        var actual = getEncoding().decode(getEncoding().encode(input));
 
         assertEquals(input, actual);
     }
@@ -43,7 +47,7 @@ class Cl100kBaseTest {
     ) {
         var expected = TestUtils.parseEncodingString(output);
         var expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-        var encodingResult = ENCODING.encode(input, 10);
+        var encodingResult = getEncoding().encode(input, 10);
 
         assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
         assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
@@ -52,7 +56,7 @@ class Cl100kBaseTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
     void cl100kBaseEncodesStableWithMaxTokensSet(String input) {
-        var actual = ENCODING.decode(ENCODING.encode(input, 10).getTokens());
+        var actual = getEncoding().decode(getEncoding().encode(input, 10).getTokens());
 
         assertTrue(input.startsWith(actual));
     }
@@ -64,7 +68,7 @@ class Cl100kBaseTest {
             String output
     ) {
         var expected = TestUtils.parseEncodingString(output);
-        var actual = ENCODING.encodeOrdinary(input);
+        var actual = getEncoding().encodeOrdinary(input);
 
         assertEquals(expected, actual);
     }
@@ -78,7 +82,7 @@ class Cl100kBaseTest {
     ) {
         var expected = TestUtils.parseEncodingString(output);
         var expectedWithMaxTokens = TestUtils.parseEncodingString(outputMaxTokens10);
-        var encodingResult = ENCODING.encodeOrdinary(input, 10);
+        var encodingResult = getEncoding().encodeOrdinary(input, 10);
 
         assertEquals(expectedWithMaxTokens, encodingResult.getTokens());
         assertEquals(expected.size() > expectedWithMaxTokens.size(), encodingResult.isTruncated());
@@ -87,7 +91,7 @@ class Cl100kBaseTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
     void cl100kBaseEncodeOrdinaryEncodesStable(String input) {
-        var actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
+        var actual = getEncoding().decode(getEncoding().encodeOrdinary(input));
 
         assertEquals(input, actual);
     }
@@ -95,7 +99,7 @@ class Cl100kBaseTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/cl100k_base_encodings.csv", numLinesToSkip = 1, maxCharsPerColumn = 1_000_000)
     void cl100kBaseEncodeOrdinaryEncodesStableWithMaxTokensSet(String input) {
-        var actual = ENCODING.decode(ENCODING.encodeOrdinary(input, 10).getTokens());
+        var actual = getEncoding().decode(getEncoding().encodeOrdinary(input, 10).getTokens());
 
         assertTrue(input.startsWith(actual));
     }
@@ -103,7 +107,7 @@ class Cl100kBaseTest {
     @Test
     void cl100kBaseEncodeOrdinaryEncodesSpecialTokensCorrectly() {
         var input = "Hello<|endoftext|>, <|fim_prefix|> <|fim_middle|> world <|fim_suffix|> ! <|endofprompt|>";
-        var actual = ENCODING.decode(ENCODING.encodeOrdinary(input));
+        var actual = getEncoding().decode(getEncoding().encodeOrdinary(input));
 
         assertEquals(input, actual);
     }

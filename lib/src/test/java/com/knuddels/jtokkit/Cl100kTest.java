@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class Cl100kBaseTest {
+class Cl100kTest {
     private static final String PUNCTUATION = "'\".,?!:()";
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
     private static final String NUMBERS = "0123456789½";
@@ -38,6 +38,10 @@ class Cl100kBaseTest {
         return ThreadLocalRandom.current();
     }
 
+    Encoding getEncoding() {
+        return ENCODING;
+    }
+
     @Disabled
     @Test
     void measureEncodingSpeeds() {
@@ -45,19 +49,19 @@ class Cl100kBaseTest {
         var measurements = new TreeMap<Integer, Long>();
 
         var iterations = 20;
-        for (var i = 1.0; i < 3_000; i = Math.max(i + 1, i * 1.01)) {
+        for (var i = 1.0; i < 2_000; i = Math.max(i + 1, i * 1.01)) {
             while (input.length() < i) {
                 input.append("a");
             }
             var inputString = input.toString();
 
             for (var j = 0; j < 10 * iterations; j++) {
-                var warmup = ENCODING.encode(inputString);
+                var warmup = getEncoding().encode(inputString);
                 assert !warmup.isEmpty();
             }
             var startTime = System.nanoTime();
             for (var j = 0; j < iterations; j++) {
-                var encodingResult = ENCODING.encode(inputString);
+                var encodingResult = getEncoding().encode(inputString);
                 assert !encodingResult.isEmpty();
             }
             var endTime = System.nanoTime();
@@ -102,6 +106,7 @@ class Cl100kBaseTest {
                 "Many words map to one token, but some don't: indivisible.\n\nUnicode characters like emojis may be split into many tokens containing the underlying bytes: \uD83E\uDD1A\uD83C\uDFFE\n\nSequences of characters commonly found next to each other may be grouped together: 1234567890",
                 "I paid $123,456 to 9876543210 people!",
                 "Mixed script: 你好 world! 🌍",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "Unicode snowman: ☃️",
                 "I'm:  0\n",
                 "We'll meet at 3 o'clock.",
@@ -110,6 +115,7 @@ class Cl100kBaseTest {
                 "Hello \n\n World  !",
                 " It's 2:30pm;\n\n\n\nlet's eat, sleep , and code!",
                 "'Thank God, here it is.' But when we took up the trunk...",
+                "What in the world are you doing???!!!",
                 "user@example.com",
                 "this is a 'quoted' word",
                 "　　a",
@@ -129,15 +135,16 @@ class Cl100kBaseTest {
                 "෫𞅄",
                 "𬕹\n  ",
                 " 😈b\n\uD844\uDDAE'ſ\uD84F\uDDB8\uD84C\uDD2CƘ淚",
-                "𗭾  󻥹\n\uD875\uDDB0蛇"
+                "𗭾  󻥹\n\uD875\uDDB0蛇",
+                "こんにちは世界"
         );
 
         IntStream.range(0, testStrings.size()).forEachOrdered(i -> {
             var testString = testStrings.get(i);
             System.out.println("Validating `" + normalizeStringForTesting(testString) + "`");
 
-            var actualTokens = ENCODING.encode(testString);
-            var decoded = ENCODING.decode(actualTokens);
+            var actualTokens = getEncoding().encode(testString);
+            var decoded = getEncoding().decode(actualTokens);
             assertEquals(testString, decoded, decoded);
         });
     }
@@ -145,20 +152,21 @@ class Cl100kBaseTest {
     @Test
     void testRoundTripWithRandomStrings() throws Exception {
         var singleTokenStrings = getAllTokens();
-        IntStream.range(0, 10_000).parallel().forEach(i -> {
+        IntStream.range(0, 100_000).parallel().forEach(i -> {
             String testString;
             do {
                 testString = generateRandomString(10, singleTokenStrings);
             } while (!UTF_8.newEncoder().canEncode(testString));
 
             var maxTokenCount = rand().nextInt(1, 2 * testString.length());
+            var actualTokens = getEncoding().encode(testString);
+            assertEquals(actualTokens.size(), getEncoding().countTokens(testString));
 
-            var actualTokens = ENCODING.encode(testString);
-            var decodedTokens = ENCODING.decode(actualTokens);
+            var decodedTokens = getEncoding().decode(actualTokens);
             assertEquals(testString, decodedTokens, decodedTokens);
 
-            var actualTrimmedTokens = ENCODING.encode(testString, maxTokenCount).getTokens();
-            var decodedTrimmedTokens = ENCODING.decode(actualTrimmedTokens);
+            var actualTrimmedTokens = getEncoding().encode(testString, maxTokenCount).getTokens();
+            var decodedTrimmedTokens = getEncoding().decode(actualTrimmedTokens);
             assertTrue(testString.startsWith(decodedTrimmedTokens));
         });
     }
