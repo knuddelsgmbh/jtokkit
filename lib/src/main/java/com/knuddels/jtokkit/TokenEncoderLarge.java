@@ -3,16 +3,19 @@ package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.IntArrayList;
 
-import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
+import static java.util.Objects.requireNonNull;
 
 final class TokenEncoderLarge {
     static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, IntArrayList out, ByteArrayWrapper match, int length) {
         assert length > 1 : "Already filtered out";
 
-        TreeMap<Integer, TreeMap<Integer, RankNode>> rankMap = new TreeMap<>();
+        TreeMap<Integer, LinkedHashMap<Integer, RankNode>> rankMap = new TreeMap<>();
 
         RankNode head = null;
         RankNode prevNode = null;
@@ -31,14 +34,12 @@ final class TokenEncoderLarge {
             }
             prevNode = node;
 
-            rankMap.computeIfAbsent(encoded, k -> new TreeMap<>()).put(i, node);
+            rankMap.computeIfAbsent(encoded, k -> new LinkedHashMap<>()).put(i, node);
         }
 
         while (validRanks > 0) {
-            TreeMap<Integer, RankNode> minNodes = rankMap.pollFirstEntry().getValue();
-            int firstIndex;
-            for (Entry<Integer, RankNode> entry = minNodes.firstEntry(); entry != null; entry = minNodes.ceilingEntry(firstIndex)) {
-                RankNode minNode = entry.getValue();
+            for (Iterator<RankNode> it = rankMap.pollFirstEntry().getValue().values().iterator(); it.hasNext(); ) {
+                RankNode minNode = it.next();
                 int minRank = minNode.rank;
                 assert minRank != MAX_RANK;
 
@@ -56,7 +57,7 @@ final class TokenEncoderLarge {
                         assert previousNode.rank != minRank;
                         removeNode(rankMap.get(previousNode.rank), rankMap, previousNode);
                         previousNode.rank = newRank;
-                        rankMap.computeIfAbsent(newRank, k -> new TreeMap<>()).put(previousNode.index, previousNode);
+                        rankMap.computeIfAbsent(newRank, k -> new LinkedHashMap<>()).put(previousNode.index, previousNode);
                     }
                 }
 
@@ -64,9 +65,8 @@ final class TokenEncoderLarge {
                 if (newRank == MAX_RANK) {
                     validRanks--;
                 }
-                firstIndex = minNode.index + 1;
                 minNode.rank = newRank;
-                rankMap.computeIfAbsent(newRank, k -> new TreeMap<>()).put(minNode.index, minNode);
+                rankMap.computeIfAbsent(newRank, k -> new LinkedHashMap<>()).put(minNode.index, minNode);
 
                 minNode.next = nextNextNode;
                 if (nextNode != null) {
@@ -77,9 +77,10 @@ final class TokenEncoderLarge {
                         validRanks--;
                         if (nextNode.rank != minRank) {
                             removeNode(rankMap.get(nextNode.rank), rankMap, nextNode);
+                        } else {
+                            it.next();
                         }
                     }
-                    firstIndex = nextNode.index + 1;
                 }
 
                 length--;
@@ -99,8 +100,8 @@ final class TokenEncoderLarge {
         return length;
     }
 
-    static void removeNode(TreeMap<Integer, RankNode> nodeMap, TreeMap<Integer, TreeMap<Integer, RankNode>> rankMap, RankNode nextNode) {
-        if (nodeMap.size() == 1) {
+    static void removeNode(Map<Integer, RankNode> nodeMap, Map<Integer, ? extends Map<Integer, RankNode>> rankMap, RankNode nextNode) {
+        if (requireNonNull(nodeMap).size() == 1) {
             assert nodeMap.containsKey(nextNode.index);
             rankMap.remove(nextNode.rank);
         } else {
@@ -121,9 +122,9 @@ final class TokenEncoderLarge {
         @Override
         public String toString() {
             return "RankNode{" +
-                    "rank=" + rank +
-                    ", index=" + index +
-                    '}';
+                   "rank=" + rank +
+                   ", index=" + index +
+                   '}';
         }
     }
 }

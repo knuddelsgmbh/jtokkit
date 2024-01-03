@@ -57,7 +57,7 @@ class Cl100kTest {
         var measurements = new TreeMap<Integer, Long>();
 
         var iterations = 20;
-        for (var i = 1.0; i < 2_000; i = Math.max(i + 1, i * 1.01)) {
+        for (var i = 1.0; i < 1000; i = Math.max(i + 1, i * 1.01)) {
             while (input.length() < i) {
                 input.append("a");
             }

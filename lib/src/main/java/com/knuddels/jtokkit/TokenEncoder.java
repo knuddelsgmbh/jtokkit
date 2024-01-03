@@ -22,7 +22,7 @@ public final class TokenEncoder {
 
     TokenEncoder(Map<byte[], Integer> encoder) {
         if (!encoder.isEmpty()) {
-            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "1500"));
+            VERY_LARGE_TOKENIZER_BYTE_THRESHOLD = parseInt(System.getProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, "500"));
             TreeMap<Integer, Map<ByteArrayWrapper, Integer>> tempEncoders = new TreeMap<>();
             encoder.forEach((k, v) -> {
                 ByteArrayWrapper key = new ByteArrayWrapper(k);
