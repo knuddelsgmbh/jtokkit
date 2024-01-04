@@ -205,10 +205,8 @@ public final class TokenEncoder {
     }
 
     int encode(ByteArrayWrapper piece, int start, int end) {
-        if (end > piece.length()) {
+        if (end > piece.length() || end - start == piece.length()) {
             return MAX_RANK;
-        } else if (end - start == piece.length()) {
-            return encode(piece);
         } else {
             return encode(piece.getBytesBetween(start, end));
         }
