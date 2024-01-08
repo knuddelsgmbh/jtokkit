@@ -12,19 +12,16 @@ import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
 import static java.util.Objects.requireNonNull;
 
 final class TokenEncoderLarge {
-    static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, IntArrayList out, ByteArrayWrapper match, int length) {
+    static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, IntArrayList out, ByteArrayWrapper match) {
+        int length = match.length();
         assert length > 1 : "Already filtered out";
 
         TreeMap<Integer, LinkedHashMap<Integer, RankNode>> rankMap = new TreeMap<>();
 
         RankNode head = null;
         RankNode prevNode = null;
-        int validRanks = 0;
         for (int i = 0; i < length + 1; i++) {
             int encoded = tokenEncoder.encode(match, i, i + 2);
-            if (encoded != MAX_RANK) {
-                validRanks++;
-            }
             RankNode node = new RankNode(encoded, i);
             if (head == null) {
                 head = node;
@@ -36,8 +33,8 @@ final class TokenEncoderLarge {
 
             rankMap.computeIfAbsent(encoded, k -> new LinkedHashMap<>()).put(i, node);
         }
-
-        while (validRanks > 0) {
+        assert rankMap.containsKey(MAX_RANK);
+        while (rankMap.size() > 1) {
             for (Iterator<RankNode> it = rankMap.pollFirstEntry().getValue().values().iterator(); it.hasNext(); ) {
                 RankNode minNode = it.next();
                 int minRank = minNode.rank;
@@ -51,9 +48,6 @@ final class TokenEncoderLarge {
                 if (previousNode != null) {
                     int newRank = tokenEncoder.encode(match, previousNode.index, nextNextNode != null ? nextNextNode.index : Integer.MAX_VALUE);
                     if (previousNode.rank != newRank) {
-                        if ((newRank == MAX_RANK) != (previousNode.rank == MAX_RANK)) {
-                            validRanks -= (newRank == MAX_RANK) ? 1 : -1;
-                        }
                         assert previousNode.rank != minRank;
                         removeNode(rankMap.get(previousNode.rank), rankMap, previousNode);
                         previousNode.rank = newRank;
@@ -62,19 +56,13 @@ final class TokenEncoderLarge {
                 }
 
                 int newRank = tokenEncoder.encode(match, minNode.index, nextNextNextNode != null ? nextNextNextNode.index : Integer.MAX_VALUE);
-                if (newRank == MAX_RANK) {
-                    validRanks--;
-                }
                 minNode.rank = newRank;
                 rankMap.computeIfAbsent(newRank, k -> new LinkedHashMap<>()).put(minNode.index, minNode);
 
                 minNode.next = nextNextNode;
-                if (nextNode != null) {
-                    if (nextNextNode != null) {
-                        nextNextNode.prev = minNode;
-                    }
+                if (nextNode != null && nextNextNode != null) {
+                    nextNextNode.prev = minNode;
                     if (nextNode.rank != MAX_RANK) {
-                        validRanks--;
                         if (nextNode.rank != minRank) {
                             removeNode(rankMap.get(nextNode.rank), rankMap, nextNode);
                         } else {
@@ -121,10 +109,7 @@ final class TokenEncoderLarge {
 
         @Override
         public String toString() {
-            return "RankNode{" +
-                   "rank=" + rank +
-                   ", index=" + index +
-                   '}';
+            return "RankNode{rank=" + rank + ", index=" + index + '}';
         }
     }
 }

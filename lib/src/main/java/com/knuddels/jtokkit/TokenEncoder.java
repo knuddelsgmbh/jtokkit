@@ -112,26 +112,24 @@ public final class TokenEncoder {
             }
             return 1;
         } else {
-            int length = match.length();
-            if (length < VERY_LARGE_TOKENIZER_BYTE_THRESHOLD) {
-                return calculateTokensSmall(maxTokenCount, keepEncodings, out, ranks, match, length);
+            if (match.length() < VERY_LARGE_TOKENIZER_BYTE_THRESHOLD) {
+                return calculateTokensSmall(maxTokenCount, keepEncodings, out, ranks, match);
             } else {
-                return calculateTokensLarge(this, maxTokenCount, keepEncodings, out, match, length);
+                return calculateTokensLarge(this, maxTokenCount, keepEncodings, out, match);
             }
         }
     }
 
-    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, IntArrayList out, IntArrayList ranks, ByteArrayWrapper match, int length) {
+    private int calculateTokensSmall(int maxTokenCount, boolean keepEncodings, IntArrayList out, IntArrayList ranks, ByteArrayWrapper match) {
+        int length = match.length();
         assert length > 1 : "Already filtered out";
         ranks.clear();
         ranks.ensureCapacity(length + 1);
 
-        int validRanks = 0;
         int minRankIndex = -1;
         for (int i = 0, minRank = MAX_RANK; i < length + 1; i++) {
             int encoded = encode(match, i, i + 2);
             if (encoded != MAX_RANK) {
-                validRanks++;
                 if (encoded < minRank) {
                     minRankIndex = i;
                     minRank = encoded;
@@ -139,7 +137,7 @@ public final class TokenEncoder {
             }
             ranks.add(encoded);
         }
-        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, validRanks, minRankIndex);
+        int tokenCount = mergeBytesAndGetTokenCount(match, length, ranks, minRankIndex);
         if (keepEncodings) {
             for (int start = 0, end = 1; end < ranks.size() && out.size() < maxTokenCount; end++) {
                 if (ranks.get(end) != DUMMY_RANK) {
@@ -153,11 +151,9 @@ public final class TokenEncoder {
         return tokenCount;
     }
 
-    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, IntArrayList ranks, int validRanks, int minRankIndex) {
+    int mergeBytesAndGetTokenCount(ByteArrayWrapper piece, int length, IntArrayList ranks, int minRankIndex) {
         assert getMinRankIndex(ranks) == minRankIndex;
-        while (validRanks > 0) {
-            assert minRankIndex >= 0;
-
+        while (minRankIndex >= 0) {
             int previousIndex = getPreviousIndex(ranks, minRankIndex - 1);
             int nextIndex = getNextIndex(ranks, minRankIndex + 1);
             int nextNextIndex = getNextIndex(ranks, nextIndex + 1);
@@ -166,26 +162,20 @@ public final class TokenEncoder {
             if (previousIndex >= 0) {
                 assert ranks.get(previousIndex) != DUMMY_RANK;
                 int newRank = encode(piece, previousIndex, nextNextIndex);
-                int oldRank = ranks.set(previousIndex, newRank);
-                if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
-                    validRanks -= (newRank == MAX_RANK) ? 1 : -1;
-                }
+                ranks.set(previousIndex, newRank);
             }
             assert ranks.get(minRankIndex) != DUMMY_RANK;
             int newRank = encode(piece, minRankIndex, nextNextNextIndex);
-            int oldRank = ranks.set(minRankIndex, newRank);
-            if ((newRank == MAX_RANK) != (oldRank == MAX_RANK)) {
-                validRanks--;
-            }
+            ranks.set(minRankIndex, newRank);
 
-            int oldDeletedRank = ranks.set(nextIndex, DUMMY_RANK);
-            if (oldDeletedRank != MAX_RANK) {
-                validRanks--;
-            }
+            ranks.set(nextIndex, DUMMY_RANK);
 
             length--;
-
-            minRankIndex = getMinRankIndex(ranks);
+            if (length < 3) {
+                break; // single tokens were already filtered out, let's skip a minimum calculation
+            } else {
+                minRankIndex = getMinRankIndex(ranks);
+            }
         }
         assert getMinRankIndex(ranks) < 0;
         return length;
