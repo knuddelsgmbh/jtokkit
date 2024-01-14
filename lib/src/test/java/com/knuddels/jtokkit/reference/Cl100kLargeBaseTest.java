@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
 
-class Cl100kLargeTokenizerTest extends Cl100kBaseTest {
+class Cl100kLargeBaseTest extends Cl100kBaseTest {
 
     public static Encoding ENCODING;
 

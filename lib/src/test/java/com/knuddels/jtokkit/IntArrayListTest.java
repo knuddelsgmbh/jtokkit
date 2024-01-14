@@ -38,6 +38,10 @@ class IntArrayListTest {
             assertEquals(standardList.size(), byteArrayList.size());
             assertEquals(standardList.isEmpty(), byteArrayList.isEmpty());
 
+            // Boxed and ToString
+            assertEquals(standardList, byteArrayList.boxed());
+            assertEquals(standardList.toString(), byteArrayList.toString());
+
             // Clear
             if (random.nextInt() % 10 == 0) {
                 byteArrayList.clear();
@@ -45,6 +49,9 @@ class IntArrayListTest {
                 assertEquals(standardList.size(), byteArrayList.size());
             }
         }
+        var element = random.nextInt();
+        byteArrayList.add(element);
+        standardList.add(element);
 
         // Test toArray
         var byteArray = byteArrayList.toArray();
@@ -57,10 +64,14 @@ class IntArrayListTest {
         var anotherIntArrayList = new IntArrayList();
         standardList.forEach(anotherIntArrayList::add);
 
+        assertEquals(byteArrayList, byteArrayList);
         assertEquals(byteArrayList, anotherIntArrayList);
-        if (!byteArrayList.isEmpty()) {
-            assertNotEquals(byteArrayList, new IntArrayList());
-        }
         assertEquals(byteArrayList.hashCode(), anotherIntArrayList.hashCode());
+
+        assertNotEquals(byteArrayList, new Object());
+        anotherIntArrayList.set(0, byteArrayList.get(0) + 1);
+        assertNotEquals(byteArrayList, anotherIntArrayList);
+
+        assertNotEquals(byteArrayList, new IntArrayList());
     }
 }
