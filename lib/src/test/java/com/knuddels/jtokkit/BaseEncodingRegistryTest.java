@@ -193,5 +193,10 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
         public String getName() {
             return "dummy";
         }
+
+        @Override
+        public int calcCharCountForTokens(String text , int tokenCount){
+            return 0;
+        }
     }
 }

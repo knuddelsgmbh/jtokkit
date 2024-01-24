@@ -201,4 +201,21 @@ public interface Encoding {
      * @return the name of this encoding
      */
     String getName();
+
+    /**
+     * Calculates the total number of characters that encompass a specified number of tokens in the given text.
+     * Counts the characters up to and including the last character of the tokenCount-th token.
+     * If the tokenCount is larger than the number of tokens in the text, the total character count of the text is returned.
+     * This method does not throw an exception if the text contains special tokens, but instead
+     * encodes them as if they were ordinary text.
+     * This method does not adjust for multi-token characters.
+     *
+     * @param text       The string in which tokens are to be counted.
+     * @param tokenCount The number of tokens for which the character count is calculated.
+     *                   This count includes spaces or delimiters if they are part of the tokens.
+     * @return           The total character count for the specified number of tokens in the text.
+     *                   Returns -1 if tokenCount is less than 1 or text is null.
+     */
+    int calcCharCountForTokens(String text, int tokenCount);
+
 }
