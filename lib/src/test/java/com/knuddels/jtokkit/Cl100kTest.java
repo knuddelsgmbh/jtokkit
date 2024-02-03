@@ -232,4 +232,25 @@ class Cl100kTest {
                 throw new IllegalStateException();
         }
     }
+
+    @Test
+    void testCalcCharCountForTokensWithRandomStrings() {
+        var singleTokenStrings = getAllTokens();
+        IntStream.range(0, 100_000).parallel().forEach(i -> {
+            String testString;
+            do {
+                testString = generateRandomString(10, singleTokenStrings);
+            } while (!UTF_8.newEncoder().canEncode(testString));
+
+            var maxTokenCount = rand().nextInt(1, 2 * testString.length());
+
+            int charCount = getEncoding().calcCharCountForTokens(testString, maxTokenCount);
+            var encoded = getEncoding().encodeOrdinary(testString, maxTokenCount);
+            if (!encoded.isTruncated()) {
+                var actualTokens = encoded.getTokens();
+                var decodedTokens = getEncoding().decode(actualTokens);
+                assertEquals(decodedTokens.length(), charCount);
+            }
+        });
+    }
 }

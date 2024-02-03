@@ -72,7 +72,7 @@ class GptBytePairEncoding implements Encoding {
         }
 
         List<Integer> out = new ArrayList<>();
-        int tokenCount = encodeOrdinaryInternal(text, maxTokenCount, keepEncodings, out);
+        int tokenCount = encodeOrdinaryInternal(text, maxTokenCount, keepEncodings, out).getTokenCount();
 
         if (keepEncodings && maxTokenCount != Integer.MAX_VALUE) {
             // Make sure we didn't break the multibyte character
@@ -93,19 +93,29 @@ class GptBytePairEncoding implements Encoding {
         return new EncodingResult(out, tokenCount, false);
     }
 
-    int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
+    InternalEncodingResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, List<Integer> out) {
         int tokenCount = 0;
+        int lastTokenPosition = 0;
         ArrayList<Integer> ranks = new ArrayList<>(); // reused to avoid allocations
         for (Matcher matcher = pattern.matcher(text); tokenCount < maxTokenCount && matcher.find(); ) {
             byte[] bytes = matcher.group().getBytes(UTF_8);
             tokenCount += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, bytes, out, ranks);
+            lastTokenPosition = matcher.end();
         }
-        return tokenCount;
+
+        return new InternalEncodingResult(tokenCount, lastTokenPosition);
     }
 
     @Override
     public int countTokens(String text) {
         return encodeInternal(text, Integer.MAX_VALUE, false).getTokenCount();
+    }
+
+    @Override
+    public int calcCharCountForTokens(String text , int tokenCount) {
+        List<Integer> out = new ArrayList<>();
+        InternalEncodingResult result = encodeOrdinaryInternal(text, tokenCount, false, out);
+        return result.getLastTokenPosition();
     }
 
     @Override
@@ -133,5 +143,25 @@ class GptBytePairEncoding implements Encoding {
     private byte[] decodeToken(int token) {
         byte[] decodedToken = encoder.decodeToken(token, specialEncoder);
         return requireNonNull(decodedToken, "Unknown token for decoding: " + token);
+    }
+
+    private static class InternalEncodingResult {
+        int tokenCount;
+
+        public int getTokenCount() {
+            return tokenCount;
+        }
+
+        public int getLastTokenPosition() {
+            return lastTokenPosition;
+        }
+
+        int lastTokenPosition;
+
+        public InternalEncodingResult(int tokenCount, int lastTokenPosition) {
+            this.tokenCount = tokenCount;
+            this.lastTokenPosition = lastTokenPosition;
+        }
+
     }
 }
