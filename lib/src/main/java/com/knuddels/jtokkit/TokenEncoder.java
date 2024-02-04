@@ -201,7 +201,7 @@ public final class TokenEncoder {
         }
     }
 
-    public byte[] decodeToken(int token, SpecialEncoder specialEncoder) {
+    byte[] decodeToken(int token, SpecialEncoder specialEncoder) {
         return decoder.computeIfAbsent(token, specialEncoder::decodeIfPresent);
     }
 }

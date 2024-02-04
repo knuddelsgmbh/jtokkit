@@ -27,7 +27,7 @@ class ByteArrayListTest {
             var element = randomByte(random);
             byteArrayList.add(element);
             standardList.add(element);
-            assertEquals(standardList.get(standardList.size() - 1), byteArrayList.get(byteArrayList.size() - 1));
+            assertEquals(standardList.getLast(), byteArrayList.get(byteArrayList.size() - 1));
 
             // Set
             if (!byteArrayList.isEmpty() && random.nextBoolean()) {
@@ -50,7 +50,7 @@ class ByteArrayListTest {
             if (randomByte(random) % 10 == 0) {
                 byteArrayList.clear();
                 standardList.clear();
-                assertEquals(standardList.size(), byteArrayList.size());
+                assertEquals(0, byteArrayList.size());
             }
         }
         var element = randomByte(random);
@@ -69,6 +69,7 @@ class ByteArrayListTest {
         var anotherByteArrayList = new ByteArrayList();
         standardList.forEach(anotherByteArrayList::add);
 
+        //noinspection EqualsWithItself
         assertEquals(byteArrayList, byteArrayList);
         assertEquals(byteArrayList, anotherByteArrayList);
         assertEquals(byteArrayList.hashCode(), anotherByteArrayList.hashCode());

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ class Cl100kParserTest {
         var url = "https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt";
         Map<Integer, String> unicodeMap = new HashMap<>();
 
-        try (var br = new BufferedReader(new InputStreamReader(new URL(url).openStream()))) {
+        try (var br = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 var parts = line.split(";");
@@ -41,7 +41,7 @@ class Cl100kParserTest {
 
     @Disabled // Takes too long
     @Test
-    void testToUtf8BytesOnFetchedUnicodeData() throws Exception {
+    void testToUtf8BytesOnFetchedUnicodeData() {
         fetchUnicodeData().entrySet().stream().parallel().forEach(e -> {
             var expected = Character.toString(e.getKey());
             if (isValidUTF8(expected)) {
@@ -60,35 +60,31 @@ class Cl100kParserTest {
     }
 
     @Test
-    void testIsApostophed() {
-        var count = 0;
+    void testIsShortContraction() {
         var pattern = compileRegex("^(?:'s|'t|'re|'ve|'m|'ll|'d)$", true);
 
-        System.out.println("isShortContraction");
         for (var cp1 = MIN_CODE_POINT; cp1 <= MAX_CODE_POINT; cp1++) { // Seems 'ſ is also a contraction...
             var asString = "'" + Character.toString(cp1);
             var matchesRegex = pattern.matcher(asString).matches();
             var actual = Cl100kParser.isShortContraction(cp1);
-            if (matchesRegex) {
-                count++;
-            }
+
             assertEquals(matchesRegex, actual, "Mismatch at code point: `" + asString + "` (" + cp1 + ")");
         }
+    }
 
-        if (false) { // Takes too long
-            System.out.println("isLongContraction");
-            for (var cp1 = MIN_CODE_POINT; cp1 <= MAX_CODE_POINT; cp1++) {
-                for (var cp2 = MIN_CODE_POINT; cp2 <= MAX_CODE_POINT; cp2++) {
-                    var asString = "'" + Character.toString(cp1) + Character.toString(cp2);
-                    var matchesRegex = pattern.matcher(asString).matches();
-                    var actual = Cl100kParser.isLongContraction(cp1, cp2);
-                    if (matchesRegex) {
-                        count++;
-                    }
-                    assertEquals(matchesRegex, actual, "Mismatch at code point: `" + asString + "` (" + cp1 + ", " + cp2 + ")");
-                }
+    @Disabled // takes too long
+    @Test
+    void testIsLongContraction() {
+        var pattern = compileRegex("^(?:'s|'t|'re|'ve|'m|'ll|'d)$", true);
+
+        for (var cp1 = MIN_CODE_POINT; cp1 <= MAX_CODE_POINT; cp1++) {
+            for (var cp2 = MIN_CODE_POINT; cp2 <= MAX_CODE_POINT; cp2++) {
+                var asString = "'" + Character.toString(cp1) + Character.toString(cp2);
+                var matchesRegex = pattern.matcher(asString).matches();
+                var actual = Cl100kParser.isLongContraction(cp1, cp2);
+
+                assertEquals(matchesRegex, actual, "Mismatch at code point: `" + asString + "` (" + cp1 + ", " + cp2 + ")");
             }
-            System.out.println(count);
         }
     }
 

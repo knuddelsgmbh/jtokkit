@@ -62,12 +62,10 @@ class EncodingFactory {
      * @return an {@link Encoding} instance for the r50k_base encoding
      */
     public static Encoding r50kBase() {
-        return fromPredefinedParameters(
+        return from50kParameters(
                 "r50k_base",
-                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/r50k_base.tiktoken",
-                SPECIAL_TOKENS_X50K_BASE,
-                false
+                SPECIAL_TOKENS_X50K_BASE
         );
     }
 
@@ -77,12 +75,10 @@ class EncodingFactory {
      * @return an {@link Encoding} instance for the p50k_base encoding
      */
     public static Encoding p50kBase() {
-        return fromPredefinedParameters(
+        return from50kParameters(
                 "p50k_base",
-                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
-                SPECIAL_TOKENS_X50K_BASE,
-                false
+                SPECIAL_TOKENS_X50K_BASE
         );
     }
 
@@ -92,12 +88,10 @@ class EncodingFactory {
      * @return an {@link Encoding} instance for the p50k_edit encoding
      */
     public static Encoding p50kEdit() {
-        return fromPredefinedParameters(
+        return from50kParameters(
                 "p50k_edit",
-                "'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
-                SPECIAL_TOKENS_P50K_EDIT,
-                false
+                SPECIAL_TOKENS_P50K_EDIT
         );
     }
 
@@ -123,14 +117,12 @@ class EncodingFactory {
         return new GptBytePairEncoding(parameters);
     }
 
-    private static Encoding fromPredefinedParameters(
+    private static Encoding from50kParameters(
             String name,
-            String patternString,
             String fileName,
-            Map<String, Integer> specialTokens,
-            boolean caseInsensitive
+            Map<String, Integer> specialTokens
     ) {
-        Pattern regex = compileRegex(patternString, caseInsensitive);
+        Pattern regex = compileRegex("'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+", false);
         Map<byte[], Integer> mergeableRanks = loadMergeableRanks(fileName);
         GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, mergeableRanks, specialTokens);
         return fromParameters(params);

@@ -81,7 +81,7 @@ class Cl100kTest {
     }
 
     @Test
-    void testEdgeCaseRoundTrips() throws Exception {
+    void testEdgeCaseRoundTrips() {
         var testStrings = List.of(
                 "\n",
                 " ",
@@ -160,12 +160,12 @@ class Cl100kTest {
     }
 
     @Test
-    void testRoundTripWithRandomStrings() throws Exception {
+    void testRoundTripWithRandomStrings() {
         var singleTokenStrings = getAllTokens();
         IntStream.range(0, 100_000).parallel().forEach(i -> {
             String testString;
             do {
-                testString = generateRandomString(10, singleTokenStrings);
+                testString = generateRandomString(singleTokenStrings);
             } while (!UTF_8.newEncoder().canEncode(testString));
 
             var maxTokenCount = rand().nextInt(1, 2 * testString.length());
@@ -187,8 +187,8 @@ class Cl100kTest {
                 .toList();
     }
 
-    String generateRandomString(int maxStringLength, List<String> singleTokenStrings) {
-        var length = rand().nextInt(1, maxStringLength);
+    String generateRandomString(List<String> singleTokenStrings) {
+        var length = rand().nextInt(1, 10);
         return rand()
                 .ints(length, 0, 20)
                 .mapToObj(category -> getRandomCharFromCategory(category, singleTokenStrings))
