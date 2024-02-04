@@ -31,7 +31,7 @@ final class SpecialEncoder {
         if (text.contains(SPECIAL_START) && text.contains(SPECIAL_END)) {
             for (String specialToken : encodedToDecoded.values()) {
                 if (text.contains(specialToken)) {
-                    throw new UnsupportedOperationException("Encoding special tokens is not supported yet.");
+                    throw new UnsupportedOperationException("Encoding special tokens is not supported.");
                 }
             }
         }

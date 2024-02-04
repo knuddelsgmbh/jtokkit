@@ -42,9 +42,6 @@ and `cl100k_base`
 
 ✅ Fast and efficient performance
 
-
-🔨 Handling of special tokens during encoding (not started)
-
 ## 📊 Performance
 
 JTokkit is between 2-3 times faster than a comparable tokenizer.
