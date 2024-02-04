@@ -20,44 +20,44 @@ import java.util.regex.Pattern;
  *     </ul>
  */
 public final class GptBytePairEncodingParams {
-	private final String name;
-	private final Pattern pattern;
-	private final Map<byte[], Integer> encoder;
-	private final Map<String, Integer> specialTokensEncoder;
+    private final String name;
+    private final Pattern pattern;
+    private final Map<byte[], Integer> encoder;
+    private final Map<String, Integer> specialTokensEncoder;
 
-	/**
-	 * Creates a new instance of {@link GptBytePairEncodingParams}.
-	 *
-	 * @param name the name of the encoding. This is used to identify the encoding and must be unique
-	 * @param pattern the pattern that is used to split the input text into tokens.
-	 * @param encoder the encoder that maps the tokens to their ids
-	 * @param specialTokensEncoder the encoder that maps the special tokens to their ids
-	 */
-	public GptBytePairEncodingParams(
-			final String name,
-			final Pattern pattern,
-			final Map<byte[], Integer> encoder,
-			final Map<String, Integer> specialTokensEncoder
-	) {
-		this.name = name;
-		this.pattern = pattern;
-		this.encoder = encoder;
-		this.specialTokensEncoder = specialTokensEncoder;
-	}
+    /**
+     * Creates a new instance of {@link GptBytePairEncodingParams}.
+     *
+     * @param name the name of the encoding. This is used to identify the encoding and must be unique
+     * @param pattern the pattern that is used to split the input text into tokens.
+     * @param encoder the encoder that maps the tokens to their ids
+     * @param specialTokensEncoder the encoder that maps the special tokens to their ids
+     */
+    public GptBytePairEncodingParams(
+            final String name,
+            final Pattern pattern,
+            final Map<byte[], Integer> encoder,
+            final Map<String, Integer> specialTokensEncoder
+    ) {
+        this.name = name;
+        this.pattern = pattern;
+        this.encoder = encoder;
+        this.specialTokensEncoder = specialTokensEncoder;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Pattern getPattern() {
-		return pattern;
-	}
+    public Pattern getPattern() {
+        return pattern;
+    }
 
-	public Map<byte[], Integer> getEncoder() {
-		return encoder;
-	}
+    public Map<byte[], Integer> getEncoder() {
+        return encoder;
+    }
 
-	public Map<String, Integer> getSpecialTokensEncoder() {
-		return specialTokensEncoder;
-	}
+    public Map<String, Integer> getSpecialTokensEncoder() {
+        return specialTokensEncoder;
+    }
 }

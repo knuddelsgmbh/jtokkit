@@ -1,7 +1,14 @@
 package com.knuddels.jtokkit;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static com.knuddels.jtokkit.Cl100kParser.addUtf8Bytes;
+import static com.knuddels.jtokkit.Cl100kParser.isValidUTF8;
+import static com.knuddels.jtokkit.EncodingFactory.compileRegex;
+import static java.lang.Character.MAX_CODE_POINT;
+import static java.lang.Character.MIN_CODE_POINT;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,14 +16,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.knuddels.jtokkit.Cl100kParser.addUtf8Bytes;
-import static com.knuddels.jtokkit.Cl100kParser.isValidUTF8;
-import static com.knuddels.jtokkit.EncodingFactory.compileRegex;
-import static java.lang.Character.MAX_CODE_POINT;
-import static java.lang.Character.MIN_CODE_POINT;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 class Cl100kParserTest {
     public static Map<Integer, String> fetchUnicodeData() {
@@ -47,7 +48,11 @@ class Cl100kParserTest {
                 var dst = new ByteArrayList();
                 addUtf8Bytes(expected, 0, expected.length(), dst);
 
-                assertArrayEquals(expected.getBytes(UTF_8), dst.toArray(), () -> "Expected `" + Arrays.toString(expected.getBytes(UTF_8)) + "` (`" + expected + "`) but was `" + Arrays.toString(dst.toArray()) + "`");
+                assertArrayEquals(
+                        expected.getBytes(UTF_8),
+                        dst.toArray(),
+                        () -> "Expected `" + Arrays.toString(expected.getBytes(UTF_8)) + "` (`" + expected + "`) but was `" + Arrays.toString(dst.toArray()) + "`"
+                );
             } else {
                 System.out.println("Skipping invalid UTF-8: " + e.getValue() + " (" + e.getKey() + ")");
             }

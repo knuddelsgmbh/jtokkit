@@ -1,20 +1,22 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.Encoding;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static java.lang.Character.MAX_CODE_POINT;
+import static java.lang.Character.MIN_CODE_POINT;
+import static java.lang.Character.isDefined;
+import static java.lang.Character.toChars;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.joining;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.knuddels.jtokkit.api.Encoding;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
-
-import static java.lang.Character.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.joining;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 class Cl100kTest {
     private static final String PUNCTUATION = "'\".,?!:()";

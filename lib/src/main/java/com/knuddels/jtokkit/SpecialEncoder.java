@@ -1,9 +1,9 @@
 package com.knuddels.jtokkit;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 final class SpecialEncoder {
     private static final String SPECIAL_START = "<|";

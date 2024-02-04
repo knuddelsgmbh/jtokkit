@@ -1,7 +1,6 @@
 package com.knuddels.jtokkit.reference;
 
 import com.knuddels.jtokkit.api.IntArrayList;
-
 import java.util.Arrays;
 import java.util.List;
 

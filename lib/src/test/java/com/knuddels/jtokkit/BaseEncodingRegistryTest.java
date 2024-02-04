@@ -1,14 +1,22 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingResult;
+import com.knuddels.jtokkit.api.EncodingType;
+import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
+import com.knuddels.jtokkit.api.IntArrayList;
+import com.knuddels.jtokkit.api.ModelType;
 import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
 

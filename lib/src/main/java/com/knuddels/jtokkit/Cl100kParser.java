@@ -1,17 +1,32 @@
 package com.knuddels.jtokkit;
 
 
-import java.util.Arrays;
-import java.util.function.Predicate;
-
-import static java.lang.Character.*;
+import static java.lang.Character.DECIMAL_DIGIT_NUMBER;
+import static java.lang.Character.LETTER_NUMBER;
+import static java.lang.Character.LOWERCASE_LETTER;
+import static java.lang.Character.MAX_CODE_POINT;
+import static java.lang.Character.MIN_SUPPLEMENTARY_CODE_POINT;
+import static java.lang.Character.MODIFIER_LETTER;
+import static java.lang.Character.OTHER_LETTER;
+import static java.lang.Character.OTHER_NUMBER;
+import static java.lang.Character.TITLECASE_LETTER;
+import static java.lang.Character.UPPERCASE_LETTER;
+import static java.lang.Character.charCount;
+import static java.lang.Character.getType;
+import static java.lang.Character.toChars;
+import static java.lang.Character.toUpperCase;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.binarySearch;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 public class Cl100kParser {
     private static final String SDTM = "sdtmSDTMſ";
     private static final String SIMPLE_WHITESPACES = "\t\n\u000B\u000C\r";
-    private static final int[] REMAINING_WHITESPACES = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".codePoints().sorted().toArray();
+    private static final int[] REMAINING_WHITESPACES = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".codePoints()
+            .sorted()
+            .toArray();
 
     public static void split(String input, Predicate<ByteArrayList> fragmentConsumer) {
         assert isValidUTF8(input) : "Input is not UTF-8: " + input;

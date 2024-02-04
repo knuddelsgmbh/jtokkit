@@ -1,15 +1,14 @@
 package com.knuddels.jtokkit;
 
 
-import com.knuddels.jtokkit.api.IntArrayList;
+import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
+import static java.util.Objects.requireNonNull;
 
+import com.knuddels.jtokkit.api.IntArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
-import static java.util.Objects.requireNonNull;
 
 final class TokenEncoderLarge {
     static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, IntArrayList out, ByteArrayWrapper match) {
@@ -36,9 +35,9 @@ final class TokenEncoderLarge {
                 assert minRank != MAX_RANK;
 
                 RankNode previousNode = minNode.prev,
-                    nextNode = minNode.next,
-                    nextNextNode = nextNode.next,
-                    nextNextNextNode = nextNextNode.next;
+                        nextNode = minNode.next,
+                        nextNextNode = nextNode.next,
+                        nextNextNextNode = nextNextNode.next;
 
                 if (previousNode != null) {
                     int newRank = tokenEncoder.encode(match, previousNode.index, nextNextNode.index);

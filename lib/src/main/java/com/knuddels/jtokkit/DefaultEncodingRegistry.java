@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.*;
+import com.knuddels.jtokkit.api.EncodingRegistry;
+import com.knuddels.jtokkit.api.EncodingType;
 
 /**
  * Thread-safe default implementation of {@link EncodingRegistry}. During initialization, it registers the default encodings
@@ -8,15 +9,15 @@ import com.knuddels.jtokkit.api.*;
  */
 final class DefaultEncodingRegistry extends AbstractEncodingRegistry {
 
-	/**
-	 * Initializes the registry with the default encodings.
-	 *
-	 * @throws IllegalStateException if an unknown encoding type is encountered
-	 */
-	public void initializeDefaultEncodings() {
-		for (final EncodingType encodingType : EncodingType.values()) {
-			addEncoding(encodingType);
-		}
-	}
+    /**
+     * Initializes the registry with the default encodings.
+     *
+     * @throws IllegalStateException if an unknown encoding type is encountered
+     */
+    public void initializeDefaultEncodings() {
+        for (final EncodingType encodingType : EncodingType.values()) {
+            addEncoding(encodingType);
+        }
+    }
 
 }

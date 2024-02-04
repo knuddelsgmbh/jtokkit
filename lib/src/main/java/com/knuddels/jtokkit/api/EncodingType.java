@@ -7,25 +7,25 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum EncodingType {
-	R50K_BASE("r50k_base"),
-	P50K_BASE("p50k_base"),
-	P50K_EDIT("p50k_edit"),
-	CL100K_BASE("cl100k_base");
+    R50K_BASE("r50k_base"),
+    P50K_BASE("p50k_base"),
+    P50K_EDIT("p50k_edit"),
+    CL100K_BASE("cl100k_base");
 
-	private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
-			.collect(Collectors.toMap(EncodingType::getName, Function.identity()));
+    private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
+            .collect(Collectors.toMap(EncodingType::getName, Function.identity()));
 
-	private final String name;
+    private final String name;
 
-	EncodingType(final String name) {
-		this.name = name;
-	}
+    EncodingType(final String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public static Optional<EncodingType> fromName(final String name) {
-		return Optional.ofNullable(nameToEncodingType.get(name));
-	}
+    public static Optional<EncodingType> fromName(final String name) {
+        return Optional.ofNullable(nameToEncodingType.get(name));
+    }
 }

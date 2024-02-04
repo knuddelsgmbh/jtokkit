@@ -1,15 +1,14 @@
 package com.knuddels.jtokkit;
 
-import com.knuddels.jtokkit.api.IntArrayList;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import static com.knuddels.jtokkit.TokenEncoderLarge.calculateTokensLarge;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyMap;
+
+import com.knuddels.jtokkit.api.IntArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public final class TokenEncoder {
     public static final int MAX_RANK = MAX_VALUE - 1;

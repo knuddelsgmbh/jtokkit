@@ -1,10 +1,10 @@
 package com.knuddels.jtokkit;
 
+import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
+
 import com.knuddels.jtokkit.api.Encoding;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-
-import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
 
 class Cl100kLargeTokenizerTest extends Cl100kTest {
 
