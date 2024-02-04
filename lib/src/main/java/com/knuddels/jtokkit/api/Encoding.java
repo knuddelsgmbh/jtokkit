@@ -1,7 +1,5 @@
 package com.knuddels.jtokkit.api;
 
-import java.util.List;
-
 public interface Encoding {
 
     /**
@@ -26,7 +24,7 @@ public interface Encoding {
      * @return the list of token ids
      * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
      */
-    List<Integer> encode(String text);
+    IntArrayList encode(String text);
 
     /**
      * Encodes the given text into a list of token ids.
@@ -77,7 +75,7 @@ public interface Encoding {
      * @param text the text to encode
      * @return the list of token ids
      */
-    List<Integer> encodeOrdinary(String text);
+    IntArrayList encodeOrdinary(String text);
 
     /**
      * Encodes the given text into a list of token ids, ignoring special tokens.
@@ -139,7 +137,7 @@ public interface Encoding {
      * @return the decoded text
      * @throws IllegalArgumentException if the list contains invalid token ids
      */
-    String decode(List<Integer> tokens);
+    String decode(IntArrayList tokens);
 
     /**
      * Decodes the given list of token ids into a byte array.
@@ -156,7 +154,7 @@ public interface Encoding {
      * @return the decoded byte array
      * @throws IllegalArgumentException if the list contains invalid token ids
      */
-    byte[] decodeBytes(List<Integer> tokens);
+    byte[] decodeBytes(IntArrayList tokens);
 
     /**
      * Returns the name of this encoding. This is the name which is used to identify

@@ -45,7 +45,7 @@ Optional<Encoding> encoding = registry.getEncodingForModel("gpt_4");
 You can use an `Encoding` to encode and decode text:
 
 ```java
-List<Integer> encoded = encoding.encode("This is a sample sentence.");
+IntArrayList encoded = encoding.encode("This is a sample sentence.");
 // encoded = [2028, 374, 264, 6205, 11914, 13]
 
 String decoded = encoding.decode(encoded);
@@ -87,13 +87,13 @@ int tokenCount = encoding.countTokensOrdinary("hello <|endoftext|> world");
 If you want to only encode up until a specified amount of `maxTokens` and truncate after that amount, you can use `Encoding#encode(String, int)` or `Encoding#encodeOrdinary(String, int)`. These methods will truncate the encoded tokens to the specified length. They will automatically handle unicode characters that were split in half by the truncation by removing those tokens from the end of the list.
 
 ```java
-List<Integer> encoded = encoding.encode("This is a sample sentence.", 3);
+IntArrayList encoded = encoding.encode("This is a sample sentence.", 3);
 // encoded = [2028, 374, 264]
 
 String decoded = encoding.decode(encoded);
 // decoded = "This is a"
 
-List<Integer> encoded = encoding.encode("I love 🍕", 4);
+IntArrayList encoded = encoding.encode("I love 🍕", 4);
 // encoded = [40, 3021]
 
 String decoded = encoding.decode(encoded);

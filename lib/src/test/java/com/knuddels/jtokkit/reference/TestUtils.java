@@ -1,17 +1,21 @@
 package com.knuddels.jtokkit.reference;
 
+import com.knuddels.jtokkit.api.IntArrayList;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class TestUtils {
 
-    static List<Integer> parseEncodingString(String encodingString) {
-        return Arrays.stream(
+    static IntArrayList parseEncodingString(String encodingString) {
+        List<Integer> list = Arrays.stream(
                         encodingString.substring(1, encodingString.length() - 1)
                                 .replaceAll(" ", "")
                                 .split(",")
                 ).map(Integer::parseInt)
-                .collect(Collectors.toList());
+                .toList();
+        var result = new IntArrayList(list.size());
+        list.forEach(result::add);
+        return result;
     }
 }

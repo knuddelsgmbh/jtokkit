@@ -1,6 +1,7 @@
 package com.knuddels.jtokkit;
 
 import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.IntArrayList;
 import org.openjdk.jmh.annotations.Benchmark;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class SingleThreadedBenchmark extends AbstractBenchmark {
     }
 
     @Override
-    protected List<List<Integer>> encodeAll(final Encoding encoding, final List<String> fileContents) {
+    protected List<IntArrayList> encodeAll(Encoding encoding, List<String> fileContents) {
         return fileContents.stream()
                 .map(encoding::encode)
                 .toList();

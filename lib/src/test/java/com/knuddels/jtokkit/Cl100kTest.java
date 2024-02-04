@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 import static java.lang.Character.*;
@@ -17,15 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Cl100kTest {
     private static final String PUNCTUATION = "'\".,?!:()";
-    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZő你好ſ ½";
-    private static final String NUMBERS = "0123456789½";
+    private static final String LETTERS = generateUnicodeCategoryString(Cl100kParser::isLetter);
+    private static final String NUMBERS = generateUnicodeCategoryString(Cl100kParser::isNumeric);
+    private static final String WHITESPACES = generateUnicodeCategoryString(Cl100kParser::isWhitespace);
     private static final String NEWLINES = "\n\r";
-    private static final String WHITESPACES = " \t " + NEWLINES;
-    private static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = " \t🤚🏾😩" + PUNCTUATION;
-    private static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = NOT_NEWLINE_OR_LETTER_OR_NUMERIC + NEWLINES;
+    private static final String NOT_NEWLINE_OR_LETTER_OR_NUMERIC = generateUnicodeCategoryString(Cl100kParser::isNotNewlineOrLetterOrNumeric);
+    private static final String NOT_WHITESPACE_OR_LETTER_OR_NUMERIC = generateUnicodeCategoryString(Cl100kParser::isNotWhitespaceOrLetterOrNumeric);
     private static final List<String> SPECIAL = List.of("'s", "'t", "'re", "'ve", "'m", "'ll", "'d", "'ſ", "'x", "🤚🏾", "😩", "　", "½");
-
     private static final Encoding ENCODING = EncodingFactory.cl100kBase();
+
+    private static String generateUnicodeCategoryString(IntPredicate characterProperty) {
+        return IntStream.range(MIN_CODE_POINT, MAX_CODE_POINT)
+                .filter(Character::isDefined)
+                .filter(characterProperty)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
 
     private static String normalizeStringForTesting(String testString) {
         return testString
@@ -49,7 +57,7 @@ class Cl100kTest {
         var measurements = new TreeMap<Integer, Long>();
 
         var iterations = 20;
-        for (var i = 1.0; i < 2_000; i = Math.max(i + 1, i * 1.01)) {
+        for (var i = 1.0; i < 1000; i = Math.max(i + 1, i * 1.01)) {
             while (input.length() < i) {
                 input.append("a");
             }

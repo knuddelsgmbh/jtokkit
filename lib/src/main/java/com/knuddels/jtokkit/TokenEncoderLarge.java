@@ -1,109 +1,90 @@
 package com.knuddels.jtokkit;
 
 
-import java.util.List;
-import java.util.Map.Entry;
+import com.knuddels.jtokkit.api.IntArrayList;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static com.knuddels.jtokkit.TokenEncoder.MAX_RANK;
+import static java.util.Objects.requireNonNull;
 
 final class TokenEncoderLarge {
-    static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, List<Integer> out, ByteArrayWrapper match, int length) {
-        assert length > 1 : "Already filtered out";
+    static int calculateTokensLarge(TokenEncoder tokenEncoder, int maxTokenCount, boolean keepEncodings, IntArrayList out, ByteArrayWrapper match) {
+        TreeMap<Integer, LinkedHashMap<Integer, RankNode>> rankMap = new TreeMap<>();
 
-        TreeMap<Integer, TreeMap<Integer, RankNode>> rankMap = new TreeMap<>();
-
-        RankNode head = null;
-        RankNode prevNode = null;
-        int validRanks = 0;
-        for (int i = 0; i < length + 1; i++) {
-            int encoded = tokenEncoder.encode(match, i, i + 2);
-            if (encoded != MAX_RANK) {
-                validRanks++;
+        RankNode prev = null;
+        for (int i = 0; i < match.length() + 1; i++) {
+            int rank = tokenEncoder.encode(match, i, i + 2);
+            RankNode node = new RankNode(rank, i, prev);
+            if (prev != null) {
+                prev.next = node;
             }
-            RankNode node = new RankNode(encoded, i);
-            if (head == null) {
-                head = node;
-            } else {
-                prevNode.next = node;
-                node.prev = prevNode;
-            }
-            prevNode = node;
+            prev = node;
 
-            rankMap.computeIfAbsent(encoded, k -> new TreeMap<>()).put(i, node);
+            rankMap.computeIfAbsent(rank, k -> new LinkedHashMap<>()).put(i, node);
         }
+        assert rankMap.containsKey(MAX_RANK);
 
-        while (validRanks > 0) {
-            TreeMap<Integer, RankNode> minNodes = rankMap.pollFirstEntry().getValue();
-            int firstIndex;
-            for (Entry<Integer, RankNode> entry = minNodes.firstEntry(); entry != null; entry = minNodes.ceilingEntry(firstIndex)) {
-                RankNode minNode = entry.getValue();
+        int tokenCount = match.length();
+        while (tokenCount > 2 && rankMap.size() > 1) {
+            for (Iterator<RankNode> it = rankMap.pollFirstEntry().getValue().values().iterator(); it.hasNext(); ) {
+                RankNode minNode = it.next();
                 int minRank = minNode.rank;
                 assert minRank != MAX_RANK;
 
-                RankNode previousNode = minNode.prev;
-                RankNode nextNode = minNode.next;
-                RankNode nextNextNode = nextNode != null ? nextNode.next : null;
-                RankNode nextNextNextNode = nextNextNode != null ? nextNextNode.next : null;
+                RankNode previousNode = minNode.prev,
+                    nextNode = minNode.next,
+                    nextNextNode = nextNode.next,
+                    nextNextNextNode = nextNextNode.next;
 
                 if (previousNode != null) {
-                    int newRank = tokenEncoder.encode(match, previousNode.index, nextNextNode != null ? nextNextNode.index : Integer.MAX_VALUE);
+                    int newRank = tokenEncoder.encode(match, previousNode.index, nextNextNode.index);
                     if (previousNode.rank != newRank) {
-                        if ((newRank == MAX_RANK) != (previousNode.rank == MAX_RANK)) {
-                            validRanks -= (newRank == MAX_RANK) ? 1 : -1;
-                        }
                         assert previousNode.rank != minRank;
                         removeNode(rankMap.get(previousNode.rank), rankMap, previousNode);
                         previousNode.rank = newRank;
-                        rankMap.computeIfAbsent(newRank, k -> new TreeMap<>()).put(previousNode.index, previousNode);
+                        rankMap.computeIfAbsent(newRank, k -> new LinkedHashMap<>()).put(previousNode.index, previousNode);
                     }
                 }
 
                 int newRank = tokenEncoder.encode(match, minNode.index, nextNextNextNode != null ? nextNextNextNode.index : Integer.MAX_VALUE);
-                if (newRank == MAX_RANK) {
-                    validRanks--;
-                }
-                firstIndex = minNode.index + 1;
                 minNode.rank = newRank;
-                rankMap.computeIfAbsent(newRank, k -> new TreeMap<>()).put(minNode.index, minNode);
+                rankMap.computeIfAbsent(newRank, k -> new LinkedHashMap<>()).put(minNode.index, minNode);
 
                 minNode.next = nextNextNode;
-                if (nextNode != null) {
-                    if (nextNextNode != null) {
-                        nextNextNode.prev = minNode;
+                nextNextNode.prev = minNode;
+                if (nextNode.rank != MAX_RANK) {
+                    if (nextNode.rank != minRank) {
+                        removeNode(rankMap.get(nextNode.rank), rankMap, nextNode);
+                    } else {
+                        it.next();
                     }
-                    if (nextNode.rank != MAX_RANK) {
-                        validRanks--;
-                        if (nextNode.rank != minRank) {
-                            removeNode(rankMap.get(nextNode.rank), rankMap, nextNode);
-                        }
-                    }
-                    firstIndex = nextNode.index + 1;
                 }
 
-                length--;
+                tokenCount--;
             }
         }
-        assert rankMap.firstEntry().getValue().values().iterator().next().rank == MAX_RANK;
 
         if (keepEncodings) {
-            while (head.next != null && out.size() < maxTokenCount) {
+            for (RankNode head = rankMap.get(MAX_RANK).get(0); head.next != null && out.size() < maxTokenCount; head = head.next) {
                 int token = tokenEncoder.encode(match, head.index, head.next.index);
                 assert token != MAX_RANK : "Token should not be MAX_RANK";
                 out.add(token);
-                head = head.next;
             }
         }
 
-        return length;
+        return tokenCount;
     }
 
-    static void removeNode(TreeMap<Integer, RankNode> nodeMap, TreeMap<Integer, TreeMap<Integer, RankNode>> rankMap, RankNode nextNode) {
-        if (nodeMap.size() == 1) {
-            assert nodeMap.containsKey(nextNode.index);
-            rankMap.remove(nextNode.rank);
+    static void removeNode(Map<Integer, RankNode> nodeMap, Map<Integer, ? extends Map<Integer, RankNode>> rankMap, RankNode node) {
+        if (requireNonNull(nodeMap).size() == 1) {
+            assert nodeMap.containsKey(node.index);
+            rankMap.remove(node.rank);
         } else {
-            nodeMap.remove(nextNode.index);
+            nodeMap.remove(node.index);
         }
     }
 
@@ -112,17 +93,15 @@ final class TokenEncoderLarge {
         int index;
         RankNode prev, next;
 
-        RankNode(int rank, int index) {
+        RankNode(int rank, int index, RankNode prev) {
             this.rank = rank;
             this.index = index;
+            this.prev = prev;
         }
 
         @Override
         public String toString() {
-            return "RankNode{" +
-                    "rank=" + rank +
-                    ", index=" + index +
-                    '}';
+            return "RankNode{rank=" + rank + ", index=" + index + '}';
         }
     }
 }
