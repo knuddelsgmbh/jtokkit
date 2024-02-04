@@ -105,6 +105,11 @@ class GptBytePairEncoding implements Encoding {
     }
 
     @Override
+    public int countTokensOrdinary(final String text) {
+        return encodeOrdinaryInternal(text, Integer.MAX_VALUE, false).getTokenCount();
+    }
+
+    @Override
     public String decode(IntArrayList tokens) {
         return new String(decodeBytes(tokens), UTF_8);
     }

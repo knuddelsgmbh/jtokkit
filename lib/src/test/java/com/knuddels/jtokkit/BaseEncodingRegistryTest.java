@@ -175,6 +175,11 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
         }
 
         @Override
+        public int countTokensOrdinary(final String text) {
+            return 0;
+        }
+
+        @Override
         public String decode(IntArrayList tokens) {
             return null;
         }

@@ -1,16 +1,17 @@
 package com.knuddels.jtokkit;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.util.stream.Collectors.toCollection;
+
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.util.stream.Collectors.toCollection;
 
 public class DataDownloader {
 
@@ -177,7 +178,7 @@ public class DataDownloader {
         }
 
         var totalSize = calculateTotalFileSize(rootFolder);
-        if (totalSize != 99_945_274) {
+        if (totalSize != 99_945_723) {
             throw new AssertionError("Total size did not match expected value, actual: " + totalSize);
         }
     }
@@ -206,8 +207,8 @@ public class DataDownloader {
         }
     }
 
-    private static void downloadUrl(String url, Path rootFolder, String fileName) throws IOException {
-        var fileUrl = new URL(url);
+    private static void downloadUrl(String url, Path rootFolder, String fileName) throws IOException, URISyntaxException {
+        var fileUrl = new URI(url).toURL();
         var localPath = rootFolder.resolve(fileName);
         if (Files.exists(localPath)) {
             System.out.printf("File %s already exists, skipping download.%n", fileName);
@@ -227,8 +228,7 @@ public class DataDownloader {
 
     private static long fileSize(Path path) {
         try {
-            var size = Files.size(path);
-            return size;
+            return Files.size(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

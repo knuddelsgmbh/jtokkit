@@ -18,6 +18,16 @@ public class SingleThreadedBenchmark extends AbstractBenchmark {
         return result;
     }
 
+    @Benchmark
+    public int benchmarkCl100kBaseTokenCountOrdinary(BenchmarkingState state) {
+        var result = 0;
+        var encoding = state.cl100kBase;
+        for (var fileContent : state.fileContents) {
+            result += encoding.countTokensOrdinary(fileContent);
+        }
+        return result;
+    }
+
     @Override
     protected List<IntArrayList> encodeAll(Encoding encoding, List<String> fileContents) {
         return fileContents.stream()

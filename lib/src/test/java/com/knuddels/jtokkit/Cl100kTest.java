@@ -160,13 +160,10 @@ class Cl100kTest {
     }
 
     @Test
-    void testRoundTripWithRandomStrings() {
+    void testEncodeRoundTripWithRandomStrings() {
         var singleTokenStrings = getAllTokens();
         IntStream.range(0, 100_000).parallel().forEach(i -> {
-            String testString;
-            do {
-                testString = generateRandomString(singleTokenStrings);
-            } while (!UTF_8.newEncoder().canEncode(testString));
+            var testString = generateRandomUtf8String(singleTokenStrings);
 
             var maxTokenCount = rand().nextInt(1, 2 * testString.length());
             var actualTokens = getEncoding().encode(testString);
@@ -181,20 +178,43 @@ class Cl100kTest {
         });
     }
 
+    @Test
+    void testEncodeOrdinaryRoundTripWithRandomStrings() {
+        var singleTokenStrings = getAllTokens();
+        IntStream.range(0, 100_000).parallel().forEach(i -> {
+            var testString = generateRandomUtf8String(singleTokenStrings);
+
+            var maxTokenCount = rand().nextInt(1, 2 * testString.length());
+            var actualTokens = getEncoding().encodeOrdinary(testString);
+            assertEquals(actualTokens.size(), getEncoding().countTokensOrdinary(testString));
+
+            var decodedTokens = getEncoding().decode(actualTokens);
+            assertEquals(testString, decodedTokens, decodedTokens);
+
+            var actualTrimmedTokens = getEncoding().encodeOrdinary(testString, maxTokenCount).getTokens();
+            var decodedTrimmedTokens = getEncoding().decode(actualTrimmedTokens);
+            assertTrue(testString.startsWith(decodedTrimmedTokens));
+        });
+    }
+
     List<String> getAllTokens() {
         return EncodingFactory.loadMergeableRanks("/com/knuddels/jtokkit/cl100k_base.tiktoken").keySet().stream()
                 .map(token -> new String(token, UTF_8))
                 .toList();
     }
 
-    String generateRandomString(List<String> singleTokenStrings) {
-        var length = rand().nextInt(1, 10);
-        return rand()
-                .ints(length, 0, 20)
-                .mapToObj(category -> getRandomCharFromCategory(category, singleTokenStrings))
-                .map(String::valueOf)
-                .map(obj -> rand().nextBoolean() ? obj : (rand().nextBoolean() ? obj.toUpperCase() : obj.toLowerCase()))
-                .collect(joining());
+    String generateRandomUtf8String(List<String> singleTokenStrings) {
+        String testString;
+        do {
+            var length = rand().nextInt(1, 10);
+            testString = rand()
+                    .ints(length, 0, 20)
+                    .mapToObj(category -> getRandomCharFromCategory(category, singleTokenStrings))
+                    .map(String::valueOf)
+                    .map(obj -> rand().nextBoolean() ? obj : (rand().nextBoolean() ? obj.toUpperCase() : obj.toLowerCase()))
+                    .collect(joining());
+        } while (!UTF_8.newEncoder().canEncode(testString));
+        return testString;
     }
 
     char[] getRandomCharFromCategory(int category, List<String> singleTokenStrings) {

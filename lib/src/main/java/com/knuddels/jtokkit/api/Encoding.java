@@ -6,7 +6,7 @@ public interface Encoding {
      * Encodes the given text into a list of token ids.
      * <p>
      * Special tokens are artificial tokens used to unlock capabilities from a model,
-     * such as fill-in-the-middle. There is currently no support for parsing special tokens
+     * such as fill-in-the-middle. There is no support for parsing special tokens
      * in a text, so if the text contains special tokens, this method will throw an
      * {@link UnsupportedOperationException}.
      * <p>
@@ -30,7 +30,7 @@ public interface Encoding {
      * Encodes the given text into a list of token ids.
      * <p>
      * Special tokens are artificial tokens used to unlock capabilities from a model,
-     * such as fill-in-the-middle. There is currently no support for parsing special tokens
+     * such as fill-in-the-middle. There is no support for parsing special tokens
      * in a text, so if the text contains special tokens, this method will throw an
      * {@link UnsupportedOperationException}.
      * <p>
@@ -107,6 +107,13 @@ public interface Encoding {
     /**
      * Encodes the given text into a list of token ids and returns the amount of tokens.
      * It is more performant than {@link #encode(String)}.
+     * <p>
+     * Special tokens are artificial tokens used to unlock capabilities from a model,
+     * such as fill-in-the-middle. There is no support for parsing special tokens
+     * in a text, so if the text contains special tokens, this method will throw an
+     * {@link UnsupportedOperationException}.
+     * <p>
+     * If you want to encode special tokens as ordinary text, use {@link #countTokensOrdinary(String)}.
      * <pre>
      * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
      * encoding.countTokens("hello world");
@@ -121,6 +128,26 @@ public interface Encoding {
      * @throws UnsupportedOperationException if the text contains special tokens which are not supported for now
      */
     int countTokens(String text);
+
+    /**
+     * Encodes the given text into a list of token ids and returns the amount of tokens.
+     * It is more performant than {@link #encodeOrdinary(String)}.
+     * <p>
+     * This method does not throw an exception if the text contains special tokens, but instead
+     * encodes them as if they were ordinary text.
+     * <pre>
+     * Encoding encoding = EncodingRegistry.getEncoding(EncodingType.CL100K_BASE);
+     * encoding.countTokensOrdinary("hello world");
+     * // returns 2
+     *
+     * encoding.countTokensOrdinary("hello &lt;|endoftext|&gt; world");
+     * // returns 8
+     * </pre>
+     *
+     * @param text the text to count tokens for
+     * @return the amount of tokens
+     */
+    int countTokensOrdinary(String text);
 
     /**
      * Decodes the given list of token ids into a text.
