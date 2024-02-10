@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.knuddels"
-version = "0.7.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
