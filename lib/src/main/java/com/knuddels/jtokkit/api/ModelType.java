@@ -39,6 +39,8 @@ public enum ModelType {
 
     // embeddings
     TEXT_EMBEDDING_ADA_002("text-embedding-ada-002", EncodingType.CL100K_BASE, 8191),
+    TEXT_EMBEDDING_3_SMALL("text-embedding-3-small", EncodingType.CL100K_BASE, 8191),
+    TEXT_EMBEDDING_3_LARGE("text-embedding-3-large", EncodingType.CL100K_BASE, 8191),
 
     // old embeddings
     TEXT_SIMILARITY_DAVINCI_001("text-similarity-davinci-001", EncodingType.R50K_BASE, 2046),
