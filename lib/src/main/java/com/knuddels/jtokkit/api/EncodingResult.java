@@ -13,6 +13,8 @@ public final class EncodingResult {
     }
 
     /**
+     * Returns the list of token ids
+     *
      * @return the list of token ids
      */
     public IntArrayList getTokens() {
@@ -20,6 +22,8 @@ public final class EncodingResult {
     }
 
     /**
+     * Returns true if the token list was truncated because the maximum token length was exceeded
+     *
      * @return true if the token list was truncated because the maximum token length was exceeded
      */
     public boolean isTruncated() {
