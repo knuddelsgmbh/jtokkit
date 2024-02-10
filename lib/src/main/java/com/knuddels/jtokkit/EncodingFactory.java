@@ -61,7 +61,7 @@ class EncodingFactory {
      *
      * @return an {@link Encoding} instance for the r50k_base encoding
      */
-    public static Encoding r50kBase() {
+    static Encoding r50kBase() {
         return from50kParameters(
                 "r50k_base",
                 "/com/knuddels/jtokkit/r50k_base.tiktoken",
@@ -74,7 +74,7 @@ class EncodingFactory {
      *
      * @return an {@link Encoding} instance for the p50k_base encoding
      */
-    public static Encoding p50kBase() {
+    static Encoding p50kBase() {
         return from50kParameters(
                 "p50k_base",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
@@ -87,7 +87,7 @@ class EncodingFactory {
      *
      * @return an {@link Encoding} instance for the p50k_edit encoding
      */
-    public static Encoding p50kEdit() {
+    static Encoding p50kEdit() {
         return from50kParameters(
                 "p50k_edit",
                 "/com/knuddels/jtokkit/p50k_base.tiktoken",
@@ -100,7 +100,7 @@ class EncodingFactory {
      *
      * @return an {@link Encoding} instance for the cl100k_base encoding
      */
-    public static Encoding cl100kBase() {
+    static Encoding cl100kBase() {
         // "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+"
         Map<byte[], Integer> mergeableRanks = loadMergeableRanks("/com/knuddels/jtokkit/cl100k_base.tiktoken");
         GptBytePairEncodingParams params = new GptBytePairEncodingParams("cl100k_base", null, mergeableRanks, SPECIAL_TOKENS_CL100K_BASE);
@@ -113,7 +113,7 @@ class EncodingFactory {
      * @param parameters the GPT BytePairEncoding parameters
      * @return an {@link Encoding} instance for the given GPT BytePairEncoding parameters
      */
-    public static Encoding fromParameters(GptBytePairEncodingParams parameters) {
+    static Encoding fromParameters(GptBytePairEncodingParams parameters) {
         return new GptBytePairEncoding(parameters);
     }
 
@@ -145,7 +145,7 @@ class EncodingFactory {
         }
     }
 
-    public static Map<byte[], Integer> loadMergeableRanks(String fileName) {
+    static Map<byte[], Integer> loadMergeableRanks(String fileName) {
         try (InputStream in = EncodingFactory.class.getResourceAsStream(fileName)) {
             if (in == null) {
                 throw new IllegalStateException("Could not find " + fileName + " in resources");
@@ -171,7 +171,7 @@ class EncodingFactory {
     }
 
     private static class Cl100kGptBytePairEncoding extends GptBytePairEncoding {
-        public Cl100kGptBytePairEncoding(GptBytePairEncodingParams params) {
+        Cl100kGptBytePairEncoding(GptBytePairEncodingParams params) {
             super(params);
         }
 

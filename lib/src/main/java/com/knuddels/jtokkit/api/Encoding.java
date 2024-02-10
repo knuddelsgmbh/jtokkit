@@ -3,6 +3,17 @@ package com.knuddels.jtokkit.api;
 public interface Encoding {
 
     /**
+     * Name of the environment variable key to control when JTokkit should switch to a different tokenizer.
+     * For all inputs below the given threshold, JTokkit uses a tokenizer that scales in quadratic time but
+     * is faster for small inputs. For larger inputs, a linearly scaling tokenizer is used. Per default, when
+     * this environment variable is not set, the threshold is configured accordingly to our benchmarks to be
+     * near-optimal for a wide variety of use-cases, but if you have a very specialized input format, you may
+     * want to experiment and benchmark with different input size thresholds.
+     */
+    String VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY = "VERY_LARGE_TOKENIZER_BYTE_THRESHOLD";
+
+
+    /**
      * Encodes the given text into a list of token ids.
      * <p>
      * Special tokens are artificial tokens used to unlock capabilities from a model,

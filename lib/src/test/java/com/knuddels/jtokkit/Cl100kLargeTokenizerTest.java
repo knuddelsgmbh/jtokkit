@@ -1,7 +1,5 @@
 package com.knuddels.jtokkit;
 
-import static com.knuddels.jtokkit.TokenEncoder.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY;
-
 import com.knuddels.jtokkit.api.Encoding;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,13 +10,13 @@ class Cl100kLargeTokenizerTest extends Cl100kTest {
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(0));
+        System.setProperty(Encoding.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY, String.valueOf(0));
         ENCODING = EncodingFactory.cl100kBase();
     }
 
     @AfterAll
     static void afterAll() {
-        System.clearProperty(VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY);
+        System.clearProperty(Encoding.VERY_LARGE_TOKENIZER_BYTE_THRESHOLD_KEY);
 
     }
 

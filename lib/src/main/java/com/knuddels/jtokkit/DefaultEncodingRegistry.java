@@ -14,7 +14,7 @@ final class DefaultEncodingRegistry extends AbstractEncodingRegistry {
      *
      * @throws IllegalStateException if an unknown encoding type is encountered
      */
-    public void initializeDefaultEncodings() {
+    void initializeDefaultEncodings() {
         for (final EncodingType encodingType : EncodingType.values()) {
             addEncoding(encodingType);
         }

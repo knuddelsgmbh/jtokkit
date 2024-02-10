@@ -21,14 +21,14 @@ import static java.util.Arrays.binarySearch;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public class Cl100kParser {
+class Cl100kParser {
     private static final String SDTM = "sdtmSDTMſ";
     private static final String SIMPLE_WHITESPACES = "\t\n\u000B\u000C\r";
     private static final int[] REMAINING_WHITESPACES = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".codePoints()
             .sorted()
             .toArray();
 
-    public static void split(String input, Predicate<ByteArrayList> fragmentConsumer) {
+    static void split(String input, Predicate<ByteArrayList> fragmentConsumer) {
         assert isValidUTF8(input) : "Input is not UTF-8: " + input;
         ByteArrayList utf8Bytes = new ByteArrayList();
         boolean finished = false;
@@ -144,11 +144,11 @@ public class Cl100kParser {
         }
     }
 
-    public static boolean isValidUTF8(String input) {
+    static boolean isValidUTF8(String input) {
         return UTF_8.newEncoder().canEncode(input);
     }
 
-    public static boolean isLetter(int ch) {
+    static boolean isLetter(int ch) {
         if (ch < 0xaa) {
             return ((ch >= 'a') && (ch <= 'z'))
                     || ((ch >= 'A') && (ch <= 'Z'));
@@ -165,7 +165,7 @@ public class Cl100kParser {
         return false;
     }
 
-    public static boolean isNumeric(int ch) {
+    static boolean isNumeric(int ch) {
         if (ch < 0xb2) {
             return (ch >= '0') && (ch <= '9');
         } else if (ch <= 0x1fbf9) {
@@ -200,7 +200,7 @@ public class Cl100kParser {
         return false;
     }
 
-    public static boolean isWhitespace(int ch) {
+    static boolean isWhitespace(int ch) {
         if (ch <= '\r') {
             return SIMPLE_WHITESPACES.indexOf(ch) >= 0;
         } else if (ch < '\u0085') {
@@ -217,7 +217,7 @@ public class Cl100kParser {
                 || (ch == '\n');
     }
 
-    public static boolean isNotWhitespaceOrLetterOrNumeric(int ch) {
+    static boolean isNotWhitespaceOrLetterOrNumeric(int ch) {
         if (ch < '0') {
             return ch >= 0 && ch != ' ' && (ch > '\r' || ch < '\t');
         } else {
@@ -225,7 +225,7 @@ public class Cl100kParser {
         }
     }
 
-    public static boolean isNotNewlineOrLetterOrNumeric(int ch) {
+    static boolean isNotNewlineOrLetterOrNumeric(int ch) {
         if (ch < '0') {
             return ch >= 0 && (ch == ' ' || !isNewline(ch));
         } else {

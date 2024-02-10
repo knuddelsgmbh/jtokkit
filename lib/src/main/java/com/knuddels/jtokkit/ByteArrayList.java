@@ -4,44 +4,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ByteArrayList {
+class ByteArrayList {
     private byte[] array;
     private int size = 0;
 
-    public ByteArrayList() {
+    ByteArrayList() {
         this(10);
     }
 
-    public ByteArrayList(int size) {
+    ByteArrayList(int size) {
         array = new byte[size];
     }
 
-    public void clear() {
+    void clear() {
         size = 0;
     }
 
-    public void add(byte element) {
+    void add(byte element) {
         if (size >= array.length) {
             resize();
         }
         array[size++] = element;
     }
 
-    public byte get(int index) {
+    byte get(int index) {
         return array[index];
     }
 
-    public int set(int index, byte element) {
-        int old = array[index];
+    void set(int index, byte element) {
         array[index] = element;
-        return old;
     }
 
     private void resize() {
         ensureCapacity(Math.max(1, array.length) * 2);
     }
 
-    public void ensureCapacity(int targetSize) {
+    void ensureCapacity(int targetSize) {
         if (targetSize <= size) {
             return;
         }
@@ -52,19 +50,19 @@ public class ByteArrayList {
         array = newArray;
     }
 
-    public int size() {
+    int size() {
         return size;
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return size == 0;
     }
 
-    public byte[] toArray() {
+    byte[] toArray() {
         return Arrays.copyOf(array, size);
     }
 
-    public List<Byte> boxed() {
+    List<Byte> boxed() {
         List<Byte> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             list.add(array[i]);

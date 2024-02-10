@@ -21,7 +21,7 @@ class ByteArrayWrapper {
      *
      * @return the length of this array.
      */
-    public int length() {
+    int length() {
         return array.length;
     }
 
@@ -35,7 +35,7 @@ class ByteArrayWrapper {
      * @throws IllegalArgumentException if startIndex is out of bounds, endIndex is out of bounds or endIndex is less than
      *                                  startIndex
      */
-    public ByteArrayWrapper getBytesBetween(int startIndex, int endIndex) {
+    ByteArrayWrapper getBytesBetween(int startIndex, int endIndex) {
         if (startIndex < 0 || startIndex >= array.length) {
             throw new IndexOutOfBoundsException("startIndex out of bounds: " + startIndex + " (" + this + ")");
         } else if (endIndex < 0 || endIndex > array.length) {

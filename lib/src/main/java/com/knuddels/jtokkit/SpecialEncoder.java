@@ -10,7 +10,7 @@ final class SpecialEncoder {
     private static final String SPECIAL_END = "|>";
     private final Map<Integer, String> encodedToDecoded;
 
-    public SpecialEncoder(Map<String, Integer> encoder) {
+    SpecialEncoder(Map<String, Integer> encoder) {
         this.encodedToDecoded = new HashMap<>(encoder.size());
         for (Map.Entry<String, Integer> entry : encoder.entrySet()) {
             String key = entry.getKey();
@@ -22,12 +22,12 @@ final class SpecialEncoder {
         }
     }
 
-    public byte[] decodeIfPresent(Integer encodedToken) {
+    byte[] decodeIfPresent(Integer encodedToken) {
         String result = encodedToDecoded.get(encodedToken);
         return result != null ? result.getBytes(UTF_8) : null;
     }
 
-    public void checkForSpecialTokens(String text) {
+    void checkForSpecialTokens(String text) {
         if (text.contains(SPECIAL_START) && text.contains(SPECIAL_END)) {
             for (String specialToken : encodedToDecoded.values()) {
                 if (text.contains(specialToken)) {
