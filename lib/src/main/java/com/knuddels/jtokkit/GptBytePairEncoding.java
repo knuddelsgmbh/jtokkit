@@ -39,12 +39,12 @@ class GptBytePairEncoding implements Encoding {
 
     @Override
     public EncodingResult encode(String text, int maxTokenCount) {
-        return encodeInternal(text, maxTokenCount, true);
+        return encodeInternal(text, maxTokenCount, true).toEncodingResult();
     }
 
-    private EncodingResult encodeInternal(String text, int maxTokenCount, boolean keepEncodings) {
+    private InternalResult encodeInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(new IntArrayList(0), -1, false);
+            return new InternalResult(new IntArrayList(0), false);
         }
 
         specialEncoder.checkForSpecialTokens(text);
@@ -59,12 +59,12 @@ class GptBytePairEncoding implements Encoding {
 
     @Override
     public EncodingResult encodeOrdinary(String text, int maxTokenCount) {
-        return encodeOrdinaryInternal(text, maxTokenCount, true);
+        return encodeOrdinaryInternal(text, maxTokenCount, true).toEncodingResult();
     }
 
-    private EncodingResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings) {
+    private InternalResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new EncodingResult(new IntArrayList(0), -1, false);
+            return new InternalResult(new IntArrayList(0), false);
         }
 
         IntArrayList out = new IntArrayList();
@@ -81,12 +81,12 @@ class GptBytePairEncoding implements Encoding {
                 String decoded = decode(tokens);
                 if (text.startsWith(decoded)) {
                     // If decoded text is equal to the head of the original text, we can safely return the tokens
-                    return new EncodingResult(tokens, -1, text.length() > decoded.length());
+                    return new InternalResult(tokens, text.length() > decoded.length());
                 }
             }
         }
 
-        return new EncodingResult(out, tokenCount, false);
+        return new InternalResult(out, tokenCount, false);
     }
 
     int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, IntArrayList out) {
@@ -101,12 +101,12 @@ class GptBytePairEncoding implements Encoding {
 
     @Override
     public int countTokens(String text) {
-        return encodeInternal(text, Integer.MAX_VALUE, false).getTokenCount();
+        return encodeInternal(text, Integer.MAX_VALUE, false).toTokenCount();
     }
 
     @Override
     public int countTokensOrdinary(final String text) {
-        return encodeOrdinaryInternal(text, Integer.MAX_VALUE, false).getTokenCount();
+        return encodeOrdinaryInternal(text, Integer.MAX_VALUE, false).toTokenCount();
     }
 
     @Override
@@ -134,5 +134,35 @@ class GptBytePairEncoding implements Encoding {
     private byte[] decodeToken(int token) {
         byte[] decodedToken = encoder.decodeToken(token, specialEncoder);
         return requireNonNull(decodedToken, "Unknown token for decoding: " + token);
+    }
+
+    private static final class InternalResult {
+        private final IntArrayList tokens;
+        private final boolean truncated;
+        private final int tokenCount;
+
+        private InternalResult(IntArrayList tokens, boolean truncated) {
+            this(tokens, -1, truncated);
+        }
+
+        private InternalResult(IntArrayList tokens, int tokenCount, boolean truncated) {
+            this.tokens = tokens;
+            this.truncated = truncated;
+            this.tokenCount = tokenCount < 0 ? tokens.size() : tokenCount;
+        }
+
+        private EncodingResult toEncodingResult() {
+            if (tokens.size() != tokenCount) {
+                throw new IllegalStateException(
+                        "Token count does not match token list size (tokenCount=" + tokenCount + ", tokens size=" + tokens.size() + ")"
+                );
+            }
+
+            return new EncodingResult(tokens, truncated);
+        }
+
+        private int toTokenCount() {
+            return tokenCount;
+        }
     }
 }
