@@ -56,7 +56,7 @@ The encoding is also fully thread-safe and can be used concurrently by multiple 
 
 :::info
 
-Note that the library currently does not support encoding of special tokens. Special tokens are artificial tokens used to unlock capabilities from a model, such as fill-in-the-middle. If the `Encoding#encode` method encounters a special token in the input text, it will throw an `UnsupportedOperationException`.
+Note that the library does not support encoding of special tokens. Special tokens are artificial tokens used to unlock capabilities from a model, such as fill-in-the-middle. If the `Encoding#encode` method encounters a special token in the input text, it will throw an `UnsupportedOperationException`.
 
 If you want to encode special tokens as if they were normal text, you can use `Encoding#encodeOrdinary` instead:
 
@@ -72,7 +72,7 @@ encoding.encodeOrdinary("hello <|endoftext|> world");
 
 ## Counting tokens
 
-If all you want is the amount of tokens the text encodes to, you can use the shorthand method `Encoding#countTokens` or `Encoding#countTokensOrdinary`:
+If all you want is the amount of tokens the text encodes to, you can use the shorthand method `Encoding#countTokens` or `Encoding#countTokensOrdinary`. These methods are faster than the corresponding `encode` methods.
 
 ```java
 int tokenCount = encoding.countTokens("This is a sample sentence.");
