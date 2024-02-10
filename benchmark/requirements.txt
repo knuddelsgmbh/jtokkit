@@ -1,2 +1,2 @@
 pyperf==2.6.2
-tiktoken==0.5.2
+tiktoken==0.6.0
