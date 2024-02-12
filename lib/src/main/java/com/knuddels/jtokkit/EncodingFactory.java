@@ -101,7 +101,7 @@ class EncodingFactory {
      * @return an {@link Encoding} instance for the cl100k_base encoding
      */
     static Encoding cl100kBase() {
-        // "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+"
+        // "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}++|\\p{N}{1,3}+| ?[^\\s\\p{L}\\p{N}]++[\r\n]*+|\\s*[\r\n]|\\s+(?!\\S)|\\s++"
         Map<byte[], Integer> mergeableRanks = loadMergeableRanks("/com/knuddels/jtokkit/cl100k_base.tiktoken");
         GptBytePairEncodingParams params = new GptBytePairEncodingParams("cl100k_base", null, mergeableRanks, SPECIAL_TOKENS_CL100K_BASE);
         return new Cl100kGptBytePairEncoding(params);
@@ -122,7 +122,7 @@ class EncodingFactory {
             String fileName,
             Map<String, Integer> specialTokens
     ) {
-        Pattern regex = compileRegex("'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+", false);
+        Pattern regex = compileRegex("'(?:[sdmt]|ll|ve|re)| ?\\p{L}++| ?\\p{N}++| ?[^\\s\\p{L}\\p{N}]++|\\s+(?!\\S)|\\s++", false);
         Map<byte[], Integer> mergeableRanks = loadMergeableRanks(fileName);
         GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, mergeableRanks, specialTokens);
         return fromParameters(params);
