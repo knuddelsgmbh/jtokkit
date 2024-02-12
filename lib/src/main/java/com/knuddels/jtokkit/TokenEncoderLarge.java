@@ -28,7 +28,7 @@ final class TokenEncoderLarge {
         assert rankMap.containsKey(MAX_RANK);
 
         int tokenCount = match.length();
-        while (tokenCount > 2 && rankMap.size() > 1) {
+        while (rankMap.size() > 1) {
             for (Iterator<RankNode> it = rankMap.pollFirstEntry().getValue().values().iterator(); it.hasNext(); ) {
                 RankNode minNode = it.next();
                 int minRank = minNode.rank;

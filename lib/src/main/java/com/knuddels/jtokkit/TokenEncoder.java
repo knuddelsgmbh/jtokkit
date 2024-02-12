@@ -170,11 +170,7 @@ final class TokenEncoder {
             ranks.set(nextIndex, DUMMY_RANK);
 
             length--;
-            if (length < 3) {
-                break; // single tokens were already filtered out, let's skip a minimum calculation
-            } else {
-                minRankIndex = getMinRankIndex(ranks);
-            }
+            minRankIndex = getMinRankIndex(ranks);
         }
         assert getMinRankIndex(ranks) < 0;
         return length;
