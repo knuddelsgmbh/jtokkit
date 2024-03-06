@@ -41,7 +41,7 @@ class Cl100kParser {
 
             if ((c0 == '\'') && c1 > 0) {
                 if (isShortContraction(c1)) {
-                    // 1) `'[sdtm]` - contractions, such as the suffixes of `he's`, `I'd`, `'tis`, `I'm`
+                    // 1) `'[sdmt]` - contractions, such as the suffixes of `he's`, `I'd`, `'tis`, `I'm`
                     endIndex += 2;
                     finished = fragmentConsumer.test(addUtf8Bytes(input, startIndex, endIndex, utf8Bytes));
                     continue;
