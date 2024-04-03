@@ -91,14 +91,14 @@ class GptBytePairEncoding implements Encoding {
 
     InternalEncodingResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, IntArrayList out) {
         int tokenCount = 0;
-        int lastTokenPosition = 0;
+        int endCharIndex = 0;
         IntArrayList ranks = new IntArrayList(); // reused to avoid allocations
         for (Matcher matcher = pattern.matcher(text); tokenCount < maxTokenCount && matcher.find(); ) {
             byte[] bytes = matcher.group().getBytes(UTF_8);
             tokenCount += encoder.addTokensAndGetCount(maxTokenCount, keepEncodings, bytes, out, ranks);
-            lastTokenPosition = matcher.end();
+            endCharIndex = matcher.end();
         }
-        return new InternalEncodingResult(tokenCount, lastTokenPosition);
+        return new InternalEncodingResult(tokenCount, endCharIndex);
     }
 
     @Override
@@ -110,7 +110,7 @@ class GptBytePairEncoding implements Encoding {
     public int calcCharCountForTokens(String text , int tokenCount) {
         IntArrayList out = new IntArrayList();
         InternalEncodingResult result = encodeOrdinaryInternal(text, tokenCount, false, out);
-        return result.getLastTokenPosition();
+        return result.getEndCharIndex();
     }
 
     @Override
@@ -175,21 +175,21 @@ class GptBytePairEncoding implements Encoding {
         }
     }
 
-    private static final class InternalEncodingResult {
+    protected static final class InternalEncodingResult {
         private final int tokenCount;
-        private final int lastTokenPosition;
+        private final int endCharIndex;
 
         public int getTokenCount() {
             return tokenCount;
         }
 
-        public int getLastTokenPosition() {
-            return lastTokenPosition;
+        public int getEndCharIndex() {
+            return endCharIndex;
         }
 
-        public InternalEncodingResult(int tokenCount, int lastTokenPosition) {
+        public InternalEncodingResult(int tokenCount, int endCharIndex) {
             this.tokenCount = tokenCount;
-            this.lastTokenPosition = lastTokenPosition;
+            this.endCharIndex = endCharIndex;
         }
 
     }

@@ -28,11 +28,12 @@ class Cl100kParser {
             .sorted()
             .toArray();
 
-    static void split(String input, Predicate<ByteArrayList> fragmentConsumer) {
+    static int split(String input, Predicate<ByteArrayList> fragmentConsumer) {
         assert isValidUTF8(input) : "Input is not UTF-8: " + input;
         ByteArrayList utf8Bytes = new ByteArrayList();
         boolean finished = false;
-        for (int endIndex = 0; endIndex < input.length() && !finished; ) {
+        int endIndex = 0;
+        while (endIndex < input.length() && !finished) {
             int startIndex = endIndex;
             int c0 = input.codePointAt(startIndex);
             int cc0 = charCount(c0);
@@ -123,6 +124,7 @@ class Cl100kParser {
                 }
             }
         }
+        return endIndex;
     }
 
 

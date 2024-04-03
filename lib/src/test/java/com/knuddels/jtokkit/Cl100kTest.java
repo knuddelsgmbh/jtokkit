@@ -269,7 +269,7 @@ class Cl100kTest {
         IntStream.range(0, 100_000).parallel().forEach(i -> {
             String testString;
             do {
-                testString = generateRandomString(10, singleTokenStrings);
+                testString = generateRandomUtf8String( singleTokenStrings);
             } while (!UTF_8.newEncoder().canEncode(testString));
 
             var maxTokenCount = rand().nextInt(1, 2 * testString.length());
