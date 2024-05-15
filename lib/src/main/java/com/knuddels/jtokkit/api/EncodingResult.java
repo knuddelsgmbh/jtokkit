@@ -6,10 +6,16 @@ package com.knuddels.jtokkit.api;
 public final class EncodingResult {
     private final IntArrayList tokens;
     private final boolean truncated;
+    private final int lastTokenIndex;
 
-    public EncodingResult(final IntArrayList tokens, final boolean truncated) {
+    public EncodingResult(final IntArrayList tokens, final boolean truncated, int lastTokenIndex) {
         this.tokens = tokens;
         this.truncated = truncated;
+        this.lastTokenIndex = lastTokenIndex;
+    }
+
+    public EncodingResult(final IntArrayList tokens, final boolean truncated) {
+        this(tokens, truncated, -1);
     }
 
     /**
@@ -30,6 +36,8 @@ public final class EncodingResult {
         return truncated;
     }
 
+    public int getLastTokenIndex() { return lastTokenIndex; }
+
     @Override
     public String toString() {
         return "EncodingResult{"
@@ -37,4 +45,5 @@ public final class EncodingResult {
                 + ", truncated=" + truncated
                 + '}';
     }
+
 }
