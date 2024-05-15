@@ -82,9 +82,9 @@ class GptBytePairEncoding implements Encoding {
                 String decoded = decode(tokens);
                 if (text.startsWith(decoded)) {
                     boolean truncated = text.length() > decoded.length();
-                    int lastTokenIndex = findLastIndex(text, decoded);
+                    int lastTokenIndex = findLastTokenIndex(text, decoded);
                     // If decoded text is equal to the head of the original text, we can safely return the tokens
-                    return new InternalResult(tokens, truncated, truncated ? lastTokenIndex : text.length()-1);
+                    return new InternalResult(tokens, truncated, truncated ? lastTokenIndex : text.length() - 1);
                 }
             }
         }
@@ -139,7 +139,7 @@ class GptBytePairEncoding implements Encoding {
         return requireNonNull(decodedToken, "Unknown token for decoding: " + token);
     }
 
-    private int findLastIndex(String text, String decode) {
+    private int findLastTokenIndex(String text, String decode) {
         for (int i = 0; i < decode.length(); i++) {
             if (text.charAt(i) != decode.charAt(i)) {
                 return i - 1;
