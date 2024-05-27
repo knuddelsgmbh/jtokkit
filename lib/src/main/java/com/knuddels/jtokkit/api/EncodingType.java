@@ -11,6 +11,7 @@ public enum EncodingType {
     P50K_BASE("p50k_base"),
     P50K_EDIT("p50k_edit"),
     CL100K_BASE("cl100k_base");
+    O200K_BASE("o200k_base");
 
     private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
             .collect(Collectors.toMap(EncodingType::getName, Function.identity()));
