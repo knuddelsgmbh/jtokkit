@@ -29,8 +29,8 @@ the need to have similar capacities in the JVM ecosystem as the library
 
 ## 🤖 Features
 
-✅ Implements encoding and decoding via `r50k_base`, `p50k_base`, `p50k_edit`
-and `cl100k_base`
+✅ Implements encoding and decoding via `r50k_base`, `p50k_base`, `p50k_edit`,
+`cl100k_base` and `o200k_base`
 
 ✅ Easy-to-use API
 
