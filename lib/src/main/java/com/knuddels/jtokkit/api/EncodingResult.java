@@ -6,10 +6,16 @@ package com.knuddels.jtokkit.api;
 public final class EncodingResult {
     private final IntArrayList tokens;
     private final boolean truncated;
+    private final int lastProcessedCharacterIndex;
 
     public EncodingResult(final IntArrayList tokens, final boolean truncated) {
+        this(tokens, truncated, -1);
+    }
+
+    public EncodingResult(final IntArrayList tokens, final boolean truncated, final int lastProcessedCharacterIndex) {
         this.tokens = tokens;
         this.truncated = truncated;
+        this.lastProcessedCharacterIndex = lastProcessedCharacterIndex;
     }
 
     /**
@@ -30,11 +36,23 @@ public final class EncodingResult {
         return truncated;
     }
 
+    /**
+     * Returns the index of the last processed character in the input string
+     *
+     * @return the index of the last processed character in the input string, is -1 if text was null or empty
+     */
+    public int getLastProcessedCharacterIndex() {
+        return lastProcessedCharacterIndex;
+    }
+
+
+
     @Override
     public String toString() {
         return "EncodingResult{"
                 + "tokens=" + tokens
                 + ", truncated=" + truncated
+                + ", lastProcessedCharacterIndex=" + lastProcessedCharacterIndex
                 + '}';
     }
 }
