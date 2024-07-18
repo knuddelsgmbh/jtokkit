@@ -7,6 +7,7 @@ import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingResult;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 import com.knuddels.jtokkit.api.IntArrayList;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,7 @@ class GptBytePairEncoding implements Encoding {
 
     private InternalResult encodeInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new InternalResult(new IntArrayList(0), false);
+            return new InternalResult(new IntArrayList(0), -1, false, -1);
         }
 
         specialEncoder.checkForSpecialTokens(text);
@@ -64,7 +65,7 @@ class GptBytePairEncoding implements Encoding {
 
     private InternalResult encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings) {
         if (text == null) {
-            return new InternalResult(new IntArrayList(0), false);
+            return new InternalResult(new IntArrayList(0), -1, false, -1);
         }
 
         IntArrayList out = new IntArrayList();
@@ -81,12 +82,12 @@ class GptBytePairEncoding implements Encoding {
                 String decoded = decode(tokens);
                 if (text.startsWith(decoded)) {
                     // If decoded text is equal to the head of the original text, we can safely return the tokens
-                    return new InternalResult(tokens, text.length() > decoded.length());
+                    return new InternalResult(tokens, -1, text.length() > decoded.length(), decoded.length() - 1);
                 }
             }
         }
 
-        return new InternalResult(out, tokenCount, false);
+        return new InternalResult(out, tokenCount, false, text.length() - 1);
     }
 
     int encodeOrdinaryInternal(String text, int maxTokenCount, boolean keepEncodings, IntArrayList out) {
@@ -140,15 +141,13 @@ class GptBytePairEncoding implements Encoding {
         private final IntArrayList tokens;
         private final boolean truncated;
         private final int tokenCount;
+        private final int lastProcessedCharacterIndex; // -1 == text was null or string was empty()
 
-        private InternalResult(IntArrayList tokens, boolean truncated) {
-            this(tokens, -1, truncated);
-        }
-
-        private InternalResult(IntArrayList tokens, int tokenCount, boolean truncated) {
+        private InternalResult(IntArrayList tokens, int tokenCount, boolean truncated, int lastProcessedCharacterIndex) {
             this.tokens = tokens;
             this.truncated = truncated;
             this.tokenCount = tokenCount < 0 ? tokens.size() : tokenCount;
+            this.lastProcessedCharacterIndex = lastProcessedCharacterIndex;
         }
 
         private EncodingResult toEncodingResult() {
@@ -158,7 +157,7 @@ class GptBytePairEncoding implements Encoding {
                 );
             }
 
-            return new EncodingResult(tokens, truncated);
+            return new EncodingResult(tokens, truncated, lastProcessedCharacterIndex);
         }
 
         private int toTokenCount() {
