@@ -10,7 +10,7 @@ public enum EncodingType {
     R50K_BASE("r50k_base"),
     P50K_BASE("p50k_base"),
     P50K_EDIT("p50k_edit"),
-    CL100K_BASE("cl100k_base");
+    CL100K_BASE("cl100k_base"),
     O200K_BASE("o200k_base");
 
     private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
