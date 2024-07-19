@@ -32,6 +32,10 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             return Optional.of(getEncodingForModel(modelType.get()));
         }
 
+        if (modelName.startsWith(ModelType.GPT_4O.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4O));
+        }
+
         if (modelName.startsWith(ModelType.GPT_4_32K.getName())) {
             return Optional.of(getEncodingForModel(ModelType.GPT_4_32K));
         }

@@ -89,6 +89,27 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
     }
 
     @Test
+    void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt4o() {
+        var encoding = registry.getEncodingForModel("gpt-4o-123");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.GPT_4O.getEncodingType().getName());
+    }
+
+    @Test
+    void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt4oMini() {
+        var encoding = registry.getEncodingForModel("gpt-4o-mini-123");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.GPT_4O_MINI.getEncodingType().getName());
+    }
+
+    @Test
+    void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt4Turbo() {
+        var encoding = registry.getEncodingForModel("gpt-4-turbo-123");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.GPT_4_TURBO.getEncodingType().getName());
+    }
+
+    @Test
     void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt3Turbo() {
         var encoding = registry.getEncodingForModel("gpt-3.5-turbo-0301");
         assertTrue(encoding.isPresent());
