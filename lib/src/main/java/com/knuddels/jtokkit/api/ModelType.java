@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum ModelType {
+
     // chat
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4O("gpt-4o", EncodingType.O200K_BASE, 128000),
@@ -15,6 +16,9 @@ public enum ModelType {
     GPT_4_TURBO("gpt-4-turbo", EncodingType.CL100K_BASE, 128000),
     GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 16385),
     GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k", EncodingType.CL100K_BASE, 16385),
+
+    // reasoning
+    O1_MINI("o1-mini", EncodingType.O200K_BASE, 128000),
 
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
