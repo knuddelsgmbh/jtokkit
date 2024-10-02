@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 public enum ModelType {
     // chat
+    GPT_O1_PREVIEW("gpt-4o", EncodingType.O200K_BASE, 128000),
+    GPT_O1_MINI("gpt-4o", EncodingType.O200K_BASE, 128000),
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4O("gpt-4o", EncodingType.O200K_BASE, 128000),
     GPT_4O_MINI("gpt-4o-mini", EncodingType.O200K_BASE, 128000),
