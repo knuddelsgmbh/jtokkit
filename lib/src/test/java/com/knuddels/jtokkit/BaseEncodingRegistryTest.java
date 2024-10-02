@@ -75,6 +75,20 @@ abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistry> {
     }
 
     @Test
+    void getEncodingForModelByPrefixReturnsCorrectEncodingForO1Mini() {
+        var encoding = registry.getEncodingForModel("o1-mini-2024-09-12");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.O1_MINI.getEncodingType().getName());
+    }
+
+    @Test
+    void getEncodingForModelByPrefixReturnsCorrectEncodingForO1() {
+        var encoding = registry.getEncodingForModel("o1-preview-2024-09-12");
+        assertTrue(encoding.isPresent());
+        assertEquals(encoding.get().getName(), ModelType.O1_MINI.getEncodingType().getName());
+    }
+
+    @Test
     void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt432k() {
         var encoding = registry.getEncodingForModel("gpt-4-32k-0314");
         assertTrue(encoding.isPresent());
