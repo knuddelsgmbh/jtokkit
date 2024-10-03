@@ -178,7 +178,7 @@ public class DataDownloader {
         }
 
         var totalSize = calculateTotalFileSize(rootFolder);
-        if (totalSize != 99_945_723) {
+        if (totalSize != 99_945_750) {
             throw new AssertionError("Total size did not match expected value, actual: " + totalSize);
         }
     }
