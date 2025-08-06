@@ -96,6 +96,9 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             case O200K_BASE:
                 encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.o200kBase());
                 break;
+            case O200K_HARMONY:
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.o200kHarmony());
+                break;
             default:
                 throw new IllegalStateException("Unknown encoding type " + encodingType.getName());
         }
