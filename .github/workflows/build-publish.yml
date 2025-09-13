@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 8 and JDK 21 with Gradle Cache
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
           distribution: 'temurin'
           java-version: |
