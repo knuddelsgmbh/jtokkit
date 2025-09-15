@@ -13,8 +13,10 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class EncodingFactory {
+    private static final Map<String, Integer> SPECIAL_TOKENS_O200K_HARMONY;
     private static final Map<String, Integer> SPECIAL_TOKENS_O200K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
@@ -56,6 +58,30 @@ class EncodingFactory {
         map.put(ENDOFTEXT, 199999);
         map.put(ENDOFPROMPT, 200018);
         SPECIAL_TOKENS_O200K_BASE = Collections.unmodifiableMap(map);
+    }
+
+    static {
+        Map<String, Integer> map = new HashMap<>(SPECIAL_TOKENS_O200K_BASE);
+        map.put("<|startoftext|>", 199998);
+        map.put(ENDOFTEXT, 199999);
+        map.put("<|reserved_200000|>", 200000);
+        map.put("<|reserved_200001|>", 200001);
+        map.put("<|return|>", 200002);
+        map.put("<|constrain|>", 200003);
+        map.put("<|reserved_200004|>", 200004);
+        map.put("<|channel|>", 200005);
+        map.put("<|start|>", 200006);
+        map.put("<|end|>", 200007);
+        map.put("<|message|>", 200008);
+        map.put("<|reserved_200009|>", 200009);
+        map.put("<|reserved_200010|>", 200010);
+        map.put("<|reserved_200011|>", 200011);
+        map.put("<|call|>", 200012);
+
+        IntStream.range(200013, 201088)
+                .forEach( i -> map.put("<|reserved_" + i + "|>", i));
+
+        SPECIAL_TOKENS_O200K_HARMONY = Collections.unmodifiableMap(map);
     }
 
     private EncodingFactory() {
@@ -119,18 +145,17 @@ class EncodingFactory {
      */
 
     static Encoding o200kBase() {
-        Map<byte[], Integer> mergeableRanks = loadMergeableRanks("/com/knuddels/jtokkit/o200k_base.tiktoken");
-        List<String> patStrList = new ArrayList<>();
-        patStrList.add("[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]*[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?");
-        patStrList.add("[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]+[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?");
-        patStrList.add("\\p{N}{1,3}");
-        patStrList.add(" ?[^\\s\\p{L}\\p{N}]+[\\r\\n/]*");
-        patStrList.add("\\s*[\\r\\n]+");
-        patStrList.add("\\s+(?!\\S)");
-        patStrList.add("\\s+");
-        Pattern regex = compileRegex(patStrList.stream().map(String::valueOf).collect(Collectors.joining("|")), false);
-        GptBytePairEncodingParams params = new GptBytePairEncodingParams("o200k_base", regex, mergeableRanks, SPECIAL_TOKENS_O200K_BASE);
-        return fromParameters(params);
+        return from200kParameters("o200k_base", SPECIAL_TOKENS_O200K_BASE);
+    }
+
+    /**
+     * Returns an {@link Encoding} instance for the o200k_harmony encoding.
+     *
+     * @return an {@link Encoding} instance for the o200k_harmony encoding
+     */
+
+    static Encoding o200kHarmony() {
+        return from200kParameters("o200k_harmony", SPECIAL_TOKENS_O200K_HARMONY);
     }
 
     /**
@@ -150,6 +175,24 @@ class EncodingFactory {
     ) {
         Pattern regex = compileRegex("'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+", false);
         Map<byte[], Integer> mergeableRanks = loadMergeableRanks(fileName);
+        GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, mergeableRanks, specialTokens);
+        return fromParameters(params);
+    }
+
+    private static Encoding from200kParameters(
+            String name,
+            Map<String, Integer> specialTokens
+    ) {
+        Map<byte[], Integer> mergeableRanks = loadMergeableRanks("/com/knuddels/jtokkit/o200k_base.tiktoken");
+        List<String> patStrList = new ArrayList<>();
+        patStrList.add("[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]*[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?");
+        patStrList.add("[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]+[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?");
+        patStrList.add("\\p{N}{1,3}");
+        patStrList.add(" ?[^\\s\\p{L}\\p{N}]+[\\r\\n/]*");
+        patStrList.add("\\s*[\\r\\n]+");
+        patStrList.add("\\s+(?!\\S)");
+        patStrList.add("\\s+");
+        Pattern regex = compileRegex(patStrList.stream().map(String::valueOf).collect(Collectors.joining("|")), false);
         GptBytePairEncodingParams params = new GptBytePairEncodingParams(name, regex, mergeableRanks, specialTokens);
         return fromParameters(params);
     }
