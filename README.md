@@ -118,6 +118,16 @@ Afterwards you can use the custom encodings alongside the default ones and acces
 them by using `registry.getEncoding("custom-name")`. See the JavaDoc for more
 details.
 
+## ⚡ Try JTokkit in Action: Online OpenAI Token Counter
+[**Try now: OpenAI Token Counter**](https://calculatorlib.com/openai-token-counter) powered by CalculatorLib
+
+- Features:
+  - Supports all OpenAI models and encoding types
+  - Counts tokens using both `encode()` and `countTokens()` methods
+  - Shows token differences between standard and "ordinary" methods
+  - Displays context window usage for selected models
+  - Provides reference information about models, context sizes, and encodings
+
 ## 📄 License
 JTokkit is licensed under the MIT License. See the
 [LICENSE](https://github.com/knuddelsgmbh/jtokkit/blob/main/LICENSE) file
