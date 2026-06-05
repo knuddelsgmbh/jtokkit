@@ -25,9 +25,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.1")
 }
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
     maxParallelForks = 4
 }
 
