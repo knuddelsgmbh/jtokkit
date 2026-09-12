@@ -7,6 +7,8 @@ import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.GptBytePairEncodingParams;
 import com.knuddels.jtokkit.api.IntArrayList;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -176,24 +178,63 @@ class EncodingFactory {
             if (in == null) {
                 throw new IllegalStateException("Could not find " + fileName + " in resources");
             }
-
-            Map<byte[], Integer> mergeableRanks = new LinkedHashMap<>(); // keep order to optimize collisions
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                int firstSpaceIndex = line.indexOf(' ');
-                assert firstSpaceIndex != -1 : "Invalid line in " + fileName + ": " + line;
-
-                byte[] token = Base64.getDecoder().decode(line.substring(0, firstSpaceIndex).getBytes(UTF_8));
-                int rank = parseInt(line.substring(firstSpaceIndex + 1));
-
-                mergeableRanks.put(token, rank);
-            }
-
-            return mergeableRanks;
+            return loadMergeableRanks(in, fileName);
         } catch (IOException e) {
             throw new IllegalStateException("Could not load " + fileName + " from resources", e);
         }
+    }
+
+    static Map<byte[], Integer> loadMergeableRanks(InputStream in, String fileName) throws IOException {
+        return parseMergeableRanks(readStreamFully(in), fileName);
+    }
+
+    private static byte[] readStreamFully(InputStream in) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] chunk = new byte[8192];
+        int read;
+        while ((read = in.read(chunk)) != -1) {
+            buffer.write(chunk, 0, read);
+        }
+        return buffer.toByteArray();
+    }
+
+    static Map<byte[], Integer> parseMergeableRanks(byte[] contents, String fileName) {
+        Map<byte[], Integer> mergeableRanks = new LinkedHashMap<>(); // keep order to optimize collisions
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(contents), UTF_8))) {
+            String line;
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if (line.isEmpty()) {
+                    continue;
+                }
+                int firstSpaceIndex = line.indexOf(' ');
+                if (firstSpaceIndex == -1) {
+                    throw invalidRankLine(fileName, lineNumber, line, "missing space-separated rank");
+                }
+
+                String rankString = line.substring(firstSpaceIndex + 1).trim();
+                int rank;
+                try {
+                    rank = parseInt(rankString);
+                } catch (NumberFormatException e) {
+                    throw invalidRankLine(fileName, lineNumber, line, "invalid rank '" + rankString + "'");
+                }
+
+                byte[] token = Base64.getDecoder().decode(line.substring(0, firstSpaceIndex).getBytes(UTF_8));
+                mergeableRanks.put(token, rank);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not parse " + fileName + " from resources", e);
+        }
+
+        return mergeableRanks;
+    }
+
+    private static IllegalStateException invalidRankLine(String fileName, int lineNumber, String line, String reason) {
+        return new IllegalStateException(
+                "Invalid mergeable rank line " + lineNumber + " in " + fileName + " (" + reason + "): " + line
+        );
     }
 
     private static class Cl100kGptBytePairEncoding extends GptBytePairEncoding {
